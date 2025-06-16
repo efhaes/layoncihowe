@@ -1,0 +1,283 @@
+:root {
+  --primary: #081c3c;
+  --secondary: #005b9e;
+  --background: linear-gradient(to bottom, #000000, #005b9e, #00f0ff);
+  --light-blue: #ffffff;
+  --text: #2E3C54;
+  --white: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+}
+
+/* Base */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  background-size: cover;
+  background-attachment: fixed;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* Konten Utama */
+.main-content {
+  max-width: 1000px;
+  margin: 5rem auto;
+  padding: 2.5rem;
+  border-radius: 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--glass-shadow);
+  transition: 0.4s ease;
+}
+
+/* Judul Halaman */
+h1 {
+  text-align: center;
+  color: var(--white);
+  font-size: 2.2rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  font-weight: 900; /* bikin tebal banget */
+  text-shadow: 
+    0 0 8px var(--secondary),
+    0 0 15px var(--secondary),
+    0 0 20px var(--accent),
+    0 0 30px var(--accent);
+}
+
+
+/* Tabel */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.07);
+}
+
+th, td {
+  padding: 16px 20px;
+  text-align: left;
+  color: var(--white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+  background: var(--secondary);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.8px;
+}
+
+tr:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transition: background-color 0.3s ease;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Link */
+a:hover {
+  text-decoration: underline;
+  color: #00e1ff;
+  text-shadow: 0 0 4px var(--secondary);
+}
+
+/* Background untuk vanta */
+#vanta {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+.table-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 2rem auto;
+  max-width: 1000px;
+}
+
+.judul-halaman {
+  text-align: center;
+  color: #ffffff;
+  font-size: 2rem;
+  margin-top: 6rem;
+  /* border-bottom: 2px solid #00f0ff; */
+  padding-bottom: 1rem;
+}
+
+table.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+table.styled-table th,
+table.styled-table td {
+  padding: 14px 18px;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+table.styled-table th {
+  background: #005b9e;
+  text-transform: uppercase;
+}
+
+table.styled-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  color: #e6f2ff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-buttons button {
+  padding: 0.6rem 1.8rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.modal-buttons button:first-child {
+  background-color: #e74c3c;
+  color: white;
+  border: 1px solid #ff6b6b;
+}
+
+.modal-buttons button:first-child:hover {
+  background-color: #c0392b;
+  box-shadow: 0 0 12px #e74c3c;
+}
+
+.modal-buttons button:last-child {
+  background-color: transparent;
+  color: #00f0ff;
+  border: 1px solid #00f0ff;
+}
+
+.modal-buttons button:last-child:hover {
+  background-color: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 12px #00f0ff;
+}
+
+.mobile-table {
+  display: none;
+}
+
+/* Tambahkan ke daftar_kelahiran.css */
+@media (max-width: 768px) {
+  .styled-table {
+    display: none !important;
+  }
+.table-wrapper {
+  display: none !important;
+}
+  .styled-table thead,
+  .styled-table tbody,
+  .styled-table tr,
+  .styled-table td,
+  .styled-table th {
+    display: none !important;
+  }
+
+  .mobile-table {
+    display: block;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    padding: 0 1rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+
+  .mobile-table {
+    display: block;
+    margin: 1rem;
+  }
+
+  .mobile-row {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+  }
+  .modal-buttons button {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .mobile-cell {
+    margin-bottom: 0.6rem;
+    color: #fff;
+    font-size: 0.95rem;
+  }
+
+  .mobile-cell a {
+    color: #00f0ff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .mobile-cell a:hover {
+    text-decoration: underline;
+  }
+
+  .mobile-cell a:last-child {
+    color: #ff5e5e;
+  }
+}

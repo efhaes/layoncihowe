@@ -1,0 +1,91 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}Daftar Pengajuan Surat{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/semua_pengajuan.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+  <div id="vanta"></div>  <!-- Vanta di luar content supaya background -->
+
+  <div class="content">
+    <h1>Daftar Pengajuan Surat</h1>
+
+    <div class="card-container">
+   {% for surat in semua_surat %}
+  <div class="card mb-3">
+    <div class="card-header">
+      <strong>{{ surat.jenis_surat }}</strong>
+    </div>
+    <div class="card-body">
+      {% if surat.nama_lengkap %}
+        <p>Nama: {{ surat.nama_lengkap }}</p>
+      {% elif surat.nama %}
+        <p>Nama: {{ surat.nama }}</p>
+      {% elif surat.nama_pemilik %}
+        <p>Nama: {{ surat.nama_pemilik }}</p>
+      {% elif surat.nama_jenazah %}
+        <p>Nama: {{ surat.nama_jenazah }}</p>
+      {% else %}
+        <p>Nama: Tidak tersedia</p>
+      {% endif %}
+
+      <p>Status: {{ surat.status }}</p>
+      <p>No WhatsApp: {{ surat.no_whatsapp }}</p>
+      <p>Tanggal: {{ surat.tanggal_pengajuan|date:"d F Y, H:i" }}</p>
+
+      {% if surat.alamat %}
+        <p>Alamat: {{ surat.alamat }}</p>
+      {% elif surat.alamat_lengkap %}
+        <p>Alamat: {{ surat.alamat_lengkap }}</p>
+      {% elif surat.alamat_usaha %}
+        <p>Alamat: {{ surat.alamat_usaha }}</p>
+      {% else %}
+        <p>Alamat: Tidak tersedia</p>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    once: true,
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    VANTA.DOTS({
+      el: "#vanta",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xffffff,
+      backgroundColor: 0x000000,
+      size: 2.00,
+      spacing: 25.00,
+      showLines: true
+    });
+  });
+</script>
+{% endblock %}

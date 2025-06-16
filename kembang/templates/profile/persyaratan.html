@@ -1,0 +1,180 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}
+Persyaratan
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/persyaratan.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+ 
+{% endblock %}
+
+{% block content %}
+<div id="vanta" ></div> 
+<!-- Hero -->
+<div class="container py-5">
+    <h2 class="text-center" data-aos="fade-down">Persyaratan Pembuatan Surat</h2>
+    <div class="row g-4">
+
+<!--Kelahiran -->
+      <div class="col-md-6" data-aos="flip-left" data-aos-delay="100">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Kelahiran</h5>
+          <ul>
+            <li>Surat Keterangan Lahir dari RS/Bidan</li>
+            <li>Fotokopi KTP dan KK orang tua</li>
+            <li>Fotokopi buku nikah orang tua</li>
+            <li>Surat Pengantar RT/RW</li>
+            <li>Pas foto bayi ukuran 3x4 (2 lembar)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!--  Kematian -->
+      <div class="col-md-6" data-aos="flip-left">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Kematian</h5>
+          <ul>
+            <li>Fotokopi KTP Almarhum/Almarhumah</li>
+            <li>Fotokopi Kartu Keluarga</li>
+            <li>Surat Keterangan Kematian dari Dokter/Rumah Sakit</li>
+            <li>Surat Pengantar dari RT/RW</li>
+            <li>Fotokopi KTP Pelapor</li>
+          </ul>
+        </div>
+      </div>
+ 
+     
+      <!-- Surat Pindah Datang -->
+      <div class="col-md-6" data-aos="flip-left">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Pindah Datang</h5>
+          <ul>
+            <li>Surat Keterangan Pindah dari daerah asal</li>
+            <li>Fotokopi KTP dan KK</li>
+            <li>Surat Pengantar RT/RW</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Surat Keterangan Domisili Usaha -->
+      <div class="col-md-6" data-aos="flip-left" data-aos-delay="100">
+        <div class="card custom-card p-2">
+          <h5 class="card-title"> Surat Keterangan Domisili Usaha (SKDU)</h5>
+          <ul>
+            <li>Fotokopi KTP dan KK</li>
+            <li>Surat Pengantar RT/RW</li>
+            <li>Foto lokasi usaha</li>
+            <li>Mengisi Nama usaha dan jenis usaha</li>
+          </ul>
+        </div>
+      </div>
+<!-- SKU -->
+      <div class="col-md-6" data-aos="flip-left">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Keterangan Usaha (SKU)</h5>
+          <ul>
+            <li>Fotokopi KTP dan KK</li>
+            <li>Surat Pengantar RT/RW</li>
+            <li>Surat pernyataan menjalankan usaha</li>
+            <li>Foto lokasi usaha</li>
+            <li>Nama usaha dan jenis usaha</li>
+          </ul>
+        </div>
+      </div>
+       <!-- SKTM -->
+      <div class="col-md-6" data-aos="flip-left" data-aos-delay="100">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Keterangan Tidak Mampu (SKTM)</h5>
+          <ul>
+            <li>Fotokopi KTP</li>
+            <li>Fotokopi Kartu Keluarga</li>
+            <li>Surat Pengantar RT/RW</li>
+            <li>Surat Keterangan Sekolah (jika untuk pendidikan)</li>
+          </ul>
+        </div>
+      </div>
+
+     <!-- Surat Pengantar KTP -->
+      <div class="col-md-6" data-aos="flip-left" data-aos-delay="100">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Pengantar KTP</h5>
+          <ul>
+            <li>Nama Lengkap </li>
+            <li>Alamat Lengkap </li>
+            <li>Fotokopi Kartu Keluarga</li>
+            <li>Surat Keterangan Sekolah (jika untuk pendidikan)</li>
+          </ul>
+        </div>
+      </div>
+
+       <!-- Surat Pengantar KK -->
+      <div class="col-md-6" data-aos="flip-left" data-aos-delay="100">
+        <div class="card custom-card p-2">
+          <h5 class="card-title">Surat Pengantar KK</h5>
+          <ul>
+            <li>Foto KK</li>
+            <li>Ijasah (jika merubah sts Pendidikan)</li>
+            <li>Surat Kelahiran (jika  penambahan anggota keluarga)</li>
+            <li>Surat Kematian ( Jika Mengurangi anggota Keluarga)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
+<script>
+   let vantaEffect; // untuk menyimpan instance Vanta
+   // Ganti warna otomatis tiap 5 detik
+    setInterval(() => {
+      const randomColor = Math.floor(Math.random() * 0xffffff);
+      vantaEffect.setOptions({ color: randomColor });
+    }, 3000);
+
+  VANTA.DOTS({
+    el: "#vanta",
+    mouseControls: false,
+    touchControls: false,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    color: 0xffffff,           // warna titik
+    backgroundColor: 0x000000, // warna latar belakang
+    size: 2.00,                // ukuran titik
+    spacing: 35.00,            // jarak antar titik
+    showLines: true          // kalau ingin garis, ubah jadi true
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+
+    // Efek 3D Hover Interaktif
+    document.querySelectorAll('.custom-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const { offsetX, offsetY } = e;
+        const { offsetWidth: width, offsetHeight: height } = card;
+        const rotateX = ((offsetY - height / 2) / height) * -10;
+        const rotateY = ((offsetX - width / 2) / width) * 10;
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+      });
+    });
+  </script>
+{% endblock javascripts %}

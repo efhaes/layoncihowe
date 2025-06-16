@@ -1,0 +1,140 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}
+cek status
+{% endblock %}
+
+{% block css %}
+ <link rel="stylesheet" href="{% static 'css/home.css' %}">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+{% endblock %}
+{% block content %}
+<!-- Vanta Background -->
+<div id="vanta" ></div> 
+
+<!-- Hero -->
+<main>
+    <h2>Cek Status Pengajuan Surat</h2>
+    <form method="get">
+      <label for="jenis">Jenis Surat:</label>
+      <select name="jenis" id="jenis" required>
+        <option value="">-- Pilih --</option>
+        <option value="kelahiran" {% if jenis == 'kelahiran' %}selected{% endif %}>Surat Kelahiran</option>
+        <option value="kematian" {% if jenis == 'kematian' %}selected{% endif %}>Surat Kematian</option>
+        <option value="pindah_datang" {% if jenis == 'pindah_datang' %}selected{% endif %}>Pindah Datang</option>
+        <option value="domisili_usaha" {% if jenis == 'domisili_usaha' %}selected{% endif %}>SKDU</option>
+        <option value="SKU" {% if jenis == 'SKU' %}selected{% endif %}>SKU</option>
+        <option value="SKTM" {% if jenis == 'SKTM' %}selected{% endif %}>SKTM</option>
+        <option value="domisili" {% if jenis == 'domisili' %}selected{% endif %}>Domisili</option>
+        <option value="Surat_KTP" {% if jenis == 'Surat_KTP' %}selected{% endif %}>Surat KTP</option>
+         <option value="Surat_KK" {% if jenis == 'Surat_KK' %}selected{% endif %}>Surat KK</option>
+      </select>
+      <button type="submit">Cari</button>
+    </form>
+
+    {% if hasil is not None %}
+      <h3>Hasil Pencarian:</h3>
+      {% if hasil %}
+        <table>
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Status</th>
+              <th>File Surat</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in hasil %}
+            <tr>
+              <td>
+                {% if jenis == 'kelahiran' %}
+                  {{ item.nama_lengkap }}
+                {% elif jenis == 'kematian' %}
+                  {{ item.nama_jenazah }}
+                {% elif jenis == 'domisili' or jenis == 'SKU' or jenis == 'SKTM' or jenis == 'Surat_KTP'  or jenis == 'Surat_KK'%}
+    {{ item.nama_lengkap }}
+                {% else %}
+                  {{ item.nama }}
+                {% endif %}
+              </td>
+              <td>{{ item.status }}</td>
+              <td>
+                {% if item.hasil_surat %}
+                  <a href="{{ item.hasil_surat.url }}" target="_blank">Download</a>
+                {% else %}
+                  Belum tersedia
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p><strong>Data tidak ditemukan.</strong></p>
+      {% endif %}
+    {% endif %}
+  </main>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.net.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
+
+  <script>
+    // VANTA Background
+    let vantaEffect = VANTA.DOTS({
+      el: "#vanta",
+      mouseControls: false,
+      touchControls: false,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xffffff,
+      backgroundColor: 0x000000,
+      size: 2.00,
+      spacing: 25.00,
+      showLines: true
+      
+    });
+
+    // Ganti warna titik otomatis
+    setInterval(() => {
+      const randomColor = Math.floor(Math.random() * 0xffffff);
+      vantaEffect.setOptions({ color: randomColor });
+    }, 3000);
+</script>
+
+ <script>
+    const burger = document.getElementById('burger');
+    const navLinks = document.getElementById('navLinks');
+
+    burger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    burger.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navLinks.classList.toggle('active');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navLinks.contains(e.target) && !burger.contains(e.target)) {
+        navLinks.classList.remove('active');
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      navLinks.classList.remove('active');
+    });
+  </script>
+{% endblock javascripts %}

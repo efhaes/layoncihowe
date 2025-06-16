@@ -1,0 +1,105 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+ <link rel="stylesheet" href="{% static 'css/detail_kelahiran.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if request.resolver_match.url_name == 'detail_pengajuan_sku' %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+<div class="container detail-sku" data-aos="fade-up" data-aos-duration="1000">
+
+  <h1 data-aos="fade-right" data-aos-delay="100">
+    <i class="fa fa-briefcase"></i> Detail Pengajuan Surat Keterangan Usaha (SKU)
+  </h1>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+    <i class="fa fa-user"></i> <strong>Nama:</strong> {{ sku.nama_lengkap }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="250">
+    <i class="fa fa-id-card"></i> <strong>NIK:</strong> {{ sku.nik }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="300">
+    <i class="fa-brands fa-whatsapp"></i> <strong>No. WhatsApp:</strong>
+    <a href="https://wa.me/{{ sku.no_whatsapp|cut:'+' }}" target="_blank">{{ sku.no_whatsapp }}</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="350">
+    <i class="fa fa-receipt"></i> <strong>NPWP:</strong> {{ sku.npwp }}
+  </div>
+
+{% for label, file in file_fields %}
+  <div class="info-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:"3" }}00">
+    <i class="fa fa-file-alt"></i> <strong>{{ label }}:</strong>
+    {% if file %}
+      <a href="{{ file.url }}" target="_blank">Lihat</a>
+    {% else %}
+      Tidak ada file.
+    {% endif %}
+  </div>
+{% endfor %}
+
+
+
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="500">
+    <i class="fa fa-circle-info"></i> <strong>Status:</strong> {{ sku.status|title }}
+  </div>
+
+  {% if sku.hasil_surat %}
+  <div class="info-card" data-aos="fade-up" data-aos-delay="550">
+    <i class="fa fa-file-pdf"></i> <strong>Hasil Surat:</strong>
+    <a href="{{ sku.hasil_surat.url }}" target="_blank">Download </a>
+  </div>
+  {% endif %}
+
+  <hr data-aos="fade-in" data-aos-delay="600">
+
+  <h3 data-aos="fade-up" data-aos-delay="650"><i class="fa fa-upload"></i> Update Status & Upload Surat</h3>
+  <form method="post" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="700">
+    {% csrf_token %}
+
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+      <option value="diajukan" {% if sku.status == "diajukan" %}selected{% endif %}>Diajukan</option>
+      <option value="diproses" {% if sku.status == "diproses" %}selected{% endif %}>Diproses</option>
+      <option value="selesai" {% if sku.status == "selesai" %}selected{% endif %}>Selesai</option>
+    </select>
+
+    <label for="hasil_surat">Unggah Hasil Surat (PDF):</label>
+    <input type="file" name="hasil_surat" accept=".pdf">
+
+    <button type="submit"><i class="fa fa-save"></i> Simpan</button>
+  </form>
+
+  {% if sku.hasil_surat %}
+  <div class="action-buttons" data-aos="zoom-in" data-aos-delay="800">
+    <a href="https://wa.me/{{ sku.no_whatsapp|cut:'+' }}?text=Surat%20Keterangan%20Usaha%20Anda%20telah%20selesai.%20Silakan%20unduh%20di:%20{{ request.scheme }}://{{ request.get_host }}{{ sku.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="action-buttons" data-aos="zoom-in" data-aos-delay="850">
+    <a href="{% url 'daftar_sku' %}">
+      <button type="button"><i class="fa fa-arrow-left"></i> Kembali</button>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block show_footer %}{% endblock %}

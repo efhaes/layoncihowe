@@ -1,0 +1,95 @@
+<!-- templates/admin/daftar_sku.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Pengajuan SKU</title>
+    <link rel="stylesheet" href="/static/css/daftar_pindah.css">
+</head>
+<body>
+     <nav class="admin-navbar" data-aos="fade-down">
+  <div class="admin-navbar-content">
+    <div class="admin-brand">
+      <link rel="stylesheet" href="/static/img/logo%20tegar.png">
+      <div class="admin-title">
+        <h1>Halo, Admin!</h1>
+        <p>Selamat datang di Dashboard</p>
+      </div>
+    </div>
+    <ul class="admin-nav-links">
+     <li> <a href="/kelola/pengumuman/">Buat Berita</a></li>
+     <li> <a href="/">Home</a></li>
+    </ul>
+  </div>
+</nav>
+    <h2>Daftar Pengajuan Surat Keterangan Usaha (SKU)</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>Nama Lengkap</th>
+            <th>NIK</th>
+            <th>Status</th>
+            <th>Tanggal Pengajuan</th>
+            <th>Aksi</th>
+        </tr>
+        
+        <tr>
+            <td>raden kipli</td>
+        <td>33</td>
+        <td>diajukan</td>
+        <td>8 Juni 2025, 0.57</td>
+        <td>
+  <a href="/sku/4/">Detail</a> |
+
+  <a href="#" onclick="openDeleteModal(4)">Hapus</a>
+
+
+</td>
+
+        </tr>
+        
+        <tr>
+            <td>farhan hafidzan</td>
+        <td>33</td>
+        <td>diajukan</td>
+        <td>5 Juni 2025, 1.22</td>
+        <td>
+  <a href="/sku/2/">Detail</a> |
+
+  <a href="#" onclick="openDeleteModal(2)">Hapus</a>
+
+
+</td>
+
+        </tr>
+        
+        <tr>
+            <td>farhan hafidzan</td>
+        <td>33</td>
+        <td>diajukan</td>
+        <td>4 Juni 2025, 18.39</td>
+        <td>
+  <a href="/sku/1/">Detail</a> |
+
+  <a href="#" onclick="openDeleteModal(1)">Hapus</a>
+
+
+</td>
+
+        </tr>
+        
+    </table>
+
+    <!-- Modal Konfirmasi Hapus -->
+<div id="deleteModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <p>Yakin ingin menghapus data ini?</p>
+    <div class="modal-buttons">
+      <button onclick="confirmDelete()">Ya, Hapus</button>
+      <button onclick="closeDeleteModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> 
+  <link rel="stylesheet" href="{% static 'css/dashboard_admin.css' %}">
+  <!-- Di dalam <head> -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Di akhir <body> -->
+
+
+</head>
+<body>
+
+  <!-- Sidebar -->
+
+
+
+
+
+<!-- Kartu Jumlah Pengajuan -->
+<div class="card-container">
+  <div class="card" data-aos="zoom-in" data-aos-delay="0">
+    <h2>👶 Akta Kelahiran</h2>
+    <p>{{ akta_kelahiran.count }}</p>
+    <a href="{% url 'daftar_pengajuan_kelahiran' %}" class="button">Lihat Detail</a>
+  </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="100">
+    <h2>🚚 Pindah Datang</h2>
+    <p>{{ pindah_datang.count }}</p>
+    <a href="{% url 'daftar_pengajuan_pindah_datang' %}" class="button">Lihat Detail</a>
+  </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="200">
+    <h2>🏠 Pindah Keluar</h2>
+    <p>{{ pindah_keluar.count }}</p>
+    <a href="{% url 'daftar_pengajuan_pindah_keluar' %}" class="button">Lihat Detail</a>
+  </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="300">
+    <h2>⚰️ Akta Kematian</h2>
+    <p>{{ akta_kematian.count }}</p>
+    <a href="{% url 'daftar_pengajuan_akta_kematian' %}" class="button">Lihat Detail</a>
+  </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="400">
+    <h2>🏪 SKU</h2>
+    <p>{{ sku.count }}</p>
+    <a href="{% url 'daftar_sku' %}" class="button">Lihat Detail</a>
+  </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="500">
+    <h2>📍 Domisili</h2>
+    <p>{{ domisili.count }}</p>
+    <a href="{% url 'daftar_domisili' %}" class="button">Lihat Detail</a>
+  </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="600">
+    <h2>💸 SKTM</h2>
+    <p>{{ sktm.count }}</p>
+    <a href="{% url 'daftar_pengajuan_sktm' %}" class="button">Lihat Detail</a>
+  </div>
+  <div class="card" data-aos="zoom-in" data-aos-delay="600">
+    <h2>💸 Semua Pengajuan</h2>
+    
+    <a href="{% url 'semua_pengajuan' %}" class="button">Lihat Detail</a>
+  </div>
+</div>
+
+
+<!-- Script AOS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    once: true
+  });
+</script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 900 });
+</script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+
+
+</body>
+</html>

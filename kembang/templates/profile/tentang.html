@@ -1,0 +1,131 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}
+Tentang | Desa
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/tentang.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- VANTA Background -->
+<div id="vanta"></div>
+
+<!-- Hero Section -->
+<section class="hero-section py-5 text-center" data-aos="fade-down">
+  <h1>Tentang Desa</h1>
+  <p>Membangun harmoni dan kemajuan bersama demi masa depan yang lebih cerah</p>
+</section>
+
+<!-- Tentang Desa & Potensi -->
+<section id="tentang-desa" class="container about-section" data-aos="fade-up">
+  <div class="row g-4">
+    <!-- Tentang Desa -->
+    <div class="col-md-6">
+      <div class="card card-custom h-100">
+        <div class="card-header">Tentang Desa Sukasari</div>
+        <div class="card-body">
+          <p>Desa Sukasari adalah salah satu desa yang terletak di Kecamatan <strong>Rumpin</strong>, Kabupaten <strong>Bogor</strong>. Desa Sukasari merupakan kesatuan masyarakat hukum dengan segala potensi sumber daya alam dan manusianya.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Potensi & Kearifan Lokal -->
+    <div class="col-md-6">
+      <div class="card card-custom h-100">
+        <div class="card-header">Potensi & Kearifan Lokal</div>
+        <div class="card-body">
+          <p>Potensi pertanian subur dengan hasil utama berupa padi dan sayuran. Keahlian masyarakat dalam kerajinan bambu dan anyaman khas daerah. Kearifan lokal terjaga lewat kesenian tradisional dan budaya gotong royong. Peternakan dan perikanan juga menjadi mata pencaharian utama warga.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Visi & Misi -->
+<section id="visi-misi" class="container about-section" data-aos="fade-up">
+  <div class="row g-4">
+    <!-- Visi -->
+    <div class="col-12 col-md-6">
+      <div class="card card-custom h-100">
+        <div class="card-header">Visi Desa</div>
+        <div class="card-body text-start">
+          <ul>
+            <li>Terwujudnya Desa Sukasari yang BERSIH, TRANSPARAN, dan MANDIRI menuju masyarakat yang sehat, makmur, dan sejahtera.</li>
+            <li>Menjunjung tinggi nilai-nilai agama.</li>
+            <li>Menjadi desa yang subur makmur dan mandiri.</li>
+            <li>Berlandaskan budaya Sunda sebagai jati diri lokal.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Misi -->
+    <div class="col-12 col-md-6">
+      <div class="card card-custom h-100">
+        <div class="card-header">Misi Desa</div>
+        <div class="card-body text-start">
+          <ul>
+            <li>Menciptakan dan meningkatkan produk unggulan desa.</li>
+            <li>Meningkatkan kerukunan umat beragama.</li>
+            <li>Menjalankan pemerintahan yang transparan dan responsif.</li>
+            <li>Meningkatkan ekonomi berbasis pertanian dan pendidikan teknologi.</li>
+            <li>Mengembangkan adat istiadat dan budaya sebagai potensi lokal.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lokasi -->
+<section id="lokasi" class="container about-section" data-aos="fade-up">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card card-custom">
+        <div class="card-body">
+          <h4 class="card-title mb-3 text-center">Lokasi Desa Sukasari</h4>
+          <div class="ratio ratio-4x3 rounded-3 overflow-hidden">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.481956740556!2d106.6715!3d-6.5169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69dd50f56fbaef%3A0xa3d47e0586762169!2sHJJR%2BCR5%2C%20Sukasari%2C%20Rumpin%2C%20Bogor%20Regency%2C%20West%20Java%2016350!5e0!3m2!1sen!2sid!4v1718279393759!5m2!1sen!2sid"
+              width="600" height="450" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block javascripts %}
+<!-- Vanta JS -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
+<script>
+  let vantaEffect = VANTA.DOTS({
+    el: "#vanta",
+    mouseControls: false,
+    touchControls: false,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    color: 0xffffff,
+    backgroundColor: 0x000000,
+    size: 2.00,
+    spacing: 35.00,
+    showLines: true
+  });
+
+  setInterval(() => {
+    const randomColor = Math.floor(Math.random() * 0xffffff);
+    if (vantaEffect) vantaEffect.setOptions({ color: randomColor });
+  }, 3000);
+</script>
+{% endblock %}

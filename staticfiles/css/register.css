@@ -1,0 +1,228 @@
+/* ===== CSS Register Night Mode ===== */
+
+/* Root Variables */
+:root {
+  --primary: #e0f7fa;
+  --secondary: #12fd5cad;
+  --text: #e0f7fa;
+  --bg-glass: rgba(0, 0, 0, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.5);
+  --white: rgba(255, 255, 255, 0.15);
+}
+
+/* Body */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+  color: var(--text);
+  background-color: transparent;
+}
+
+/* Vanta Background */
+#vanta-clouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+/* Bintang */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 60% 10%, #fff, transparent),
+    radial-gradient(1px 1px at 80% 70%, #fff, transparent),
+    radial-gradient(1px 1px at 40% 80%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 50%, #fff, transparent);
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: twinkle 5s infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+}
+
+/* Bulan */
+.moon {
+  position: fixed;
+  top: 50px;
+  right: 80px;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at 30% 30%, #fffcd1, #f0e6a0 60%, transparent 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 20px #fffcd1;
+  z-index: 0;
+  animation: floatMoon 10s ease-in-out infinite;
+}
+
+@keyframes floatMoon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Wrapper */
+.register-wrapper {
+  min-height: 100vh;
+  padding: 50px 15px 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Register Card (Glass Effect) */
+.register-card {
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  background: var(--bg-glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  z-index: 1;
+  color: var(--text);
+}
+
+/* Logo */
+.logo-desa {
+  width: 80px;
+  height: auto;
+}
+
+/* Judul dan Subjudul */
+.register-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.register-subtitle {
+  font-size: 1rem;
+  color: #bbdefb;
+}
+
+/* Form Input */
+input.form-control, select.form-control, textarea.form-control {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  padding: 0.6rem;
+}
+
+input.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  border-color: var(--secondary);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  box-shadow: 0 0 0 0.15rem rgba(0, 255, 255, 0.25);
+}
+
+/* Tombol */
+.btn-register {
+  background-color: var(--primary);
+  color: #000;
+  font-weight: 600;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border: none;
+  transition: 0.3s ease;
+}
+textarea.form-control {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  padding: 0.6rem;
+  resize: none; /* Menghilangkan resize corner */
+  height: 48px; /* Disamakan dengan input biasa */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea.form-control:focus {
+  border-color: var(--secondary);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  box-shadow: 0 0 0 0.15rem rgba(0, 255, 255, 0.25);
+}
+
+
+.btn-register:hover {
+  background-color: var(--secondary);
+  color: #000;
+}
+
+/* Footer Teks */
+p.text-center {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+p.text-center a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+p.text-center a:hover {
+  text-decoration: underline;
+  color: var(--secondary);
+}
+
+/* ========================
+   Responsive (Mobile First)
+=========================== */
+@media (max-width: 576px) {
+  .register-card {
+    padding: 1.5rem 1.2rem;
+    border-radius: 0.8rem;
+  }
+
+  .register-title {
+    font-size: 1.4rem;
+  }
+
+  .register-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .moon {
+    top: 30px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .logo-desa {
+    width: 70px;
+  }
+
+  .btn-register {
+    font-size: 0.95rem;
+    padding: 0.5rem;
+  }
+}
+

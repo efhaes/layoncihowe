@@ -1,0 +1,124 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block css %}
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- AOS Animation -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/detail_kelahiran.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if request.resolver_match.url_name == 'detail_pengajuan_pindah_datang' %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+<div class="container detail-akta" data-aos="zoom-in" data-aos-duration="1000">
+
+  <h1 data-aos="fade-right" data-aos-delay="100">
+    <i class="fa fa-file-alt"></i> Detail Pengajuan Surat Pindah Datang
+  </h1>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+    <i class="fa fa-user"></i> <strong>Nama:</strong> {{ datang.nama }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="300">
+    <i class="fa fa-id-card"></i> <strong>NIK:</strong> {{ datang.nik }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="400">
+    <i class="fa fa-map-marker-alt"></i> <strong>Asal Daerah:</strong> {{ datang.asal_daerah }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="500">
+    <i class="fa fa-location-arrow"></i> <strong>Tujuan Daerah:</strong> {{ datang.tujuan_daerah }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="600">
+    <i class="fa fa-calendar-day"></i> <strong>Tanggal Pindah:</strong> {{ datang.tanggal_pindah|date:"d F Y" }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="700">
+    <i class="fa fa-comment-dots"></i> <strong>Alasan Pindah:</strong> {{ datang.alasan_pindah }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="800">
+    <i class="fa-brands fa-whatsapp"></i> <strong>No. WhatsApp:</strong>
+    <a href="https://wa.me/{{ datang.no_whatsapp|cut:'+' }}" target="_blank">{{ datang.no_whatsapp }}</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="900">
+    <i class="fa fa-users"></i> <strong>KK Lama:</strong>
+    <a href="{{ datang.kk_lama.url }}" target="_blank">Lihat File</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="1000">
+    <i class="fa fa-id-card-alt"></i> <strong>KTP:</strong>
+    <a href="{{ datang.ktp.url }}" target="_blank">Lihat File</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="1100">
+    <i class="fa fa-file-signature"></i> <strong>Surat Pengantar:</strong>
+    <a href="{{ datang.surat_pengantar.url }}" target="_blank">Lihat File</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="1200">
+    <i class="fa fa-flag-checkered"></i> <strong>Status:</strong> {{ datang.status|title }}
+  </div>
+
+  {% if datang.hasil_surat %}
+  <div class="info-card" data-aos="fade-up" data-aos-delay="1300">
+    <i class="fa fa-file-download"></i> <strong>Hasil Surat:</strong>
+    <a href="{{ datang.hasil_surat.url }}" target="_blank">Lihat File</a>
+  </div>
+  {% endif %}
+
+  <hr data-aos="fade-in" data-aos-delay="1350" />
+
+  <h3 data-aos="zoom-in" data-aos-delay="1400">
+    <i class="fa fa-edit"></i> Update Status & Upload Surat
+  </h3>
+
+  <form method="POST" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="1500">
+    {% csrf_token %}
+    <label for="status"><i class="fa fa-flag"></i> Status:</label>
+    <select name="status" id="status" required>
+      <option value="diajukan" {% if datang.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
+      <option value="sedang diproses" {% if datang.status == 'sedang diproses' %}selected{% endif %}>Sedang Diproses</option>
+      <option value="selesai" {% if datang.status == 'selesai' %}selected{% endif %}>Selesai</option>
+    </select>
+
+    <label for="hasil_surat"><i class="fa fa-upload"></i> Upload Hasil Surat (jika selesai):</label>
+    <input type="file" name="hasil_surat" id="hasil_surat" accept=".pdf">
+
+    <button type="submit"><i class="fa fa-save"></i> Simpan Perubahan</button>
+  </form>
+
+  <div class="action-buttons" data-aos="zoom-in-up" data-aos-delay="1600">
+    <a href="{% url 'daftar_pengajuan_pindah_datang' %}">
+      <button type="button"><i class="fa fa-arrow-left"></i> Kembali</button>
+    </a>
+    {% if datang.hasil_surat %}
+    <a href="{{ datang.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa fa-download"></i> Download</button>
+    </a>
+    <a href="https://wa.me/{{ datang.no_whatsapp|cut:'+' }}?text=Berikut%20hasil%20surat%20pindah%20datang%20Anda:%20{{ request.scheme }}://{{ request.get_host }}{{ datang.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim WA</button>
+    </a>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block show_footer %}{% endblock %}

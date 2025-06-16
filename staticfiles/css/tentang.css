@@ -1,0 +1,187 @@
+/* ===== Root Variables ===== */
+:root {
+  --primary: #081c3c;
+  --secondary: #005b9e;
+  --background: linear-gradient(to bottom, #081c3c, #005b9e, #00f0ff);
+  --light-blue: #F0F8FF;
+  --text: #e0f0ff;
+  --white: #ffffff;
+}
+
+/* ===== Reset & Base ===== */
+
+
+/* ===== VANTA Background ===== */
+#vanta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -100;
+  width: 100%;
+  height: 100%;
+  background: var(--background);
+}
+
+/* ===== Typography ===== */
+h1 {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 2.8rem;
+  text-shadow: 2px 2px 6px rgba(0, 255, 255, 0.4);
+  margin-top: -20px;
+}
+
+h2, h3, h5, h6 {
+  color: var(--white);
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+h4 {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 2.2rem;
+  text-shadow: 2px 2px 6px rgba(0, 255, 255, 0.4);
+}
+
+p, li {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+a {
+  color: #00ccff;
+  text-decoration: none;
+  font-weight: 500;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Layout Utilities ===== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 0 15px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Hero Section ===== */
+.hero-section {
+  padding: 100px 20px 60px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 2;
+}
+.hero-section p {
+  font-size: 1.2rem;
+  color: #e8f8ff;
+}
+
+/* ===== About Section ===== */
+.about-section {
+  padding: 50px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  margin-bottom: 2rem;
+  transition: 0.3s ease-in-out;
+}
+.about-section:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
+  transform: translateY(-4px);
+}
+
+/* ===== Card Custom ===== */
+.card-custom {
+  border-radius: 1rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+  color: var(--text);
+  height: 100%;
+  overflow: hidden;
+}
+.card-custom .card-header {
+  background-color: rgba(0, 91, 158, 0.8);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+.card-custom .card-body {
+  padding: 1.5rem;
+}
+
+/* ===== Ratio for Maps ===== */
+.ratio {
+  aspect-ratio: 4 / 3;
+}
+.ratio iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0.75rem;
+}
+
+/* ===== Utilities ===== */
+.highlight {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  padding: 2px 6px;
+  border-radius: 0.3rem;
+  font-weight: 600;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h4 {
+    font-size: 1.6rem;
+  }
+  .hero-section p {
+    font-size: 1rem;
+  }
+  .card-custom {
+    margin-bottom: 1rem;
+  }
+  .ratio {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+#lokasi.about-section {
+  background: none;
+  border: none;
+  backdrop-filter: none;
+  box-shadow: none;
+
+  /* Ukuran dan layout */
+  max-width: 800px;         /* batasi lebar maksimum */
+  margin: 0 auto 1rem;      /* center secara horizontal dan beri jarak bawah */
+  padding: 30px 15px;       /* padding atas-bawah dan kiri-kanan */
+  border-radius: 0.75rem;   /* opsional: sudut membulat sedikit */
+}
+@media (max-width: 768px) {
+  #lokasi.about-section {
+    padding: 20px 10px;
+    max-width: 100%;
+  }
+}
+

@@ -1,0 +1,149 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="{% static 'css/detail_skdu.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if request.resolver_match.url_name == 'detail_skdu' %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+<div class="container detail-domisili-usaha" data-aos="zoom-in" data-aos-duration="1000">
+
+  <h1 data-aos="fade-right" data-aos-delay="100">
+    <i class="fa fa-building"></i> Detail Pengajuan Domisili Usaha
+  </h1>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+    <i class="fa fa-user"></i> <strong>Nama Pemilik:</strong> {{ pengajuan.nama_pemilik }}
+  </div>
+  <div class="info-card" data-aos="fade-up" data-aos-delay="300">
+    <i class="fa fa-id-card"></i> <strong>NIK:</strong> {{ pengajuan.nik_pemilik }}
+  </div>
+  <div class="info-card" data-aos="fade-up" data-aos-delay="350">
+    <i class="fa fa-briefcase"></i> <strong>Nama Usaha:</strong> {{ pengajuan.nama_usaha }}
+  </div>
+  <div class="info-card" data-aos="fade-up" data-aos-delay="400">
+    <i class="fa fa-tags"></i> <strong>Jenis Usaha:</strong> {{ pengajuan.jenis_usaha }}
+  </div>
+  <div class="info-card" data-aos="fade-up" data-aos-delay="450">
+    <i class="fa fa-map-marker-alt"></i> <strong>Alamat Usaha:</strong> {{ pengajuan.alamat_usaha }}
+  </div>
+  <div class="info-card" data-aos="fade-up" data-aos-delay="500">
+    <i class="fa-brands fa-whatsapp"></i> <strong>No. WhatsApp:</strong>
+    <a href="https://wa.me/{{ pengajuan.no_whatsapp|cut:'+' }}" target="_blank">{{ pengajuan.no_whatsapp }}</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="550">
+    <i class="fa fa-id-card"></i> <strong>Fotokopi KTP:</strong>
+    {% if pengajuan.fotokopi_ktp %}
+      <a href="{{ pengajuan.fotokopi_ktp.url }}" target="_blank">Lihat KTP</a>
+    {% else %}
+      Belum diunggah
+    {% endif %}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="600">
+    <i class="fa fa-users"></i> <strong>Fotokopi KK:</strong>
+    {% if pengajuan.fotokopi_kk %}
+      <a href="{{ pengajuan.fotokopi_kk.url }}" target="_blank">Lihat KK</a>
+    {% else %}
+      Belum diunggah
+    {% endif %}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="650">
+    <i class="fa fa-file-alt"></i> <strong>NIB:</strong>
+    {% if pengajuan.nib %}
+      <a href="{{ pengajuan.nib.url }}" target="_blank">Lihat NIB</a>
+    {% else %}
+      Belum diunggah
+    {% endif %}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="700">
+    <i class="fa fa-envelope"></i> <strong>Surat Pengantar RT/RW:</strong>
+    {% if pengajuan.surat_pengantar_rt_rw %}
+      <a href="{{ pengajuan.surat_pengantar_rt_rw.url }}" target="_blank">Lihat Surat</a>
+    {% else %}
+      Belum diunggah
+    {% endif %}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="750">
+  <i class="fa fa-camera"></i> <strong>Foto Lokasi Usaha:</strong><br>
+  {% if pengajuan.foto_lokasi_usaha %}
+     <a href="{{ pengajuan.foto_lokasi_usaha.url }}" target="_blank">Lihat File</a>
+  {% else %}
+    Belum diunggah
+  {% endif %}
+</div>
+
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="800">
+    <i class="fa fa-info-circle"></i> <strong>Status:</strong> {{ pengajuan.status|title }}
+  </div>
+  <div class="info-card" data-aos="fade-up" data-aos-delay="850">
+    <i class="fa fa-calendar-alt"></i> <strong>Tanggal Pengajuan:</strong> {{ pengajuan.tanggal_pengajuan|date:"d M Y H:i" }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="900">
+    <i class="fa fa-file-pdf"></i> <strong>Hasil Surat:</strong>
+    {% if pengajuan.hasil_surat %}
+      <a href="{{ pengajuan.hasil_surat.url }}" target="_blank">Download PDF</a>
+    {% else %}
+      Belum tersedia
+    {% endif %}
+  </div>
+
+  <hr data-aos="fade-in" data-aos-delay="950" />
+
+  <h3 data-aos="fade-up" data-aos-delay="1000"><i class="fa fa-edit"></i> Update Status & Upload Surat</h3>
+  <form method="post" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="1050">
+    {% csrf_token %}
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+      <option value="diajukan" {% if pengajuan.status == "diajukan" %}selected{% endif %}>Diajukan</option>
+      <option value="diproses" {% if pengajuan.status == "diproses" %}selected{% endif %}>Diproses</option>
+      <option value="selesai" {% if pengajuan.status == "selesai" %}selected{% endif %}>Selesai</option>
+    </select>
+
+    <label for="hasil_surat">Unggah Hasil Surat (PDF):</label>
+    <input type="file" name="hasil_surat" accept=".pdf">
+
+    <button type="submit"><i class="fa fa-save"></i> Simpan</button>
+  </form>
+
+  {% if pengajuan.hasil_surat %}
+  <div class="action-buttons" data-aos="zoom-in" data-aos-delay="1100">
+    <a href="{{ pengajuan.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa fa-download"></i> Download PDF</button>
+    </a>
+
+    <a href="https://wa.me/{{ pengajuan.no_whatsapp|cut:'+' }}?text=Surat%20Domisili%20Usaha%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ pengajuan.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="action-buttons" data-aos="zoom-in" data-aos-delay="1150">
+    <a href="{% url 'daftar_pengajuan_skdu' %}">
+      <button type="button"><i class="fa fa-arrow-left"></i> Kembali</button>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block show_footer %}{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "surat/base_form_surat.html" %}
+{% load static %}
+
+{% block title %}Pengajuan Surat Pengantar KTP Baru{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/surat/pindah.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container" data-aos="fade-up">
+    <h1>Formulir Pengajuan Surat Pengantar KTP Baru</h1>
+  {% block heading %} {% endblock %}
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="mt-3 d-flex flex-wrap align-items-center gap-2">
+            <button type="submit" class="btn btn-primary">Kirim Pengajuan</button>
+            <a href="{% url 'home' %}" class="btn btn-primary">Kembali ke Beranda</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

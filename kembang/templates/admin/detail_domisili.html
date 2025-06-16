@@ -1,0 +1,106 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block css %}
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- AOS Animation -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <!-- Custom CSS -->
+<link rel="stylesheet" href="{% static 'css/detail_kelahiran.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if request.resolver_match.url_name == 'detail_pengajuan_domisili' %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+<div class="container detail-akta" data-aos="zoom-in" data-aos-duration="1000">
+
+  <h1 data-aos="fade-right" data-aos-delay="100">
+    <i class="fa fa-file-alt"></i> Detail Pengajuan Surat Domisili
+  </h1>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+    <i class="fa fa-user"></i> <strong>Nama:</strong> {{ domisili.nama_lengkap }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="300">
+    <i class="fa fa-id-card"></i> <strong>NIK:</strong> {{ domisili.nik }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="400">
+    <i class="fa-brands fa-whatsapp"></i> <strong>No. WhatsApp:</strong>
+    <a href="https://wa.me/{{ domisili.no_whatsapp|cut:'+' }}" target="_blank">{{ domisili.no_whatsapp }}</a>
+  </div>
+
+  <hr data-aos="fade-in" data-aos-delay="500" />
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="600">
+    <i class="fa fa-envelope-open"></i> <strong>Surat Pengantar:</strong>
+    <a href="{{ domisili.surat_pengantar.url }}" target="_blank">Lihat</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="700">
+    <i class="fa fa-id-badge"></i> <strong>Foto KTP:</strong>
+    <a href="{{ domisili.foto_ktp.url }}" target="_blank">Lihat</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="800">
+    <i class="fa fa-users"></i> <strong>Foto KK:</strong>
+    <a href="{{ domisili.foto_kk.url }}" target="_blank">Lihat</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="900">
+    <i class="fa fa-file-lines"></i> <strong>Surat Permohonan:</strong>
+    <a href="{{ domisili.surat_permohonan.url }}" target="_blank">Lihat</a>
+  </div>
+
+  <hr data-aos="fade-in" data-aos-delay="1000" />
+
+  <h3 data-aos="zoom-in" data-aos-delay="1100">
+    <i class="fa fa-edit"></i> Update Status & Upload Surat
+  </h3>
+
+  <form method="POST" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="1200">
+    {% csrf_token %}
+    <label for="status"><i class="fa fa-flag"></i> Status:</label>
+    <select name="status" id="status" required>
+      <option value="diajukan" {% if domisili.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
+      <option value="sedang diproses" {% if domisili.status == 'sedang diproses' %}selected{% endif %}>Sedang Diproses</option>
+      <option value="selesai" {% if domisili.status == 'selesai' %}selected{% endif %}>Selesai</option>
+    </select>
+
+    <label for="hasil_surat"><i class="fa fa-upload"></i> Upload Hasil Surat (PDF):</label>
+    <input type="file" name="hasil_surat" id="hasil_surat" accept=".pdf">
+
+    <button type="submit"><i class="fa fa-save"></i> Simpan Perubahan</button>
+  </form>
+
+  <div class="action-buttons" data-aos="zoom-in-up" data-aos-delay="1400">
+    <a href="{% url 'daftar_domisili' %}">
+      <button type="button"><i class="fa fa-arrow-left"></i> Kembali</button>
+    </a>
+
+    {% if domisili.hasil_surat %}
+    <a href="{{ domisili.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa fa-download"></i> Download</button>
+    </a>
+
+    <a href="https://wa.me/{{ domisili.no_whatsapp|cut:'+' }}?text=Berikut%20hasil%20surat%20domisili%20Anda:%20{{ request.scheme }}://{{ request.get_host }}{{ domisili.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim WA</button>
+    </a>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block show_footer %}{% endblock %}

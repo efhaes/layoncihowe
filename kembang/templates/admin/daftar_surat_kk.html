@@ -1,0 +1,136 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/daftar_kelahiran.css' %}">
+<style>
+  #vanta {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+  }
+
+  .content-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Background VANTA -->
+<div id="vanta"></div>
+
+<div class="content-wrapper">
+  <h1 class="judul-halaman">Daftar Pengajuan Surat Pengantar KK</h1>
+
+  <!-- Tabel Desktop -->
+  <div class="table-wrapper">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Nama Lengkap</th>
+          <th>Status</th>
+          <th>Tanggal Pengajuan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in kk %}
+        <tr>
+          <td>{{ item.nama_lengkap }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.tanggal_pengajuan }}</td>
+          <td>
+            <a href="{% url 'detail_pengajuan_kk' item.pk %}">Detail</a> |
+            <a href="#" onclick="openDeleteModal({{ item.pk }})">Hapus</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" style="text-align: center;">Belum ada pengajuan.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tabel Mobile -->
+  <div class="mobile-table">
+    {% for item in kk %}
+    <div class="mobile-row">
+      <div class="mobile-cell"><strong>Nama Lengkap:</strong> {{ item.nama_lengkap }}</div>
+      <div class="mobile-cell"><strong>Status:</strong> {{ item.status }}</div>
+      <div class="mobile-cell"><strong>Tanggal Pengajuan:</strong> {{ item.tanggal_pengajuan }}</div>
+      <div class="mobile-cell">
+        <strong>Aksi:</strong>
+        <a href="{% url 'detail_pengajuan_kk' item.pk %}">Detail</a> |
+        <a href="#" onclick="openDeleteModal({{ item.pk }})">Hapus</a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="mobile-row">
+      <div class="mobile-cell">Belum ada pengajuan.</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- MODAL HAPUS -->
+<div id="deleteModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <p>Yakin ingin menghapus data ini?</p>
+    <div class="modal-buttons">
+      <button onclick="confirmDelete()">Ya, Hapus</button>
+      <button onclick="closeDeleteModal()">Batal</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  let selectedDeleteId = null;
+
+  function openDeleteModal(id) {
+    selectedDeleteId = id;
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    selectedDeleteId = null;
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  function confirmDelete() {
+    if (selectedDeleteId) {
+      window.location.href = `/hapus-kk/${selectedDeleteId}/`;
+    }
+  }
+</script>
+
+<!-- VANTA.JS Background -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
+<script>
+  VANTA.DOTS({
+    el: "#vanta",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.0,
+    scaleMobile: 1.0,
+    color: 0xffffff,
+    backgroundColor: 0x000000,
+    spacing: 30.00,
+    showLines: true
+  });
+</script>
+{% endblock %}

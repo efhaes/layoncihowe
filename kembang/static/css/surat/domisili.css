@@ -1,0 +1,207 @@
+/* ===== Import Font ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* ===== Global Styles ===== */
+:root {
+  --primary: #081c3c;
+  --secondary: #005b9e;
+  --background: linear-gradient(to bottom, #081c3c, #005b9e, #00f0ff);
+  --light-blue: #F0F8FF;
+  --text: #2E3C54;
+  --white: #FFFFFF;
+}
+
+body {
+  background: linear-gradient(to bottom, #000000, #001f3f, #006d74);
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ===== Links ===== */
+a {
+  color: #00f0ff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: #00BFFF;
+}
+
+/* ===== Alert Styles ===== */
+.alert {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  padding: 15px 25px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #00f0ff;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  max-width: 90%;
+  backdrop-filter: blur(8px);
+  animation: fadeInDown 0.6s ease;
+  text-align: center;
+}
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -30px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@media (max-width: 576px) {
+  .alert {
+    top: 70px;
+    font-size: 14px;
+    padding: 10px 15px;
+    max-width: 95%;
+  }
+}
+
+/* ===== Container / Form Wrapper ===== */
+.form-container {
+  max-width: 800px;
+  margin: 6rem auto 3rem auto;
+  padding: 2rem 2.5rem;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgb(0, 255, 64), 0 0 20px rgba(0, 240, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* ===== Heading ===== */
+.form-container h1 {
+  text-align: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  letter-spacing: 1px;
+  line-height: 1.3;
+  text-shadow: 0 0 10px rgb(6, 255, 255);
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Form Styles ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+form p {
+  margin: 0;
+}
+form label {
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 0 4px rgb(13, 255, 255);
+  display: inline-block;
+}
+form input[type="text"],
+form input[type="file"],
+form input[type="date"],
+form input[type="email"],
+form select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  font-size: 1rem;
+  color: #ffffff;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 8px rgb(10, 255, 255);
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Gaya <option> di dropdown (untuk sebagian browser) */
+form select option {
+  background-color: #001f3f; /* Bukan putih! */
+  color: #00f0ff;
+  text-shadow: 0 0 3px #00f0ff;
+}
+
+/* Tambahan caret icon glow (opsional) */
+form select:focus {
+  outline: none;
+  box-shadow: 0 0 12px #00f0ff;
+}
+
+form input::placeholder,
+form select::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 0 3px rgba(0, 255, 255, 0.6);
+}
+
+
+/* ===== Submit Button ===== */
+button[type="submit"] {
+  background: #00e1ff;
+  color: #000000;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 12px #00f0ff66;
+}
+button[type="submit"]:hover {
+  background: #11ff09;
+  box-shadow: 0 0 16px #00f0ff99;
+}
+
+/* ===== Link Button ===== */
+.form-container a.btn-primary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+.form-container a.btn-primary:hover {
+  background: #495057;
+  color: white;
+}
+
+/* ===== AOS Animation Support ===== */
+[data-aos] {
+  opacity: 0;
+  transition-property: transform, opacity;
+  transition-duration: 0.8s;
+}
+[data-aos].aos-animate {
+  opacity: 1;
+}
+
+/* ===== Fade Animation ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

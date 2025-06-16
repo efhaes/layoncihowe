@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Desa Sukasari{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  {% block css %}{% endblock %}
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- ✅ Navbar -->
+  {% if request.user.is_authenticated and request.user.is_staff %}
+    {% include "partials/navbar_masyarakat.html" %}
+  {% else %}
+    {% include "partials/navbar_masyarakat.html" %}
+  {% endif %}
+
+  <!-- ✅ Konten Halaman -->
+  <div>
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- ✅ JavaScript -->
+  {% block javascripts %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+  </script>
+
+  <!-- ✅ Script toggle burger menu -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const nav = document.querySelector('nav');
+      const burger = document.querySelector('.burger');
+      if (burger && nav) {
+        burger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          nav.classList.toggle('active');
+          const expanded = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!expanded));
+        });
+        document.addEventListener('click', () => {
+          if(nav.classList.contains('active')){
+            nav.classList.remove('active');
+            burger.setAttribute('aria-expanded', 'false');
+          }
+        });
+        nav.addEventListener('click', e => e.stopPropagation());
+        window.addEventListener('scroll', () => {
+          if(nav.classList.contains('active')){
+            nav.classList.remove('active');
+            burger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+  </script>
+
+  <!-- ✅ Footer -->
+  {% block show_footer %}
+  <footer class="footer-custom text-center py-1">
+    <p>© 2025 Aplikasi Pelayanan – Dibuat oleh <strong>TECHO</strong>.</p>
+  </footer>
+  {% endblock %}
+
+</div>
+</body>
+</html>

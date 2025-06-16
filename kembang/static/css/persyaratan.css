@@ -1,0 +1,54 @@
+/* Reset dasar */
+/* ===== Root Variables ===== */
+:root {
+  --primary:#081c3c;
+  --background: linear-gradient(to bottom, #081c3c, #005b9e, #00f0ff);
+  --white: #FFFFFF;
+  
+}
+/* Judul halaman */
+h2 {
+  color: #ffffff; /* Ganti dengan warna biru tua misalnya */
+  margin-bottom: 50px;
+  font-weight: 900;
+  margin-top: 2rem;;
+  
+}
+
+/* Card 3D Animasi */
+.custom-card {
+  background-color: rgba(255, 255, 255, 0.06); /* Putih 6% transparan, seperti kaca bening */
+  backdrop-filter: blur(6px); /* Efek blur latar belakang, bikin efek frosted glass */
+  -webkit-backdrop-filter: blur(6px); /* Untuk Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Border tipis semi transparan */
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(2, 248, 116, 0.4); /* Bayangan hijau neon semi transparan */
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.custom-card:hover {
+  transform: translateY(-12px) rotateX(2deg) rotateY(-2deg);
+  box-shadow: 0 20px 40px rgba(5, 185, 251, 0.6); /* Biru neon saat hover */
+}
+
+.custom-card h5 {
+  color: #00f7ff; /* Judul jadi biru terang untuk kontras */
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.custom-card ul {
+  padding-left: 20px;
+  color: #ddd; /* Teks dalam list lebih cerah agar mudah dibaca */
+}
+
+.custom-card ul li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+
+

@@ -1,0 +1,222 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block css %}
+
+ <link rel="stylesheet" href="{% static 'css/home.css' %}">
+ <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- Vanta Background -->
+<div id="vanta"></div>
+
+<!-- Hero -->
+<section class="hero" data-aos="fade-up">
+    <h1>Selamat Datang di Layanan Online Desa Sukasari </h1>
+    <p>Pelayanan lebih cepat, mudah, dan transparan untuk seluruh masyarakat desa.</p>
+    <small>Digitalisasi Pelayanan Publik Menuju Desa Cerdas</small>
+</section>
+
+<!-- Konten Berdasarkan Role -->
+{% if user.is_superuser %}
+    {% include "partials/kartu_admin.html" %}
+{% else %}
+    <div class="cards-container">
+
+      <div class="card" data-aos="fade-up" data-aos-delay="100">
+        <h2>✉️ Surat Kelahiran</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_akta_kelahiran' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="100">
+        <h2>✉️Pindah Datang</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_pindah_datang' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <h2>✉️SKDU</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_skdu' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <h2>✉️Surat Kematian</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_akta_kematian' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="400">
+        <h2>✉️SKTM</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_sktm' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="400">
+        <h2>✉️Domisili</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_domisili' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="400">
+        <h2>✉️SKU</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_sku' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="400">
+        <h2>✉️Surat Pengantar KTP</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_ktp' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+      <div class="card" data-aos="fade-up" data-aos-delay="400">
+        <h2>✉️Surat Pengantar KK</h2>
+        {% if user.is_authenticated %}
+          <a href="{% url 'pengajuan_kk' %}">Ajukan Sekarang</a>
+        {% else %}
+          <button disabled>Ajukan Sekarang</button>
+          <div class="login-msg">Harap login terlebih dahulu</div>
+        {% endif %}
+      </div>
+
+    </div>
+{% endif %}
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.globe.min.js"></script>
+
+<script>
+  let vantaEffect; // untuk menyimpan instance Vanta
+   // Ganti warna otomatis tiap 5 detik
+    setInterval(() => {
+      const randomColor = Math.floor(Math.random() * 0xffffff);
+      vantaEffect.setOptions({ color: randomColor });
+    }, 3000);
+
+  document.addEventListener('DOMContentLoaded', function () {
+    vantaEffect = VANTA.GLOBE({
+      el: "#vanta",
+      mouseControls: false,
+      touchControls: false,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      size: 1.8,
+      points: 20,
+      color: 0x00bfff,
+      backgroundColor: 0x000000,
+      
+    });
+  });
+
+  function gantiWarna() {
+    const warnaAcak = Math.floor(Math.random()*16777215); // warna acak hex
+    vantaEffect.setOptions({
+      color: warnaAcak
+    });
+  }
+</script>
+
+
+
+<!-- Script kamu tetap aman -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const sliders = document.querySelectorAll('.image-slider');
+    sliders.forEach(slider => {
+      const images = slider.querySelectorAll('.slider-image');
+      const prevBtn = slider.querySelector('.prev-btn');
+      const nextBtn = slider.querySelector('.next-btn');
+      let index = 0;
+
+      function showImage(i) {
+        images.forEach((img, idx) => {
+          img.style.display = idx === i ? 'block' : 'none';
+        });
+      }
+
+      if (nextBtn && prevBtn) {
+        nextBtn.addEventListener('click', () => {
+          index = (index + 1) % images.length;
+          showImage(index);
+        });
+
+        prevBtn.addEventListener('click', () => {
+          index = (index - 1 + images.length) % images.length;
+          showImage(index);
+        });
+      }
+    });
+
+    const beritaWrapper = document.querySelector('.berita-wrapper');
+    const beritaItems = document.querySelectorAll('.berita-item');
+    let beritaIndex = 0;
+
+    setInterval(() => {
+      beritaIndex = (beritaIndex + 1) % beritaItems.length;
+      beritaWrapper.style.transform = `translateX(-${beritaIndex * 100}%)`;
+    }, 5000);
+
+    sliders.forEach(slider => {
+      const images = slider.querySelectorAll('.slider-image');
+      let current = 0;
+
+      if (images.length > 1) {
+        setInterval(() => {
+          images[current].style.display = 'none';
+          current = (current + 1) % images.length;
+          images[current].style.display = 'block';
+        }, 3000);
+      }
+    });
+  });
+</script>
+{% endblock javascripts %}

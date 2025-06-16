@@ -1,0 +1,65 @@
+{% load static %}
+
+<!-- ==== GLOWING NAVBAR ==== -->
+<nav>
+  <div class="brand">
+    <img src="{% static 'img/logo tegar.png' %}" alt="Logo" class="logo-img">
+    Desa Sukasari
+  </div>
+
+  <div class="nav-links">
+    <a class="user-info">
+      {% if user.is_authenticated %}
+        <i class="fas fa-user"></i>
+        <span>
+          {% if user.userprofile %}{{ user.userprofile.nama }}{% else %}{{ user.username }}{% endif %}
+        </span>
+      {% endif %}
+    </a>
+
+    <a href="{% url 'home' %}">Home</a>
+
+    {% if user.is_authenticated and not user.is_superuser %}
+      <a href="{% url 'cek_status' %}">Cek Status</a>
+    {% endif %}
+
+    {% if user.is_authenticated and user.is_superuser %}
+      <a href="{% url 'announcement_manage' %}">Buat Pengumuman</a>
+      <a href="{% url 'semua_pengajuan' %}">Semua Pengajuan</a>
+      <a href="{% url 'announcement_page' %}">Pengumuman</a>
+      <a href="{% url 'tentang' %}">Tentang</a>
+    {% endif %}
+
+    {% if not user.is_superuser %}
+      <a href="{% url 'announcement_page' %}">Pengumuman</a>
+      <a href="{% url 'persyaratan' %}">Persyaratan</a>
+      <a href="{% url 'tentang' %}">Tentang</a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+
+    {% else %}
+     <a href="{% url 'login' %}" class="login-link">Login</a>
+
+    {% endif %}
+  </div>
+
+  <div class="burger" aria-label="Menu Navigasi" aria-expanded="false" role="button" tabindex="0">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</nav>
+
+<script>
+  const burger = document.querySelector(".burger");
+  const navLinks = document.querySelector(".nav-links");
+
+  burger.addEventListener("click", () => {
+    navLinks.classList.toggle("nav-active");
+    burger.classList.toggle("toggle");
+  });
+  
+  
+</script>

@@ -1,0 +1,177 @@
+/* ===== CSS Login Page Selaras Vanta.Clouds ===== */
+
+/* Root Variables */
+:root {
+  --primary: #081c3c;
+  --secondary: #005b9e;
+  --light-blue: rgba(240, 248, 255, 0.8);
+  --text: #222222;
+  --white: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(0, 0, 0, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+}
+
+
+/* ===== Glassmorphism Transparent Alert ===== */
+.custom-alert {
+  background: rgba(255, 255, 255, 0.08); /* Semi bening */
+  color: #ff0000; /* Warna neon terang */
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px;
+  font-weight: 700;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  box-shadow:
+    0 0 8px rgba(0, 240, 255, 0.5),
+    0 0 20px rgba(0, 240, 255, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.3);
+  text-shadow:
+    0 0 3px rgba(0, 240, 255, 0.6),
+    0 0 6px rgba(0, 240, 255, 0.7),
+    0 0 8px rgba(255, 255, 255, 0.6); /* Neon-glow effect */
+}
+
+
+/* Tambahan warna glow ringan berdasarkan jenis pesan */
+.alert-success.custom-alert {
+  box-shadow: 0 0 10px rgba(0, 255, 150, 0.4);
+}
+
+.alert-danger.custom-alert,
+.alert-error.custom-alert {
+  box-shadow: 0 0 10px rgba(255, 0, 70, 0.4);
+}
+
+.alert-warning.custom-alert {
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+}
+
+.alert-info.custom-alert {
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.4);
+}
+
+/* Tombol Close */
+.custom-alert .btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+  transition: 0.2s ease;
+}
+.custom-alert .btn-close:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+
+
+
+/* Vanta Container */
+#vanta-clouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+/* Login Wrapper */
+.login-wrapper {
+  min-height: 100vh;
+  padding: 50px 15px 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Login Card (Glass Effect) */
+.login-card {
+  max-width: 450px;
+  width: 100%;
+  padding: 2rem;
+  background: var(--white);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 1;
+  color: var(--text);
+}
+
+/* Logo */
+.logo-desa {
+  width: 80px;
+  height: auto;
+}
+
+/* Judul */
+.login-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #000000;
+}
+
+/* Subjudul */
+.login-subtitle {
+  font-size: 1rem;
+  color: #333333;
+}
+
+/* Form Input */
+input.form-control {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+input.form-control::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+input.form-control:focus {
+  border-color: #000;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000;
+}
+
+/* Tombol Login */
+.btn-login {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  transition: 0.3s ease;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-login:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Link Style */
+a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #005b9e;
+}
+
+/* Footer */
+footer {
+  background-color: transparent;
+  color: #000;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 10px 15px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+}

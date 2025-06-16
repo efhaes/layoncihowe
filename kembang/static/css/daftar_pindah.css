@@ -1,0 +1,206 @@
+/* ========== GLOBAL ========== */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0; /* Hapus padding agar navbar menempel langsung */
+}
+
+h2 {
+  text-align: center;
+}
+
+a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+/* ========== NAVBAR ========== */
+.admin-navbar {
+  background: #3498DB;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  padding: 18px 30px;
+  border-radius: 0 0 20px 20px;
+  position: relative;
+  z-index: 10;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+
+/* ========== NAVBAR CONTENT ========== */
+.admin-navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.admin-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #5DADE2;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  object-fit: cover;
+}
+
+.admin-title h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.admin-title p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ecf0f1;
+}
+
+
+/* ========== NAVIGATION LINKS ========== */
+.admin-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-nav-links li a {
+  text-decoration: none;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-nav-links li a:hover,
+.admin-nav-links li a:focus {
+  background-color: #5DADE2;
+  color: #ffffff;
+  box-shadow: 0 0 8px #5DADE2;
+  outline: none;
+}
+
+
+/* ========== RESPONSIVE NAVBAR ========== */
+@media (max-width: 768px) {
+  .admin-navbar-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .admin-nav-links li a {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+  }
+}
+
+.modal {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  border-radius: 8px;
+}
+.modal-buttons button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.modal-buttons button:first-child {
+  background-color: red;
+  color: white;
+}
+.modal-buttons button:last-child {
+  background-color: gray;
+  color: white;
+}
+
+/* ========== TABLE ========== */
+.main-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  background: #fff;
+}
+
+/* ===== CONTENT STYLING ===== */
+h1 {
+  text-align: center;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+th, td {
+  border: 1px solid #999;
+  padding: 10px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* ===== LINK ===== */
+a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 30px;
+}

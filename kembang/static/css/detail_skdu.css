@@ -1,0 +1,214 @@
+/* ===== Root Variables ===== */
+:root {
+  --primary:#081c3c;
+  --secondary:#005b9e;
+  --background: linear-gradient(to bottom, #081c3c, #005b9e, #00f0ff);
+  --light-blue: #F0F8FF;
+  --text: #2E3C54;
+  --white: #FFFFFF;
+  
+}
+
+/* ===== Layout Centering ===== */
+.detail-domisili-usaha {
+  max-width: 600px;
+  margin: 6rem auto 4rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 0 12px var(--glow);
+  backdrop-filter: blur(16px);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Title Styling ===== */
+.detail-domisili-usaha h1 {
+  font-size: 1.8rem;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 0 0 8px var(--accent);
+}
+
+/* ===== Info Section ===== */
+.info-card, .detail-domisili-usahap {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--glow);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ===== Form Elements ===== */
+form label {
+  display: block;
+  margin-top: 1.2rem;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+form select, form input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--text);
+  border-radius: 6px;
+}
+
+form button {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.5rem;
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--accent);
+  transition: all 0.3s ease;
+}
+
+form button:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+/* ===== Action Buttons (Download / WA / Kembali) ===== */
+.action-buttons {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.action-buttons button {
+  background: var(--primary);
+  color: var(--white);
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  transition: 0.3s ease;
+  box-shadow: 0 0 8px var(--glow);
+}
+
+.action-buttons button:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .detail-domisili-usaha {
+    margin: 5rem 1rem;
+    padding: 1.5rem;
+  }
+}
+
+/* ===== Form Container Nyatu Total ===== */
+.detail-domisili-usaha{
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  border: 1.5px solid rgba(0, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* ===== Semua bagian di dalamnya nyatu rapih ===== */
+.detail-domisili-usahah1,
+.detail-domisili-usaha h3,
+.detail-domisili-usaha .info-card,
+.detail-domisili-usaha form,
+.detail-domisili-usaha .action-buttons {
+  margin-bottom: 1rem;
+}
+
+.detail-domisili-usaha.info-card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
+  border-left: 3px solid #00f0ff;
+}
+
+/* Label dan form */
+.detail-domisili-usaha form label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+  color: #c2f9ff;
+}
+
+.detail-domisili-usahaform select,
+.detail-domisili-usaha form input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.32);
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.detail-domisili-usaha form button {
+  background: linear-gradient( #081c3c);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+  transition: 0.3s;
+}
+.detail-domisili-usahaform button:hover {
+  transform: scale(1.02);
+  background: linear-gradient(135deg, #00f0ff, #005b9e);
+}
+
+/* Tombol bawah */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.action-buttons button {
+  background: #000;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  transition: 0.3s;
+}
+.action-buttons button:hover {
+  background: #00ff44;
+  color: #000;
+}
+
+/* Tambahan transisi */
+.detail-domisili-usaha * {
+  transition: all 0.3s ease-in-out;
+}
+
+/* ===== Body Background Gelap Menyala ===== */
+body {
+  background: linear-gradient(to bottom, #000000, #001f3f, #00f0ff);
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+}
