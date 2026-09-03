@@ -1,0 +1,232 @@
+{% extends "partials/base_admin.html" %}
+{% load static %}
+
+{% block title %}
+  Dashboard Admin | Desa
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<section class="admin-dash-hero" data-aos="fade-down">
+  <div class="container">
+    <p class="section-eyebrow">Panel Admin</p>
+    <h2>Dashboard Pengajuan Surat</h2>
+    <p class="admin-dash-sub">Rekap jumlah pengajuan per jenis surat. Klik kartu untuk lihat daftarnya.</p>
+  </div>
+</section>
+
+<!-- Status overview: belum diproses / diproses / selesai -->
+<div class="container">
+  <div class="status-overview" data-aos="fade-up">
+
+    <div class="status-card status-card-warn">
+      <div class="status-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+      <div>
+        <span class="status-value">{{ belum_selesai_total }}</span>
+        <span class="status-label">Belum Selesai</span>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-icon"><i class="fa-solid fa-inbox"></i></div>
+      <div>
+        <span class="status-value">{{ status_summary.diajukan }}</span>
+        <span class="status-label">Belum Diproses</span>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-icon"><i class="fa-solid fa-spinner"></i></div>
+      <div>
+        <span class="status-value">{{ status_summary.diproses }}</span>
+        <span class="status-label">Sedang Diproses</span>
+      </div>
+    </div>
+
+    <div class="status-card status-card-ok">
+      <div class="status-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div>
+        <span class="status-value">{{ status_summary.selesai }}</span>
+        <span class="status-label">Sudah Selesai</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Grafik: per bulan (tahun berjalan) & per tahun -->
+<div class="container">
+  <div class="chart-grid" data-aos="fade-up" data-aos-delay="50">
+
+    <div class="admin-panel">
+      <div class="admin-panel-head">
+        <h3>Pengajuan per Bulan — {{ tahun_ini }}</h3>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartBulanan"></canvas>
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head">
+        <h3>Pengajuan per Tahun</h3>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartTahunan"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="container">
+  <p class="section-eyebrow" style="text-align:left; margin: 2rem 0 0.75rem;">Rincian per Jenis Surat</p>
+</div>
+
+<div class="container">
+  <div class="stat-grid">
+
+    <a href="{% url 'daftar_pengajuan_kelahiran' %}" class="stat-card" data-aos="fade-up" data-aos-delay="0">
+      {% if notifikasi.kelahiran > 0 %}<span class="notif-badge">{{ notifikasi.kelahiran }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-baby"></i></div>
+      <span class="stat-value">{{ akta_kelahiran.count }}</span>
+      <span class="stat-label">Surat Kelahiran</span>
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_akta_kematian' %}" class="stat-card" data-aos="fade-up" data-aos-delay="50">
+      {% if notifikasi.kematian > 0 %}<span class="notif-badge">{{ notifikasi.kematian }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-cross"></i></div>
+      <span class="stat-value">{{ akta_kematian.count }}</span>
+      <span class="stat-label">Surat Kematian</span>
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_pindah_datang' %}" class="stat-card" data-aos="fade-up" data-aos-delay="100">
+      {% if notifikasi.pindah > 0 %}<span class="notif-badge">{{ notifikasi.pindah }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-truck-moving"></i></div>
+      <span class="stat-value">{{ pindah_datang.count }}</span>
+      <span class="stat-label">Pindah Datang</span>
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_skdu' %}" class="stat-card" data-aos="fade-up" data-aos-delay="150">
+      {% if notifikasi.skdu > 0 %}<span class="notif-badge">{{ notifikasi.skdu }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-store"></i></div>
+      <span class="stat-value">{{ pindah_keluar.count }}</span>
+      <span class="stat-label">SKDU</span>
+    </a>
+
+    <a href="{% url 'daftar_sku' %}" class="stat-card" data-aos="fade-up" data-aos-delay="200">
+      {% if notifikasi.sku > 0 %}<span class="notif-badge">{{ notifikasi.sku }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
+      <span class="stat-value">{{ sku.count }}</span>
+      <span class="stat-label">SKU</span>
+    </a>
+
+    <a href="{% url 'daftar_domisili' %}" class="stat-card" data-aos="fade-up" data-aos-delay="250">
+      {% if notifikasi.domisili > 0 %}<span class="notif-badge">{{ notifikasi.domisili }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-house"></i></div>
+      <span class="stat-value">{{ domisili.count }}</span>
+      <span class="stat-label">Surat Domisili</span>
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_sktm' %}" class="stat-card" data-aos="fade-up" data-aos-delay="300">
+      {% if notifikasi.sktm > 0 %}<span class="notif-badge">{{ notifikasi.sktm }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+      <span class="stat-value">{{ sktm.count }}</span>
+      <span class="stat-label">SKTM</span>
+    </a>
+
+    <a href="{% url 'daftar_kk' %}" class="stat-card" data-aos="fade-up" data-aos-delay="350">
+      {% if notifikasi.kk > 0 %}<span class="notif-badge">{{ notifikasi.kk }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-people-roof"></i></div>
+      <span class="stat-value">{{ kk.count }}</span>
+      <span class="stat-label">Pengantar KK</span>
+    </a>
+
+    <a href="{% url 'daftar_ktp' %}" class="stat-card" data-aos="fade-up" data-aos-delay="400">
+      {% if notifikasi.ktp > 0 %}<span class="notif-badge">{{ notifikasi.ktp }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-id-card"></i></div>
+      <span class="stat-value">{{ ktp.count }}</span>
+      <span class="stat-label">Pengantar KTP</span>
+    </a>
+
+    <a href="{% url 'daftar_surat_lainnya' %}" class="stat-card" data-aos="fade-up" data-aos-delay="450">
+      {% if notifikasi.lainnya > 0 %}<span class="notif-badge">{{ notifikasi.lainnya }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
+      <span class="stat-value">{{ lainnya.count }}</span>
+      <span class="stat-label">Surat Lainnya</span>
+    </a>
+
+    <a href="{% url 'semua_pengajuan' %}" class="stat-card stat-card-highlight" data-aos="fade-up" data-aos-delay="500">
+      {% if notifikasi.total > 0 %}<span class="notif-badge">{{ notifikasi.total }}</span>{% endif %}
+      <div class="stat-icon"><i class="fa-solid fa-folder-open"></i></div>
+      <span class="stat-value">{{ semua_pengajuan|length }}</span>
+      <span class="stat-label">Semua Pengajuan</span>
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  const bulanLabels = {{ bulan_labels_json|safe }};
+  const bulanData = {{ bulan_data_json|safe }};
+  const tahunLabels = {{ tahun_labels_json|safe }};
+  const tahunData = {{ tahun_data_json|safe }};
+
+  const chartFont = { family: "'Open Sans', sans-serif", size: 12 };
+
+  new Chart(document.getElementById('chartBulanan'), {
+    type: 'bar',
+    data: {
+      labels: bulanLabels,
+      datasets: [{
+        label: 'Pengajuan',
+        data: bulanData,
+        backgroundColor: '#2D6A4F',
+        borderRadius: 6,
+        maxBarThickness: 34,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: chartFont }, grid: { display: false } },
+        y: { ticks: { font: chartFont, precision: 0 }, beginAtZero: true }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('chartTahunan'), {
+    type: 'bar',
+    data: {
+      labels: tahunLabels,
+      datasets: [{
+        label: 'Pengajuan',
+        data: tahunData,
+        backgroundColor: '#C9A227',
+        borderRadius: 6,
+        maxBarThickness: 44,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: chartFont }, grid: { display: false } },
+        y: { ticks: { font: chartFont, precision: 0 }, beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}

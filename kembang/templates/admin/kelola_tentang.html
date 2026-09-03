@@ -1,0 +1,347 @@
+{% extends "partials/base_admin.html" %}
+{% load static %}
+
+{% block title %}Kelola Tentang Desa{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --gov-green: #1f5c3d;
+    --gov-green-dark: #143d29;
+    --gov-gold: #c8a24a;
+    --gov-bg: #f7f8f5;
+  }
+  .ktd-card {
+    background: #fff;
+    border: 1px solid #e3e6e0;
+    border-left: 4px solid var(--gov-green);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+  .ktd-card h2 {
+    color: var(--gov-green-dark);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .ktd-card h2 .gold-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gov-gold); display: inline-block;
+  }
+  .ktd-item-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .75rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    background: var(--gov-bg);
+  }
+  .ktd-item-row .teks { flex: 1; }
+  .ktd-btn {
+    border: none;
+    border-radius: 6px;
+    padding: .25rem .55rem;
+    font-size: .8rem;
+    cursor: pointer;
+  }
+  .ktd-btn-move { background: #e9ece8; color: var(--gov-green-dark); }
+  .ktd-btn-edit { background: var(--gov-gold); color: #fff; }
+  .ktd-btn-delete { background: #b3372c; color: #fff; }
+  .ktd-btn-primary { background: var(--gov-green); color: #fff; }
+  .ktd-add-row { display: flex; gap: .5rem; margin-top: .75rem; }
+  .ktd-add-row input { flex: 1; }
+  .ktd-struktur-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .ktd-struktur-item {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: .75rem;
+    text-align: center;
+    background: var(--gov-bg);
+  }
+  .ktd-struktur-item img {
+    width: 90px; height: 90px; object-fit: cover;
+    border-radius: 50%; margin-bottom: .5rem;
+    border: 2px solid var(--gov-gold);
+  }
+  .ktd-struktur-item .jabatan { color: var(--gov-green-dark); font-weight: 600; font-size: .85rem; }
+  .ktd-struktur-actions { margin-top: .5rem; display: flex; gap: .35rem; justify-content: center; flex-wrap: wrap; }
+  .ktd-foto-preview {
+    width: 100%; max-width: 320px; border-radius: 10px; margin-bottom: 1rem;
+  }
+  details.ktd-edit-form { margin-top: .35rem; }
+  details.ktd-edit-form summary { cursor: pointer; color: var(--gov-green); font-size: .8rem; }
+</style>
+
+<h1 class="mb-4" style="color: var(--gov-green-dark); font-weight: 700;">Kelola Tentang Desa</h1>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+{# ============================== INFO UTAMA ============================== #}
+<div class="ktd-card">
+  <h2><span class="gold-dot"></span> Info Utama</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="update_info">
+    <div class="mb-3">
+      <label class="form-label">{{ tentang_form.sejarah_singkat.label }}</label>
+      {{ tentang_form.sejarah_singkat }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">{{ tentang_form.potensi_kearifan_lokal.label }}</label>
+      {{ tentang_form.potensi_kearifan_lokal }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">{{ tentang_form.lokasi_embed_url.label }}</label>
+      {{ tentang_form.lokasi_embed_url }}
+      <small class="text-muted">Klik tombol "Bagikan" di Google Maps lalu tempel link-nya di sini.</small>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">{{ tentang_form.no_whatsapp.label }}</label>
+      {{ tentang_form.no_whatsapp }}
+      <small class="text-muted">Contoh: 08xxxxxxxxxx atau 628xxxxxxxxxx</small>
+    </div>
+    {% if tentang.lokasi_embed_cache %}
+      <div class="mb-3">
+        <iframe src="{{ tentang.lokasi_embed_cache }}" width="100%" height="220" style="border:0; border-radius:8px;" loading="lazy"></iframe>
+      </div>
+    {% endif %}
+    <button type="submit" class="ktd-btn ktd-btn-primary">Simpan Info Utama</button>
+  </form>
+</div>
+
+{# ============================== FOTO KANTOR ============================== #}
+<div class="ktd-card">
+  <h2><span class="gold-dot"></span> Foto Kantor Desa</h2>
+  {% if profil_desa.foto %}
+    <img src="{{ profil_desa.foto.url }}" alt="Foto Kantor Desa" class="ktd-foto-preview">
+  {% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="update_foto">
+    <div class="mb-3">
+      {{ profil_desa_form.foto }}
+    </div>
+    <button type="submit" class="ktd-btn ktd-btn-primary">Ganti Foto</button>
+  </form>
+</div>
+
+{# ============================== VISI ============================== #}
+<div class="ktd-card">
+  <h2><span class="gold-dot"></span> Visi</h2>
+
+  {% for item in tentang.visi_items.all %}
+    <div class="ktd-item-row">
+      <span class="teks">{{ item.teks }}</span>
+
+      <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="visi_move">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="hidden" name="arah" value="naik">
+        <button type="submit" class="ktd-btn ktd-btn-move" title="Naik">&uarr;</button>
+      </form>
+      <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="visi_move">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="hidden" name="arah" value="turun">
+        <button type="submit" class="ktd-btn ktd-btn-move" title="Turun">&darr;</button>
+      </form>
+
+      <details class="ktd-edit-form">
+        <summary>Edit</summary>
+        <form method="post" class="mt-2 d-flex gap-2">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="visi_edit">
+          <input type="hidden" name="item_id" value="{{ item.id }}">
+          <input type="text" name="teks" class="form-control form-control-sm" value="{{ item.teks }}" required>
+          <button type="submit" class="ktd-btn ktd-btn-edit">Simpan</button>
+        </form>
+      </details>
+
+      <form method="post" onsubmit="return confirm('Hapus poin visi ini?');" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="visi_delete">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <button type="submit" class="ktd-btn ktd-btn-delete">Hapus</button>
+      </form>
+    </div>
+  {% empty %}
+    <p class="text-muted">Belum ada poin visi.</p>
+  {% endfor %}
+
+  <form method="post" class="ktd-add-row">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="visi_add">
+    <input type="text" name="teks" class="form-control" placeholder="Tambah poin visi baru..." required>
+    <button type="submit" class="ktd-btn ktd-btn-primary">Tambah</button>
+  </form>
+</div>
+
+{# ============================== MISI ============================== #}
+<div class="ktd-card">
+  <h2><span class="gold-dot"></span> Misi</h2>
+
+  {% for item in tentang.misi_items.all %}
+    <div class="ktd-item-row">
+      <span class="teks">{{ item.teks }}</span>
+
+      <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="misi_move">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="hidden" name="arah" value="naik">
+        <button type="submit" class="ktd-btn ktd-btn-move" title="Naik">&uarr;</button>
+      </form>
+      <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="misi_move">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="hidden" name="arah" value="turun">
+        <button type="submit" class="ktd-btn ktd-btn-move" title="Turun">&darr;</button>
+      </form>
+
+      <details class="ktd-edit-form">
+        <summary>Edit</summary>
+        <form method="post" class="mt-2 d-flex gap-2">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="misi_edit">
+          <input type="hidden" name="item_id" value="{{ item.id }}">
+          <input type="text" name="teks" class="form-control form-control-sm" value="{{ item.teks }}" required>
+          <button type="submit" class="ktd-btn ktd-btn-edit">Simpan</button>
+        </form>
+      </details>
+
+      <form method="post" onsubmit="return confirm('Hapus poin misi ini?');" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="misi_delete">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <button type="submit" class="ktd-btn ktd-btn-delete">Hapus</button>
+      </form>
+    </div>
+  {% empty %}
+    <p class="text-muted">Belum ada poin misi.</p>
+  {% endfor %}
+
+  <form method="post" class="ktd-add-row">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="misi_add">
+    <input type="text" name="teks" class="form-control" placeholder="Tambah poin misi baru..." required>
+    <button type="submit" class="ktd-btn ktd-btn-primary">Tambah</button>
+  </form>
+</div>
+
+{# ============================== STRUKTUR ORGANISASI ============================== #}
+<div class="ktd-card">
+  <h2><span class="gold-dot"></span> Struktur Organisasi</h2>
+
+  <div class="ktd-struktur-grid mb-4">
+    {% for item in struktur_list %}
+      <div class="ktd-struktur-item">
+        {% if item.foto %}
+          <img src="{{ item.foto.url }}" alt="{{ item.nama }}">
+        {% endif %}
+        <div>{{ item.nama }}</div>
+        <div class="jabatan">{{ item.get_slot_display }}{% if item.jabatan and item.jabatan != item.get_slot_display %} &middot; {{ item.jabatan }}{% endif %}</div>
+
+        <div class="ktd-struktur-actions">
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="struktur_move">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <input type="hidden" name="arah" value="naik">
+            <button type="submit" class="ktd-btn ktd-btn-move">&uarr;</button>
+          </form>
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="struktur_move">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <input type="hidden" name="arah" value="turun">
+            <button type="submit" class="ktd-btn ktd-btn-move">&darr;</button>
+          </form>
+          <form method="post" onsubmit="return confirm('Hapus {{ item.nama }} dari struktur organisasi?');" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="struktur_delete">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <button type="submit" class="ktd-btn ktd-btn-delete">Hapus</button>
+          </form>
+        </div>
+
+        <details class="ktd-edit-form">
+          <summary>Edit</summary>
+          <form method="post" enctype="multipart/form-data" class="mt-2 text-start">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="struktur_save">
+            <input type="hidden" name="struktur_id" value="{{ item.id }}">
+            <div class="mb-2">
+              <input type="text" name="nama" class="form-control form-control-sm" value="{{ item.nama }}" required>
+            </div>
+            <div class="mb-2">
+              <input type="text" name="jabatan" class="form-control form-control-sm" value="{{ item.jabatan }}" required>
+            </div>
+            <div class="mb-2">
+              <select name="slot" class="form-select form-select-sm">
+                {% for value, label in struktur_form.fields.slot.choices %}
+                  <option value="{{ value }}" {% if value == item.slot %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-2">
+              <input type="file" name="foto" class="form-control form-control-sm">
+            </div>
+            <button type="submit" class="ktd-btn ktd-btn-edit w-100">Simpan Perubahan</button>
+          </form>
+        </details>
+      </div>
+    {% empty %}
+      <p class="text-muted">Belum ada data struktur organisasi.</p>
+    {% endfor %}
+  </div>
+
+  <h3 style="font-size: 1rem; color: var(--gov-green-dark);">Tambah Anggota Struktur</h3>
+  <form method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="struktur_save">
+    <div class="col-md-3">
+      <label class="form-label">Nama</label>
+      {{ struktur_form.nama }}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Jabatan</label>
+      {{ struktur_form.jabatan }}
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Slot</label>
+      {{ struktur_form.slot }}
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Foto</label>
+      {{ struktur_form.foto }}
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="ktd-btn ktd-btn-primary w-100">Tambah</button>
+    </div>
+  </form>
+  <small class="text-muted d-block mt-2">
+    Catatan: slot seperti Kepala Desa, Sekretaris Desa, dan Kaur hanya boleh diisi 1 orang.
+    Slot "Pelaksana Teknis Lapangan" dan "Unsur Kewilayahan" boleh diisi lebih dari satu (mis. beberapa Kadus).
+  </small>
+</div>
+
+{% endblock %}

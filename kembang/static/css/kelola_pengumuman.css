@@ -1,262 +1,210 @@
-/* ===== CSS Global Style Optimized ===== */
+/* =========================================================
+   Desa Cihowe — Kelola Pengumuman (Admin)
+   Wajib load base.css & admin_layout.css duluan (token, layout sidebar).
+   File ini nge-restyle komponen Bootstrap (.card, .btn, .modal)
+   biar konsisten sama design system Gov Clean, bukan tema
+   dark-glass/neon yang lama.
+   ========================================================= */
 
-/* ===== Root Variables ===== */
-:root {
-  --primary:#081c3c;
-  --secondary:#005b9e;
-  --background: linear-gradient(to bottom, #081c3c, #005b9e, #00f0ff);
-  --light-blue: #F0F8FF;
-  --text: #2E3C54;
-  --white: #FFFFFF;
-  
-}
-
-.container h2 {
-  padding-bottom: 1rem;
-  font-size: 2.2rem;
-  margin-bottom: 1rem;
-  margin-top: 2rem;
-  color: var(--white);
-  text-align: center;
-  font-weight: 700;
-  text-shadow: 0 0 8px #00f0ff, 0 0 12px #00f0ff88;
-}
-
-
-
+/* ===== Kartu pengumuman ===== */
 .card {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  color: #ffffff;
-  overflow: hidden; /* biar gambar nggak keluar batas */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  overflow: hidden;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 15px #00f0ff66;
+  box-shadow: var(--shadow-md);
+  border-color: var(--secondary);
+}
+
+/* ===== Gambar kartu (card-img-top & carousel)
+   height TETAP (bukan aspect-ratio) => card image nggak ikut
+   membengkak walau kolomnya lebar (admin pakai col-md-6).
+   object-fit: contain + padding => foto ukuran/rasio apapun
+   selalu utuh, nggak pernah kepotong.
+========================================================= */
+.card-img-top,
+.carousel-item img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  padding: 0.6rem;
+  box-sizing: border-box;
+  background: linear-gradient(160deg, #eef4f0 0%, #e2ece5 100%);
+}
+
+@media (max-width: 576px) {
+  .card-img-top,
+  .carousel-item img {
+    height: 180px;
+  }
+}
+
+.card-body {
+  padding: 1.4rem;
 }
 
 .card-title {
-  color: #ffffff;
-  font-weight: 600;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-text {
-  color: #e0f7ff;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin-bottom: 0.6rem;
 }
 
-.text-muted {
-  color: #b0d4ff !important;
+.card-body small.text-muted {
+  color: var(--text-muted) !important;
+  font-size: 0.78rem;
 }
 
-/* Gambar lebih kecil & rapi */
-img.card-img-top,
-.carousel-item img {
-  border-radius: 0.75rem 0.75rem 0 0;
-  object-fit: cover;
-  height: 200px; /* ✅ Dikecilin dari 300px ke 200px */
-  width: 100%;
+/* ===== Carousel gambar pengumuman ===== */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 10%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-/* ==== Modal Header (Lebih Kontras & Menyala) ==== */
-.modal-header {
-  background: rgba(0, 240, 255, 0.25); /* Lebih terang dari sebelumnya */
-  border-bottom: 1px solid #00f0ffcc;
-  padding: 1.2rem 1.5rem;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  box-shadow: 0 0 12px #00f0ff44, inset 0 -1px 0 #00f0ff88;
-}
-
-
-.modal-title {
-  color: #00f0ff;
-  font-weight: 700;
-  text-shadow: 0 0 8px #00f0ff88;
-  font-size: 1.4rem;
-}
-
-/* ==== Modal Body ==== */
-.modal-body {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
-  padding: 1.5rem;
-  font-size: 1.1rem;
-  border-left: 1px solid #00f0ff33;
-  border-right: 1px solid #00f0ff33;
-}
-
-/* ==== Modal Footer ==== */
-.modal-footer {
-  background: rgba(0, 240, 255, 0.05);
-  border-top: 1px solid #00f0ff33;
-  padding: 1rem 1.5rem;
-  border-bottom-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-/* ==== Tambah Pengumuman Button (btn-edit) ==== */
-.btn-edit {
-  background-color: #00f0ff;
-  color: #081c3c;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 10px #00f0ff88, 0 0 20px #00f0ff44;
-}
-
-.btn-edit:hover {
-  background-color: #00c8d9;
-  color: #ffffff;
-  box-shadow: 0 0 15px #00f0ffcc, 0 0 25px #00f0ffaa;
-}
-
-/* ==== Button Styles ==== */
-.btn-delete {
-  background-color: #ff4d4d;
-  color: #ffffff;
-  border: none;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 10px #ff4d4d66;
-}
-
-.btn-close {
-  background-color: #ff4d4d;
-  color: #ffffff;
-  border: none;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 0 10px #ff4d4d66, 0 0 20px #ff1a1a33;
-  text-shadow: 0 0 3px #fff;
-}
-
-.btn-close:hover {
-  background-color: #ff1a1a;
-  box-shadow: 0 0 15px #ff4d4d, 0 0 25px #ff1a1a;
-  transform: scale(1.05);
-}
-
-.btn-delete:hover {
-  background-color: #d10000;
-  box-shadow: 0 0 15px #ff4d4d99;
-}
-
-.btn-secondary {
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  font-weight: 500;
-  border-radius: 8px;
-  transition: background 0.3s ease;
-}
-
-.btn-secondary:hover {
-  background-color: #1a252f;
-}
-
-/* ==== Modal Content Overall ==== */
-.modal-content {
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 1rem;
-  box-shadow: 0 0 20px #00f0ff33;
-  border: 1px solid #00f0ff33;
-  backdrop-filter: blur(10px);
-  color: #fff;
-}
-
-
-.form-control {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid #00f0ff33;
-}
-
-.form-control:focus {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #ffff;
-  border-color: #00f0ff;
-  box-shadow: 0 0 5px #00f0ff88;
-}
-
-label.form-label {
-  font-weight: 500;
-  color: #b0d4ff;
+.carousel:hover .carousel-control-prev,
+.carousel:hover .carousel-control-next {
+  opacity: 0.85;
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-  background-color: #00f0ff;
+  background-color: rgba(27, 67, 50, 0.55);
   border-radius: 50%;
-  padding: 1rem;
+  padding: 0.9rem;
+  background-size: 45%;
 }
 
-
-@media (max-width: 576px) {
-  .card-text {
-    font-size: 0.9rem;
-  }
-  h2 {
-    font-size: 1.5rem;
-  }
+/* ===== Tombol aksi ===== */
+.btn-edit {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.5rem 1.1rem;
+  transition: background 0.2s ease;
+}
+.btn-edit:hover {
+  background: var(--secondary);
+  color: var(--white);
 }
 
-
-@keyframes aurora-move {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.btn-delete {
+  background: #B3261E;
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.5rem 1.1rem;
+  transition: background 0.2s ease;
+}
+.btn-delete:hover {
+  background: #8C1D17;
+  color: var(--white);
 }
 
-/* Ensure content stays above aurora background */
-
-
-html, body {
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  box-sizing: border-box;
+/* ===== Modal Tambah/Edit & Konfirmasi Hapus ===== */
+.modal-content {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
 }
 
-#vanta-bg {
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
+.modal-header {
+  background: var(--accent-soft);
+  border-bottom: 1px solid var(--border);
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  padding: 1.1rem 1.4rem;
 }
 
-.content {
-  position: relative;
-  z-index: 2;
-  padding: 2rem;
-  min-height: 100vh;
+.modal-title {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.15rem;
 }
 
+.modal-body {
+  padding: 1.4rem;
+  color: var(--text);
+}
 
+.modal-footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  padding: 1rem 1.4rem;
+}
 
+/* ===== Form di dalam modal ===== */
+.modal .form-label {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
 
+.modal .form-control {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  padding: 0.55rem 0.8rem;
+}
 
+.modal .form-control:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+}
 
+.modal .form-text {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.5rem 1.1rem;
+}
+.btn-secondary:hover {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-close {
+  opacity: 0.6;
+}
+.btn-close:hover {
+  opacity: 1;
+}
+
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+
+.modal.show {
+  z-index: 1055 !important;
+}

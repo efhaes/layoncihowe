@@ -1,0 +1,270 @@
+/* ==========================================================================
+   Semua Pengajuan — Buku Register Admin
+   Mengikuti design tokens "Gov Clean" (var(--card), var(--border),
+   var(--text), var(--secondary), var(--radius-sm), var(--radius-lg), dst)
+   ========================================================================== */
+
+/* --- Header halaman --- */
+.register-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 0.35rem;
+}
+
+.register-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 0.35rem;
+}
+
+.admin-dash-sub {
+  color: var(--text-muted, #6b7280);
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 46ch;
+}
+
+.register-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1.6rem;
+  min-width: 110px;
+  text-align: center;
+}
+
+.register-count-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--secondary);
+  line-height: 1;
+}
+
+.register-count-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted, #6b7280);
+  margin-top: 0.3rem;
+}
+
+/* --- Search bar --- */
+.register-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.5rem;
+  max-width: 420px;
+}
+
+.register-search i {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.9rem;
+}
+
+.ledger-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.ledger-search-input::placeholder {
+  color: var(--text-muted, #9ca3af);
+}
+
+/* --- Tombol hapus semua --- */
+.btn-hapus-semua {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #B3261E;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.btn-hapus-semua:hover {
+  filter: brightness(0.9);
+}
+
+.btn-hapus-semua:active {
+  transform: scale(0.98);
+}
+
+/* --- Grid kartu --- */
+.mixed-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.mixed-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.2rem;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.mixed-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.mixed-card p {
+  margin: 0.3rem 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.mixed-card p strong {
+  font-weight: 600;
+  color: var(--text-muted, #6b7280);
+  margin-right: 0.25rem;
+}
+
+/* Tombol hapus per-kartu, pojok kanan atas */
+.btn-delete {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: #B3261E;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-delete:hover {
+  background: #B3261E;
+  color: #fff;
+}
+
+/* Tag jenis surat */
+.jenis-tag {
+  display: inline-block;
+  background: color-mix(in srgb, var(--secondary) 12%, transparent);
+  color: var(--secondary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  margin-bottom: 0.6rem;
+  margin-right: 2rem; /* beri ruang agar tidak tabrakan dengan btn-delete */
+}
+
+/* --- Badge status (stempel) --- */
+.stempel {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  text-transform: capitalize;
+}
+
+.stempel-pending,
+.stempel-menunggu {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.stempel-diproses,
+.stempel-proses {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.stempel-selesai,
+.stempel-disetujui,
+.stempel-approved {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.stempel-ditolak,
+.stempel-rejected {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+/* --- Empty state --- */
+.empty-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 3rem 1rem;
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.empty-row i {
+  font-size: 1.8rem;
+  color: var(--border);
+}
+
+/* --- Kartu yang disembunyikan oleh script pencarian --- */
+.mixed-card.is-hidden {
+  display: none;
+}
+
+/* --- Responsif --- */
+@media (max-width: 640px) {
+  .register-header {
+    flex-direction: column;
+  }
+
+  .register-count {
+    align-self: flex-start;
+  }
+
+  .mixed-card-container {
+    grid-template-columns: 1fr;
+  }
+}

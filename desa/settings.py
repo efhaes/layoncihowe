@@ -1,16 +1,35 @@
 from pathlib import Path
-import os  # Tambahin ini buat STATIC_ROOT
-# import dj_database_url  # opsional, kalau nanti mau PostgreSQL
+from decouple import config, Csv
+import os
+import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-7rigmo((v#weqhr-(zqee0(a0d^-le#a*oja9^l91hgo-8(^3t'
+# ===== Kunci rahasia
+SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = False
+# ===== Mode
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['techo-web.onrender.com']  # ✅ ganti sesuai nama subdomain Render kamu
+# ===== Host
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='127.0.0.1,localhost',
+    cast=Csv()
+)
 
-# Aplikasi
+
+CSRF_TRUSTED_ORIGINS = [
+    # HTTP (sebelum HTTPS aktif)
+    "http://168.231.123.63",
+    "http://techo.id", "http://www.techo.id",
+    "http://layoncihowe.techo.id",
+    # HTTPS (setelah TLS)
+    "https://techo.id", "https://www.techo.id",
+    "https://layoncihowe.techo.id",
+]
+
+# ===== Aplikasi
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,10 +41,10 @@ INSTALLED_APPS = [
     'widget_tweaks',
 ]
 
-# Middleware
+# ===== Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ tambahkan ini
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # untuk static hashed (backup selain Nginx)
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'kembang.context_processors.notifikasi_admin',
             ],
         },
     },
@@ -54,7 +74,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'desa.wsgi.application'
 
-# Database — masih pakai SQLite dulu
+# ===== Database (SQLite)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -62,45 +82,59 @@ DATABASES = {
     }
 }
 
-# Validasi password
+# ===== Validasi password
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Waktu & Bahasa
+# ===== Bahasa & Zona Waktu
 LANGUAGE_CODE = 'id'
 TIME_ZONE = 'Asia/Jakarta'
 USE_I18N = True
 USE_TZ = True
 
-# ===== ✅ FINAL STATIC SETTINGS UNTUK DEPLOY =====
+# ===== Static & Media
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ✅ folder hasil collectstatic
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # folder statis custom kamu
-    
-]
+STATIC_ROOT = BASE_DIR / 'staticfiles'      # hasil collectstatic untuk Nginx
+STATICFILES_DIRS = [BASE_DIR / 'static']    # sumber asset projek
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise (handle static files)
+# WhiteNoise (hash + compress)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WHITENOISE_MAX_AGE = 60 * 60 * 24 * 30  # optional cache 30 hari
 
-# SSL Support (penting di Render)
+# reverse proxy header (Nginx)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Primary Key Default
+# ===== Default PK
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ===== Auth
+LOGIN_URL = '/login/'
+
+# ===== Keamanan (aktif otomatis kalau USE_HTTPS=1 di environment)
+USE_HTTPS = os.getenv('USE_HTTPS', '0') == '1'
+
+SECURE_SSL_REDIRECT = USE_HTTPS
+SESSION_COOKIE_SECURE = USE_HTTPS
+CSRF_COOKIE_SECURE = USE_HTTPS
+SECURE_HSTS_SECONDS = 31536000 if USE_HTTPS else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = USE_HTTPS
+SECURE_HSTS_PRELOAD = USE_HTTPS
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+X_FRAME_OPTIONS = "DENY"
+
+# ===== Logging ke console (buat systemd journal)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'stream': sys.stdout},
+    },
+    'root': {'handlers': ['console'], 'level': 'WARNING'},
+}

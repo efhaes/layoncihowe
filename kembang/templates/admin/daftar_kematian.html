@@ -1,46 +1,102 @@
-{% extends "partials/base.html" %}
+{% extends "partials/base_admin.html" %}
 {% load static %}
 
 {% block css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/daftar_kelahiran.css' %}">
+<link rel="stylesheet" href="{% static 'css/daftar.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Background VANTA -->
-<div id="vanta"></div>
-<h1 class="judul-halaman">Daftar Pengajuan Surat Kematian</h1>
+
+<div class="register-header">
+  <div>
+    <div class="section-eyebrow">Buku Register</div>
+    <h2>Daftar Pengajuan Surat Kematian</h2>
+    <p class="admin-dash-sub">Catatan seluruh pengajuan surat keterangan kematian yang masuk dari warga.</p>
+  </div>
+  <div class="register-count">
+    <span class="register-count-value">{{ daftar|length }}</span>
+    <span class="register-count-label">Catatan</span>
+  </div>
+</div>
+
+
+<div class="register-search">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" class="ledger-search-input" placeholder="Cari nama atau NIK...">
+</div>
+
+
 <div class="table-wrapper">
-  <table class="styled-table">
-     <thead>
+  <table class="ledger-table">
+    <thead>
       <tr>
-        <th>Nama Lengkap</th>
-         <th>Status</th>
+        <th class="col-no">No</th>
+        <th>Nama Almarhum/Almarhumah</th>
+        <th>Status</th>
         <th>Tanggal Pengajuan</th>
-        <th>Aksi</th>
+        <th class="col-aksi">Aksi</th>
       </tr>
     </thead>
     <tbody>
       {% for akta in daftar %}
-      <tr>
-        <td>{{ akta.nama_jenazah }}</td>
-        <td>{{ akta.tanggal_pengajuan }}</td>
-        <td>{{ akta.status }}</td>
-        <td>
-          <a href="{% url 'detail_pengajuan_akta_kematian' akta.pk %}">Detail</a> |
-          <a href="#" onclick="openDeleteModal({{ akta.pk }})">Hapus</a>
+      <tr class="ledger-row status-line-{{ akta.status }}"
+          data-search="{{ akta.nama_jenazah|lower }} {{ akta.user.username }}">
+        <td class="ledger-index">{{ forloop.counter }}</td>
+        <td class="nama-cell">{{ akta.nama_jenazah }}</td>
+        <td><span class="stempel stempel-{{ akta.status }}">{{ akta.get_status_display }}</span></td>
+        <td class="tanggal-cell">{{ akta.tanggal_pengajuan|date:"d M Y" }}</td>
+        <td class="aksi-cell">
+          <a class="ledger-action" href="{% url 'detail_pengajuan_akta_kematian' akta.pk %}">
+            <i class="fa-solid fa-eye"></i> Detail
+          </a>
+          <a class="ledger-action ledger-action-danger" href="#" onclick="openDeleteModal({{ akta.pk }}); return false;">
+            <i class="fa-solid fa-trash"></i> Hapus
+          </a>
         </td>
       </tr>
       {% empty %}
-    <td colspan="5" style="text-align: center;">Belum ada pengajuan.</td>
+      <tr>
+        <td colspan="5" class="empty-row">
+          <i class="fa-solid fa-inbox"></i>
+          Belum ada pengajuan surat kematian.
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<!-- Versi mobile -->
+<div class="mobile-table">
+  {% for akta in daftar %}
+  <div class="mobile-row" data-search="{{ akta.nama_jenazah|lower }} {{ akta.user.username }}">
+    <div class="mobile-row-top">
+      <span class="mobile-nama">{{ akta.nama_jenazah }}</span>
+      <span class="stempel stempel-{{ akta.status }}">{{ akta.get_status_display }}</span>
+    </div>
+    <div class="mobile-tanggal">{{ akta.tanggal_pengajuan|date:"d M Y" }}</div>
+    <div class="mobile-aksi">
+      <a href="{% url 'detail_pengajuan_akta_kematian' akta.pk %}">Detail</a>
+      <a href="#" onclick="openDeleteModal({{ akta.pk }}); return false;">Hapus</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="mobile-row">
+    <div class="empty-row">
+      <i class="fa-solid fa-inbox"></i>
+      Belum ada pengajuan surat kematian.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<form id="deleteForm" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
 <!-- Modal Konfirmasi Hapus -->
-<div id="deleteModal" class="modal" style="display: none;">
+<div id="deleteModal" class="modal">
   <div class="modal-content">
-    <p>Yakin ingin menghapus data ini?</p>
+    <p>Yakin ingin menghapus data pengajuan ini?</p>
     <div class="modal-buttons">
       <button onclick="confirmDelete()">Ya, Hapus</button>
       <button onclick="closeDeleteModal()">Batal</button>
@@ -48,33 +104,17 @@
   </div>
 </div>
 
-
-<div class="mobile-table">
-  {% for akta in daftar %}
-  <div class="mobile-row">
-    <div class="mobile-cell"><strong>Nama Lengkap:</strong> {{ akta.nama_jenazah }}</div>
-    <div class="mobile-cell"><strong>Status:</strong> {{ akta.status }}</div>
-    <div class="mobile-cell"><strong>Tanggal Pengajuan:</strong> {{ akta.tanggal_pengajuan }}</div>
-    <div class="mobile-cell">
-      <strong>Aksi:</strong>
-      <a href="{% url 'detail_pengajuan_akta_kematian' akta.pk %}">Detail</a> |
-      <a href="#" onclick="openDeleteModal({{ akta.pk }})">Hapus</a>
-    </div>
-  </div>
-  {% empty %}
-  <div class="mobile-row">
-    <div class="mobile-cell">Belum ada pengajuan.</div>
-  </div>
-  {% endfor %}
-</div>
 {% endblock %}
 
 {% block javascripts %}
+
+<script src="{% static 'js/search.js' %}"></script>
+
+
 <script>
   let selectedDeleteId = null;
 
   function openDeleteModal(id) {
-    console.log("Modal dibuka untuk ID:", id); // Debug log
     selectedDeleteId = id;
     document.getElementById('deleteModal').style.display = 'flex';
   }
@@ -83,29 +123,13 @@
     selectedDeleteId = null;
     document.getElementById('deleteModal').style.display = 'none';
   }
+
   function confirmDelete() {
     if (selectedDeleteId) {
-     window.location.href = `{% url 'hapus_kematian' 0 %}`.replace('0', selectedDeleteId);
+      const form = document.getElementById('deleteForm');
+      form.action = `{% url 'hapus_kematian' 0 %}`.replace('0', selectedDeleteId);
+      form.submit();
     }
   }
-</script>
-<!-- VANTA.JS Background -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
-<script>
-  VANTA.DOTS({
-    el: "#vanta",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.0,
-    scaleMobile: 1.0,
-    color: 0xffffff,
-      backgroundColor: 0x000000,
-    spacing: 30.00,
-    showLines: true
-  });
 </script>
 {% endblock %}

@@ -1,0 +1,319 @@
+/* =========================================================
+   Desa Cihowe — Admin Layout (Sidebar + Topbar)
+   Wajib load base.css duluan (token warna dipakai di sini).
+   Ini LAYOUT-level CSS — beda dari home.css yang dipakai
+   halaman publik.
+   ========================================================= */
+
+:root {
+  --admin-sidebar-w: 250px;
+  --admin-topbar-h: 64px;
+}
+
+body.admin-body {
+  display: block;       /* override flex column dari base.css, layout admin beda */
+  padding-top: 0;
+  background: var(--bg);
+  font-family: 'Open Sans', -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.admin-content h1, .admin-content h2, .admin-content h3,
+.admin-content h4, .admin-content h5, .admin-content h6 {
+  font-family: 'Open Sans', -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
+/* ===== Sidebar ===== */
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--admin-sidebar-w);
+  height: 100vh;
+  background: linear-gradient(180deg, var(--primary) 0%, #12332a 100%);
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  z-index: 1100;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+.admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.4rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar-logo {
+  width: 120px;
+  height: 120px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.admin-sidebar-logo img {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;     /* atau 'contain' kalau logo ga mau ke-crop */
+}
+
+.admin-sidebar-brand strong {
+  display: block;
+  color: var(--white);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-sidebar-brand span {
+  display: block;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+}
+
+.admin-nav-group {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 1.25rem 0.6rem 0.5rem;
+}
+.admin-nav-group:first-child { margin-top: 0.25rem; }
+
+.admin-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-nav-link i {
+  width: 18px;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.admin-nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+}
+
+.admin-nav-link.active {
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 700;
+}
+.admin-nav-link.active i { opacity: 1; }
+
+.admin-nav-badge {
+  margin-left: auto;
+  background: #B3261E;
+  color: var(--white);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+.admin-nav-link.active .admin-nav-badge {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.admin-sidebar-footer {
+  padding: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav-link-danger:hover {
+  background: rgba(179, 38, 30, 0.25);
+  color: #ffb3ae;
+}
+
+/* ===== Overlay (mobile) ===== */
+.admin-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 18, 0.5);
+  z-index: 1050;
+}
+.admin-sidebar-overlay.active { display: block; }
+
+/* ===== Area konten utama ===== */
+.admin-main {
+  margin-left: var(--admin-sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  height: var(--admin-topbar-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  z-index: 900;
+}
+
+.admin-topbar-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  flex: 1;
+}
+
+.admin-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.admin-topbar-notif {
+  position: relative;
+  color: var(--secondary);
+  font-size: 1.15rem;
+  text-decoration: none;
+}
+.admin-topbar-notif-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #B3261E;
+  color: var(--white);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+}
+
+.admin-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.admin-topbar-user i { font-size: 1.3rem; color: var(--text-muted); }
+
+.admin-burger {
+  display: none;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.admin-burger span {
+  position: absolute;
+  left: 6px;
+  width: 22px;
+  height: 2.5px;
+  border-radius: 3px;
+  background: var(--primary);
+  transition: 0.2s ease;
+}
+.admin-burger span:nth-child(1) { top: 10px; }
+.admin-burger span:nth-child(2) { top: 16px; }
+.admin-burger span:nth-child(3) { top: 22px; }
+
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  position: relative;
+  isolation: isolate; /* stacking context sendiri, biar ::before pasti di belakang konten */
+}
+
+/* Dekorasi latar — dot pattern halus + motif daun di pojok.
+   Low-opacity langsung di warna/fill-nya (bukan lewat `opacity`
+   di elemen), biar gampang di-tweak per layer. */
+.admin-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-position: 0 0, calc(100% + 70px) -70px, -90px calc(100% + 60px);
+  background-size: 26px 26px, 360px 360px, 300px 300px;
+  background-image:
+    radial-gradient(rgba(27, 67, 50, 0.05) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cpath d='M150 20 C 60 60, 40 160, 150 280 C 260 160, 240 60, 150 20 Z' fill='%231B4332' fill-opacity='0.05'/%3E%3Cpath d='M150 30 L150 270 M150 90 L100 60 M150 130 L205 100 M150 170 L95 145 M150 210 L200 190' stroke='%231B4332' stroke-opacity='0.07' stroke-width='2' fill='none'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cpath d='M150 20 C 60 60, 40 160, 150 280 C 260 160, 240 60, 150 20 Z' fill='%23C9A227' fill-opacity='0.06'/%3E%3Cpath d='M150 30 L150 270 M150 90 L100 60 M150 130 L205 100 M150 170 L95 145 M150 210 L200 190' stroke='%23C9A227' stroke-opacity='0.08' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+}
+
+/* Layer kedua — ranting/dahan (pojok kiri-atas) + sawah berundak
+   (garis kontur di bagian bawah halaman), biar kerasa suasana desa. */
+.admin-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: no-repeat, repeat-x;
+  background-position: -20px -20px, left bottom;
+  background-size: 220px 220px, 420px 130px;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 220'%3E%3Cpath d='M10 10 C 60 40, 90 90, 140 130' stroke='%231B4332' stroke-opacity='0.09' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M40 30 C 55 20, 70 15, 85 25' stroke='%231B4332' stroke-opacity='0.09' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='85' cy='25' rx='10' ry='5' fill='%231B4332' fill-opacity='0.07' transform='rotate(-20 85 25)'/%3E%3Cellipse cx='65' cy='60' rx='10' ry='5' fill='%231B4332' fill-opacity='0.07' transform='rotate(30 65 60)'/%3E%3Cellipse cx='100' cy='85' rx='10' ry='5' fill='%231B4332' fill-opacity='0.07' transform='rotate(-10 100 85)'/%3E%3Cellipse cx='125' cy='115' rx='10' ry='5' fill='%231B4332' fill-opacity='0.07' transform='rotate(25 125 115)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 130'%3E%3Cpath d='M0 90 Q 35 72 70 90 T 140 90 T 210 90 T 280 90 T 350 90 T 420 90' stroke='%232D6A4F' stroke-opacity='0.07' stroke-width='2' fill='none'/%3E%3Cpath d='M0 108 Q 35 94 70 108 T 140 108 T 210 108 T 280 108 T 350 108 T 420 108' stroke='%232D6A4F' stroke-opacity='0.06' stroke-width='2' fill='none'/%3E%3Cpath d='M0 126 Q 35 116 70 126 T 140 126 T 210 126 T 280 126 T 350 126 T 420 126' stroke='%232D6A4F' stroke-opacity='0.05' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+}
+
+/* ===== Responsive: sidebar jadi off-canvas ===== */
+@media (max-width: 992px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+  .admin-sidebar.active { transform: translateX(0); }
+
+  .admin-main { margin-left: 0; }
+
+  .admin-burger { display: block; }
+
+  .admin-content { padding: 1.25rem; }
+  .admin-content::before {
+    background-size: 26px 26px, 220px 220px, 200px 200px;
+  }
+  .admin-content::after {
+    background-size: 140px 140px, 280px 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-topbar-user span { display: none; }
+  .admin-topbar { padding: 0 1rem; }
+}

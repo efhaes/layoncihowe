@@ -1,228 +1,704 @@
-/* ===== CSS Register Night Mode ===== */
+/* =========================================================
+   REGISTER DESA CIHOWE
+========================================================= */
 
-/* Root Variables */
 :root {
-  --primary: #e0f7fa;
-  --secondary: #12fd5cad;
-  --text: #e0f7fa;
-  --bg-glass: rgba(0, 0, 0, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-shadow: rgba(0, 0, 0, 0.5);
-  --white: rgba(255, 255, 255, 0.15);
+  --primary: #1B5E45;
+  --primary-dark: #124B37;
+  --primary-soft: #DDEBE4;
+
+  --bg: #EEF5F1;
+  --white: #FFFFFF;
+
+  --text: #213A2D;
+  --muted: #7B8D84;
+
+  --border: #D9E4DE;
+
+  --radius-lg: 24px;
+  --radius-md: 14px;
+
+  --shadow: 0 20px 50px rgba(32, 75, 55, 0.10);
 }
 
-/* Body */
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow-x: hidden;
-  color: var(--text);
-  background-color: transparent;
-}
-
-/* Vanta Background */
-#vanta-clouds {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -2;
-}
-
-/* Bintang */
-.stars {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    radial-gradient(1px 1px at 20% 30%, #fff, transparent),
-    radial-gradient(1px 1px at 60% 10%, #fff, transparent),
-    radial-gradient(1px 1px at 80% 70%, #fff, transparent),
-    radial-gradient(1px 1px at 40% 80%, #fff, transparent),
-    radial-gradient(1px 1px at 70% 50%, #fff, transparent);
-  z-index: -1;
-  opacity: 0.6;
-  pointer-events: none;
-  animation: twinkle 5s infinite;
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 0.9; }
-}
-
-/* Bulan */
-.moon {
-  position: fixed;
-  top: 50px;
-  right: 80px;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle at 30% 30%, #fffcd1, #f0e6a0 60%, transparent 100%);
-  border-radius: 50%;
-  box-shadow: 0 0 20px #fffcd1;
-  z-index: 0;
-  animation: floatMoon 10s ease-in-out infinite;
-}
-
-@keyframes floatMoon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-/* Wrapper */
-.register-wrapper {
   min-height: 100vh;
-  padding: 50px 15px 100px;
+
+  font-family: 'Poppins', sans-serif;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(108, 153, 128, 0.14),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 82% 75%,
+      rgba(190, 210, 198, 0.20),
+      transparent 30%
+    ),
+    #EEF5F1;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.register-page {
+  position: relative;
+
+  min-height: 100vh;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  padding: 30px 16px;
+
+  overflow: hidden;
 }
 
-/* Register Card (Glass Effect) */
-.register-card {
-  max-width: 500px;
-  width: 100%;
-  padding: 2rem;
-  background: var(--bg-glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px 0 var(--glass-shadow);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+
+/* =========================================================
+   BACKGROUND SHAPES
+========================================================= */
+
+.register-page::before,
+.register-page::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #C5D8CC,
+      #7FA58E
+    );
+
+  box-shadow:
+    inset 8px 8px 16px rgba(255, 255, 255, 0.28),
+    0 20px 30px rgba(50, 90, 70, 0.10);
+
+  pointer-events: none;
+}
+
+
+.register-page::before {
+  width: 65px;
+  height: 65px;
+
+  top: 5%;
+  left: 5%;
+}
+
+
+.register-page::after {
+  width: 80px;
+  height: 80px;
+
+  right: 4%;
+  bottom: -15px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.register-container {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 400px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.register-card {
+  position: relative;
+
+  padding: 24px 28px 22px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  border: 1px solid rgba(255, 255, 255, 0.85);
+
+  border-radius: 28px;
+
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(8px);
+}
+
+
+/* =========================================================
+   VISUAL
+========================================================= */
+
+.register-visual {
+  position: relative;
+
+  height: 130px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 14px;
+}
+
+
+.logo-bg {
+  position: absolute;
+
+  width: 105px;
+  height: 105px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #E6F0EA,
+      #D5E3DA
+    );
+
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.7);
+}
+
+
+.logo-desa {
+  position: relative;
+  z-index: 2;
+
+  width: 90px;
+  max-height: 110px;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 10px 12px rgba(30, 70, 50, 0.14)
+    );
+}
+
+
+.visual-dot {
+  position: absolute;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #B2CBB9,
+      #67947B
+    );
+
+  box-shadow:
+    0 10px 20px rgba(40, 80, 60, 0.12);
+}
+
+
+.dot-1 {
+  width: 18px;
+  height: 18px;
+
+  left: 30px;
+  top: 18px;
+}
+
+
+.dot-2 {
+  width: 12px;
+  height: 12px;
+
+  right: 32px;
+  bottom: 18px;
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.register-heading {
+  margin-bottom: 16px;
+}
+
+
+.register-heading h1 {
+  margin: 0 0 4px;
+
+  color: var(--primary-dark);
+
+  font-size: 1.25rem;
+
+  font-weight: 700;
+}
+
+
+.register-heading p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.78rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--text);
+
+  font-size: 0.74rem;
+
+  font-weight: 600;
+}
+
+
+.input-wrapper {
+  position: relative;
+}
+
+
+.input-wrapper .form-control {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 13px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  color: var(--text);
+
+  font-family: inherit;
+
+  font-size: 0.78rem;
+
+  box-shadow: none;
+
+  transition: 0.2s ease;
+}
+
+
+.input-wrapper .form-control::placeholder {
+  color: #A3B0A9;
+}
+
+
+.input-wrapper .form-control:focus {
+  background: #fff;
+
+  border-color: #7BA08B;
+
+  box-shadow:
+    0 0 0 3px rgba(47, 105, 75, 0.08);
+
+  outline: none;
+}
+
+
+.input-wrapper select.form-control {
   color: var(--text);
 }
 
-/* Logo */
-.logo-desa {
-  width: 80px;
-  height: auto;
+
+.form-hint {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 0.65rem;
 }
 
-/* Judul dan Subjudul */
-.register-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--primary);
+
+.invalid-feedback {
+  margin-top: 4px;
+
+  color: #B84C4C;
+
+  font-size: 0.68rem;
 }
 
-.register-subtitle {
-  font-size: 1rem;
-  color: #bbdefb;
-}
 
-/* Form Input */
-input.form-control, select.form-control, textarea.form-control {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  padding: 0.6rem;
-}
+/* =========================================================
+   REGISTER BUTTON
+========================================================= */
 
-input.form-control::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-input.form-control:focus,
-select.form-control:focus,
-textarea.form-control:focus {
-  border-color: var(--secondary);
-  background-color: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  box-shadow: 0 0 0 0.15rem rgba(0, 255, 255, 0.25);
-}
-
-/* Tombol */
 .btn-register {
-  background-color: var(--primary);
-  color: #000;
-  font-weight: 600;
-  padding: 0.6rem;
-  border-radius: 0.5rem;
-  border: none;
-  transition: 0.3s ease;
-}
-textarea.form-control {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  padding: 0.6rem;
-  resize: none; /* Menghilangkan resize corner */
-  height: 48px; /* Disamakan dengan input biasa */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+  height: 44px;
 
-textarea.form-control:focus {
-  border-color: var(--secondary);
-  background-color: rgba(0, 0, 0, 0.6);
+  margin-top: 4px;
+
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #1F674B,
+      #124B37
+    );
+
   color: #fff;
-  box-shadow: 0 0 0 0.15rem rgba(0, 255, 255, 0.25);
+
+  font-family: inherit;
+
+  font-size: 0.82rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 20px rgba(26, 86, 62, 0.18);
+
+  transition: 0.2s ease;
 }
 
 
 .btn-register:hover {
-  background-color: var(--secondary);
-  color: #000;
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 25px rgba(26, 86, 62, 0.22);
 }
 
-/* Footer Teks */
-p.text-center {
-  font-size: 0.9rem;
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.register-divider {
+  display: grid;
+
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin: 14px 0 12px;
+}
+
+
+.register-divider span {
+  height: 1px;
+
+  background: var(--border);
+}
+
+
+.register-divider p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.7rem;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.login-button {
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 11px;
+
+  color: var(--text);
+
+  text-decoration: none;
+
+  font-size: 0.74rem;
+
+  transition: 0.2s ease;
+}
+
+
+.login-button i {
+  color: var(--primary);
+}
+
+
+.login-button strong {
+  color: var(--primary);
+
+  font-weight: 700;
+}
+
+
+.login-button:hover {
+  background: #F3F8F5;
+
+  border-color: #BDD0C5;
+
   color: var(--text);
 }
 
-p.text-center a {
+
+/* =========================================================
+   HOME
+========================================================= */
+
+.back-home {
+  margin-top: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
   color: var(--primary);
+
+  font-size: 0.72rem;
+
   font-weight: 600;
+
   text-decoration: none;
 }
 
-p.text-center a:hover {
-  text-decoration: underline;
-  color: var(--secondary);
+
+.back-home:hover {
+  color: var(--primary-dark);
 }
 
-/* ========================
-   Responsive (Mobile First)
-=========================== */
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.register-security {
+  margin-top: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  color: var(--muted);
+
+  font-size: 0.65rem;
+}
+
+
+.register-security i {
+  color: #6E967F;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.custom-alert {
+  border: 0;
+
+  border-radius: 10px;
+
+  font-size: 0.74rem;
+
+  padding: 10px 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - HP
+========================================================= */
+
 @media (max-width: 576px) {
+
+  .register-page {
+    padding: 16px 12px;
+  }
+
+  .register-container {
+    max-width: 100%;
+  }
+
   .register-card {
-    padding: 1.5rem 1.2rem;
-    border-radius: 0.8rem;
+    padding: 20px 18px 18px;
+
+    border-radius: 22px;
   }
 
-  .register-title {
-    font-size: 1.4rem;
+  .register-visual {
+    height: 110px;
+
+    margin-bottom: 10px;
   }
 
-  .register-subtitle {
-    font-size: 0.95rem;
-  }
-
-  .moon {
-    top: 30px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
+  .logo-bg {
+    width: 85px;
+    height: 85px;
   }
 
   .logo-desa {
-    width: 70px;
+    width: 72px;
+    max-height: 90px;
+  }
+
+  .dot-1 {
+    width: 14px;
+    height: 14px;
+
+    left: 22px;
+    top: 14px;
+  }
+
+  .dot-2 {
+    width: 10px;
+    height: 10px;
+
+    right: 24px;
+    bottom: 14px;
+  }
+
+  .register-heading h1 {
+    font-size: 1.1rem;
+  }
+
+  .register-heading p {
+    font-size: 0.72rem;
+  }
+
+  .register-heading {
+    margin-bottom: 12px;
+  }
+
+  .register-form {
+    gap: 10px;
+  }
+
+  .form-group label {
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+  }
+
+  .input-wrapper .form-control {
+    height: 38px;
+    font-size: 0.74rem;
+    padding: 0 11px;
+    border-radius: 10px;
   }
 
   .btn-register {
-    font-size: 0.95rem;
-    padding: 0.5rem;
+    height: 40px;
+    font-size: 0.78rem;
+    border-radius: 10px;
+    margin-top: 2px;
+    padding: 0 14px;
+  }
+
+  .register-divider {
+    margin: 10px 0 10px;
+    gap: 8px;
+  }
+
+  .register-divider p {
+    font-size: 0.65rem;
+  }
+
+  .login-button {
+    height: 38px;
+    font-size: 0.7rem;
+    border-radius: 10px;
+  }
+
+  .back-home {
+    font-size: 0.68rem;
+    margin-top: 10px;
+  }
+
+  .register-security {
+    font-size: 0.6rem;
+    margin-top: 12px;
+  }
+
+  .custom-alert {
+    font-size: 0.7rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  .register-page::before {
+    width: 40px;
+    height: 40px;
+
+    top: 3%;
+    left: 3%;
+  }
+
+  .register-page::after {
+    width: 50px;
+    height: 50px;
+
+    right: 3%;
+    bottom: -10px;
   }
 }
-

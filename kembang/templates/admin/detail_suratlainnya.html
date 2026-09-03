@@ -1,0 +1,122 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="{% static 'css/detail_skdu.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="container detail-domisili-usaha" data-aos="zoom-in" data-aos-duration="1000">
+  <h1 data-aos="fade-right" data-aos-delay="100">
+    <i class="fa fa-envelope"></i> Detail Pengajuan Surat Lainnya
+  </h1>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+    <i class="fa fa-user"></i> <strong>Nama Lengkap:</strong> {{ surat.nama_lengkap }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="250">
+    <i class="fa fa-id-card"></i> <strong>NIK:</strong> {{ surat.nik }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="300">
+    <i class="fa fa-map-marker-alt"></i> <strong>Alamat:</strong> {{ surat.alamat_lengkap }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="350">
+    <i class="fa-brands fa-whatsapp"></i> <strong>No. WhatsApp:</strong>
+    <a href="https://wa.me/{{ surat.no_whatsapp|cut:'+' }}" target="_blank">{{ surat.no_whatsapp }}</a>
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+    <i class="fa fa-file-alt"></i> <strong>Jenis Surat</strong> {{ surat.jenis_pengajuan }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="400">
+    <i class="fa fa-file-alt"></i> <strong>Keterangan:</strong> {{ surat.keterangan }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="450">
+    <i class="fa fa-id-card"></i> <strong>Foto KTP:</strong>
+    {% if surat.foto_ktp %}
+      <a href="{{ surat.foto_ktp.url }}" target="_blank">Lihat KTP</a>
+    {% else %}
+      Belum diunggah
+    {% endif %}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="500">
+    <i class="fa fa-users"></i> <strong>Foto KK:</strong>
+    {% if surat.foto_kk %}
+      <a href="{{ surat.foto_kk.url }}" target="_blank">Lihat KK</a>
+    {% else %}
+      Belum diunggah
+    {% endif %}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="550">
+    <i class="fa fa-info-circle"></i> <strong>Status:</strong> {{ surat.status|title }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="600">
+    <i class="fa fa-calendar-alt"></i> <strong>Tanggal Pengajuan:</strong> {{ surat.tanggal_pengajuan|date:"d M Y H:i" }}
+  </div>
+
+  <div class="info-card" data-aos="fade-up" data-aos-delay="650">
+    <i class="fa fa-file-pdf"></i> <strong>Hasil Surat:</strong>
+    {% if surat.hasil_surat %}
+      <a href="{{ surat.hasil_surat.url }}" target="_blank">Download PDF</a>
+    {% else %}
+      Belum tersedia
+    {% endif %}
+  </div>
+
+  <hr data-aos="fade-in" data-aos-delay="700" />
+
+  <h3 data-aos="fade-up" data-aos-delay="750"><i class="fa fa-edit"></i> Update Status & Upload Surat</h3>
+  <form method="post" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="800">
+    {% csrf_token %}
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+      <option value="diajukan" {% if surat.status == "diajukan" %}selected{% endif %}>Diajukan</option>
+      <option value="diproses" {% if surat.status == "diproses" %}selected{% endif %}>Diproses</option>
+      <option value="selesai" {% if surat.status == "selesai" %}selected{% endif %}>Selesai</option>
+    </select>
+
+    <label for="hasil_surat">Unggah Hasil Surat (PDF):</label>
+    <input type="file" name="hasil_surat" accept=".pdf">
+
+    <button type="submit"><i class="fa fa-save"></i> Simpan</button>
+  </form>
+
+  {% if surat.hasil_surat %}
+  <div class="action-buttons" data-aos="zoom-in" data-aos-delay="850">
+    <a href="{{ surat.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa fa-download"></i> Download PDF</button>
+    </a>
+    <a href="https://wa.me/{{ surat.no_whatsapp|cut:'+' }}?text=Surat%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ surat.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="action-buttons" data-aos="zoom-in" data-aos-delay="900">
+    <a href="{% url 'daftar_surat_lainnya' %}">
+      <button type="button"><i class="fa fa-arrow-left"></i> Kembali</button>
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

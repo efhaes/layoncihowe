@@ -1,0 +1,424 @@
+/* =========================================================
+   Desa Cihowe — Formulir Pengajuan Surat (Masyarakat)
+   Diselaraskan ke design system "Gov Clean" di base.css.
+   Wajib load base.css duluan (token, navbar, footer, AOS).
+   Reusable untuk formulir surat lain — cukup ganti judul/ikon.
+   ========================================================= */
+
+/* ===== Hero kecil di atas form ===== */
+.form-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1.5rem 4.5rem;
+  background: linear-gradient(160deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--white);
+  text-align: center;
+}
+
+.form-hero h1 {
+  color: var(--white);
+  font-weight: 800;
+  font-size: 1.9rem;
+  margin-bottom: 0.6rem;
+  position: relative;
+  z-index: 2;
+}
+
+.form-hero p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.98rem;
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.form-hero::after {
+  content: "";
+  position: absolute;
+  left: -8%; right: -8%; bottom: -1px;
+  height: 60px;
+  background: var(--bg);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  z-index: 1;
+}
+
+@media (max-width: 576px) {
+  .form-hero { padding: 2.5rem 1.25rem 3.5rem; }
+  .form-hero h1 { font-size: 1.5rem; }
+}
+
+/* ===== Container form ===== */
+.form-container {
+  max-width: 820px;
+  margin: -1.5rem auto 3rem;
+  padding: 2.25rem 2.75rem;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
+}
+
+.form-container h1 {
+  display: none; /* judul sekarang di .form-hero, hindari duplikat */
+}
+
+/* Ringkasan error di atas form — muncul kalau ada field yang salah isi */
+.form-error-summary {
+  background: #FDEDEC;
+  border: 1px solid #F3B7B2;
+  border-left: 4px solid #B3261E;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+}
+.form-error-summary i {
+  color: #B3261E;
+  font-size: 1.1rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+.form-error-summary strong {
+  display: block;
+  color: #8C1D17;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.form-error-summary span {
+  color: #8C1D17;
+  font-size: 0.86rem;
+}
+
+.form-note {
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  font-size: 0.86rem;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.form-note i {
+  color: var(--primary);
+  margin-top: 0.15rem;
+}
+
+/* ===== Form ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+form p {
+  margin: 0 0 1.15rem;
+}
+
+form label {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  display: inline-block;
+  font-size: 0.9rem;
+}
+
+/* Tanda field wajib diisi — otomatis, ngikutin atribut `required`
+   di input/select/textarea-nya, gak perlu ditandain manual per field. */
+form p:has(input:required) label::after,
+form p:has(select:required) label::after,
+form p:has(textarea:required) label::after {
+  content: " *";
+  color: #B3261E;
+  font-weight: 700;
+}
+
+.form-required-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: -0.5rem 0 1.25rem;
+}
+.form-required-note span {
+  color: #B3261E;
+  font-weight: 700;
+}
+
+/* Help text di bawah field (dari help_text= di forms.py) */
+form .helptext {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  line-height: 1.45;
+}
+form p:has(ul.errorlist) .helptext {
+  color: #8C1D17;
+}
+
+form input[type="text"],
+form input[type="file"],
+form input[type="date"],
+form input[type="email"],
+form input[type="number"],
+form select,
+form textarea {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+}
+
+form select option {
+  background-color: var(--white);
+  color: var(--text);
+}
+
+form input[type="file"] {
+  padding: 0.55rem 0.7rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+form input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Pesan error bawaan Django form — bikin jelas, bukan teks kecil doang */
+form ul.errorlist {
+  list-style: none;
+  padding: 0.5rem 0.8rem;
+  margin: 0 0 0.5rem;
+  background: #FDEDEC;
+  border: 1px solid #F3B7B2;
+  border-radius: var(--radius-sm);
+  color: #8C1D17;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+form ul.errorlist li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+form ul.errorlist li::before {
+  content: "\f06a"; /* fa-circle-exclamation */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #B3261E;
+  flex-shrink: 0;
+}
+
+/* Border merah di input yang errornya nempel di <p> yang sama */
+form p:has(ul.errorlist) input,
+form p:has(ul.errorlist) select,
+form p:has(ul.errorlist) textarea {
+  border-color: #B3261E;
+  background: #FFFBFA;
+}
+form p:has(ul.errorlist) label {
+  color: #B3261E;
+}
+
+/* ===== Tombol ===== */
+.form-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+button[type="submit"] {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 0.8rem 1.75rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+button[type="submit"]:hover {
+  background: var(--secondary);
+}
+
+.form-container a.btn-primary {
+  background: var(--white);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+.form-container a.btn-primary:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+/* ===== Alert (pesan sukses/error dari Django messages) ===== */
+.alert {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  padding: 0.85rem 1.4rem;
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--secondary);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-width: 90%;
+  animation: fadeInDown 0.4s ease;
+  text-align: left;
+}
+.alert-danger { border-left-color: #B3261E; }
+.alert-success { border-left-color: var(--secondary); }
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (max-width: 576px) {
+  .alert { top: 70px; font-size: 0.88rem; padding: 0.7rem 1rem; max-width: 95%; }
+}
+
+/* ===== Panduan alur setelah pengajuan ===== */
+.panduan-section {
+  max-width: 900px;
+  margin: 0 auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.panduan-heading {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.panduan-eyebrow {
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.panduan-heading h2 {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+.panduan-heading p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.panduan-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.panduan-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.panduan-step .step-number {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panduan-step .step-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin: 0.5rem auto 1rem;
+}
+
+.panduan-step strong {
+  display: block;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.98rem;
+  margin-bottom: 0.4rem;
+}
+
+.panduan-step p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.panduan-step a {
+  color: var(--secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.panduan-step a:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .panduan-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== AOS ===== */
+[data-aos] {
+  opacity: 0;
+  transition-property: transform, opacity;
+  transition-duration: 0.6s;
+}
+[data-aos].aos-animate { opacity: 1; }

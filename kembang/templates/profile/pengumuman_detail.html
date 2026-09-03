@@ -1,25 +1,58 @@
-<div class="modal-header flex-column align-items-stretch text-center" style="background: rgba(0, 240, 255, 0.05); border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding: 1rem 1.5rem; position: relative;">
-  <!-- Tanggal (kiri atas) -->
-  <small class="text-info fw-semibold mb-1 text-start" style="font-size: 0.9rem; position: absolute; top: 1rem; left: 1.5rem;">
-    <i class="fas fa-calendar-alt me-1"></i> {{ announcement.published_at|date:"d M Y H:i" }}
-  </small>
 
-  <!-- Judul (tengah) -->
-  <h5 class="modal-title text-neon m-0 w-100">{{ announcement.title }}</h5>
+<button
+  type="button"
+  class="btn-close ig-modal-close"
+  data-bs-dismiss="modal"
+  aria-label="Tutup"
+></button>
 
-  <!-- Tombol Close (kanan atas) -->
-  <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
+<div class="ig-modal-body">
 
-
-<div class="modal-body">
   {% if announcement.images.all %}
-    <div class="mb-3 d-flex flex-wrap gap-2 justify-content-start">
+  <div class="ig-post-media">
+    <div class="ig-post-media-track">
       {% for img in announcement.images.all %}
-        <img src="{{ img.image.url }}" class="img-fluid rounded" style="max-height: 200px;" alt="Gambar pengumuman">
+        <div class="ig-post-media-slide">
+          <img
+            src="{{ img.image.url }}"
+            alt="{{ announcement.title }}"
+            loading="lazy"
+          >
+        </div>
       {% endfor %}
     </div>
+
+    {% if announcement.images.all|length > 1 %}
+    <div class="ig-post-dots">
+      {% for img in announcement.images.all %}
+        <span{% if forloop.first %} class="active"{% endif %}></span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
   {% endif %}
 
-  <div class="text-light">{{ announcement.content|linebreaks }}</div>
+  <div class="ig-post-caption">
+    <div class="ig-post-caption-inner">
+
+      <div class="ig-post-caption-meta">
+        <span class="ig-post-caption-category">
+          <i class="fa-solid fa-bullhorn"></i>
+          Pengumuman Desa
+        </span>
+        <span class="ig-post-caption-date">
+          <i class="fa-regular fa-calendar"></i>
+          {{ announcement.published_at|date:"d M Y, H:i" }}
+        </span>
+      </div>
+
+      <h5 class="ig-post-caption-title">{{ announcement.title }}</h5>
+
+      <div class="ig-post-caption-text">
+        {{ announcement.content|linebreaks }}
+      </div>
+
+    </div>
+  </div>
+
 </div>

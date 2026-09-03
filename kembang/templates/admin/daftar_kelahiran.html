@@ -1,49 +1,86 @@
-{% extends "partials/base.html" %}
+{% extends "partials/base_admin.html" %}
 {% load static %}
 
+{% block title %}
+  Surat Kelahiran | Desa Cihowe
+{% endblock %}
+
+{% block page_title %}Daftar Pengajuan Surat Kelahiran{% endblock %}
+
 {% block css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/daftar_kelahiran.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/daftar.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Background VANTA -->
-<div id="vanta"></div>
-<h1 class="judul-halaman">Daftar Pengajuan Surat Kelahiran</h1>
-<div class="table-wrapper">
-  <table class="styled-table">
+
+<section class="register-header" data-aos="fade-down">
+  <div class="register-header-text">
+    <p class="section-eyebrow">Surat Kependudukan &mdash; Kelahiran</p>
+    <h2>Buku Register Pengajuan</h2>
+    <p class="admin-dash-sub">Setiap pengajuan tercatat dan diberi nomor urut sesuai tanggal masuk.</p>
+  </div>
+  <div class="register-count" aria-label="Jumlah catatan">
+    <span class="register-count-value">{{ pengajuan|length }}</span>
+    <span class="register-count-label">Catatan</span>
+  </div>
+</section>
+
+<div class="register-search">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" class="ledger-search-input" placeholder="Cari nama atau NIK...">
+</div>
+
+<div class="table-wrapper" data-aos="fade-up">
+  <table class="ledger-table">
     <thead>
       <tr>
+        <th class="col-no">No.</th>
         <th>Nama Lengkap</th>
         <th>Status</th>
         <th>Tanggal Pengajuan</th>
-        <th>Aksi</th>
+        <th class="col-aksi">Aksi</th>
       </tr>
     </thead>
     <tbody>
       {% for akta in pengajuan %}
-      <tr>
-        <td>{{ akta.nama_lengkap }}</td>
-         <td>{{ akta.status }}</td>
-        <td>{{ akta.tanggal_pengajuan }}</td>
+      <tr class="ledger-row status-line-{{ akta.status|lower }}"
+          data-search="{{ akta.nama_lengkap|lower }} {{ akta.user.username }}">
+        <td class="col-no"><span class="ledger-index">{{ forloop.counter|stringformat:"03d" }}</span></td>
+        <td class="nama-cell">{{ akta.nama_lengkap }}</td>
         <td>
-          <a href="{% url 'detail_pengajuan_kelahiran' akta.pk %}">Detail</a> |
-          <a href="#" onclick="openDeleteModal({{ akta.pk }})">Hapus</a>
+          <span class="stempel stempel-{{ akta.status|lower }}">{{ akta.status }}</span>
+        </td>
+        <td class="tanggal-cell">{{ akta.tanggal_pengajuan }}</td>
+        <td class="aksi-cell">
+          <a href="{% url 'detail_pengajuan_kelahiran' akta.pk %}" class="ledger-action" title="Lihat detail">
+            <i class="fa-solid fa-eye"></i><span>Detail</span>
+          </a>
+          <a href="#" class="ledger-action ledger-action-danger" title="Hapus catatan" onclick="openDeleteModal({{ akta.pk }}); return false;">
+            <i class="fa-solid fa-trash"></i><span>Hapus</span>
+          </a>
         </td>
       </tr>
       {% empty %}
       <tr>
-       <td colspan="5" style="text-align: center;">Belum ada pengajuan.</td>
+        <td colspan="5" class="empty-row">
+          <i class="fa-solid fa-inbox"></i>
+          <span>Belum ada pengajuan tercatat.</span>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
+<form id="deleteForm" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+
 <!-- Modal Konfirmasi Hapus -->
-<div id="deleteModal" class="modal" style="display: none;">
+<div id="deleteModal" class="modal">
   <div class="modal-content">
-    <p>Yakin ingin menghapus data ini?</p>
+    <p>Yakin ingin menghapus catatan ini dari register?</p>
     <div class="modal-buttons">
       <button onclick="confirmDelete()">Ya, Hapus</button>
       <button onclick="closeDeleteModal()">Batal</button>
@@ -54,19 +91,22 @@
 <!-- Versi Mobile Responsive -->
 <div class="mobile-table">
   {% for akta in pengajuan %}
-  <div class="mobile-row">
-    <div class="mobile-cell"><strong>Nama Lengkap:</strong> {{ akta.nama_lengkap }}</div>
-    <div class="mobile-cell"><strong>Status:</strong> {{ akta.status }}</div>
-    <div class="mobile-cell"><strong>Tanggal Pengajuan:</strong> {{ akta.tanggal_pengajuan }}</div>
-    <div class="mobile-cell">
-      <strong>Aksi:</strong>
-      <a href="{% url 'detail_pengajuan_kelahiran' akta.pk %}">Detail</a> |
-      <a href="#" onclick="openDeleteModal({{ akta.pk }})">Hapus</a>
+  <div class="mobile-row status-line-{{ akta.status|lower }}"
+       data-search="{{ akta.nama_lengkap|lower }} {{ akta.user.username }}">
+    <div class="mobile-row-top">
+      <span class="ledger-index">{{ forloop.counter|stringformat:"03d" }}</span>
+      <span class="stempel stempel-{{ akta.status|lower }}">{{ akta.status }}</span>
+    </div>
+    <div class="mobile-cell mobile-nama">{{ akta.nama_lengkap }}</div>
+    <div class="mobile-cell mobile-tanggal">{{ akta.tanggal_pengajuan }}</div>
+    <div class="mobile-cell mobile-aksi">
+      <a href="{% url 'detail_pengajuan_kelahiran' akta.pk %}"><i class="fa-solid fa-eye"></i> Detail</a>
+      <a href="#" onclick="openDeleteModal({{ akta.pk }}); return false;"><i class="fa-solid fa-trash"></i> Hapus</a>
     </div>
   </div>
   {% empty %}
   <div class="mobile-row">
-    <div class="mobile-cell">Belum ada pengajuan.</div>
+    <div class="mobile-cell">Belum ada pengajuan tercatat.</div>
   </div>
   {% endfor %}
 </div>
@@ -74,11 +114,12 @@
 {% endblock %}
 
 {% block javascripts %}
+<script src="{% static 'js/search.js' %}"></script>
+
 <script>
   let selectedDeleteId = null;
 
   function openDeleteModal(id) {
-    console.log("Modal dibuka untuk ID:", id); // Debug log
     selectedDeleteId = id;
     document.getElementById('deleteModal').style.display = 'flex';
   }
@@ -90,28 +131,10 @@
 
   function confirmDelete() {
     if (selectedDeleteId) {
-      window.location.href = `{% url 'hapus_kelahiran' 0 %}`.replace('0', selectedDeleteId);
+      const form = document.getElementById('deleteForm');
+      form.action = `{% url 'hapus_kelahiran' 0 %}`.replace('0', selectedDeleteId);
+      form.submit();
     }
   }
-
-</script>
-<!-- VANTA.JS Background -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
-<script>
-  VANTA.DOTS({
-    el: "#vanta",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.0,
-    scaleMobile: 1.0,
-    color: 0xffffff,
-      backgroundColor: 0x000000,
-    spacing: 30.00,
-    showLines: true
-  });
 </script>
 {% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'partials/base_admin.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+<div class="chat-panel-wrap">
+  <div class="chat-panel">
+    <div class="chat-panel-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 5v5h5"/></svg>
+    </div>
+    <h3>Pemulihan Passphrase Chat</h3>
+    <p class="chat-panel-desc">Gunakan kode pemulihan yang dicatat waktu setup awal buat bikin passphrase harian baru.</p>
+
+    {% csrf_token %}
+
+    <div id="langkah-kode" class="chat-form">
+      <input type="text" id="input-kode" placeholder="Kode pemulihan (mis. XK9M-2PQR-...)">
+      <button id="btn-buka">Buka</button>
+      <p id="error-kode" class="chat-error-text"></p>
+    </div>
+
+    <div id="langkah-passphrase-baru" style="display:none;">
+      <p class="chat-panel-desc">Kode benar. Sekarang buat passphrase harian baru:</p>
+      <div class="chat-form">
+        <input type="password" id="passphrase-baru1" placeholder="Passphrase baru (min. 12 karakter)">
+        <input type="password" id="passphrase-baru2" placeholder="Ulangi passphrase baru">
+        <button id="btn-lanjut-recovery">Lanjut: Buat Kode Pemulihan Baru</button>
+      </div>
+    </div>
+
+    <div id="langkah-recovery-baru" style="display:none;">
+      <div class="chat-recovery-box">
+        <div class="label">Kode pemulihan baru kamu (catat/cetak sekarang, kode lama sudah tidak berlaku):</div>
+        <div class="chat-recovery-code" id="kode-recovery-baru"></div>
+      </div>
+
+      <label class="chat-checkbox-row">
+        <input type="checkbox" id="konfirmasi-dicatat-baru">
+        Saya sudah mencatat/mencetak kode ini
+      </label>
+
+      <div class="chat-form">
+        <button id="btn-simpan-baru" disabled>Simpan Passphrase Baru</button>
+      </div>
+    </div>
+
+    <p id="hasil" class="chat-result-text"></p>
+  </div>
+</div>
+
+<script src="{% static 'js/e2ee.js' %}"></script>
+<script>
+const WRAPPED_PRIVATE_KEY_RECOVERY = {{ wrapped_private_key_recovery|safe }};
+
+function csrftoken() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+let _recoveredPrivateKey = null;
+let _newWrappedPassphrase = null;
+let _newRecoveryCode = null;
+
+document.getElementById('btn-buka').addEventListener('click', async () => {
+  const kode = document.getElementById('input-kode').value.trim();
+  try {
+    _recoveredPrivateKey = await E2EE.unwrapPrivateKeyWithPassphrase(WRAPPED_PRIVATE_KEY_RECOVERY, kode);
+  } catch (e) {
+    document.getElementById('error-kode').textContent = 'Kode pemulihan salah.';
+    return;
+  }
+  document.getElementById('langkah-kode').style.display = 'none';
+  document.getElementById('langkah-passphrase-baru').style.display = 'block';
+});
+
+document.getElementById('btn-lanjut-recovery').addEventListener('click', async () => {
+  const p1 = document.getElementById('passphrase-baru1').value;
+  const p2 = document.getElementById('passphrase-baru2').value;
+
+  if (p1.length < 12) { alert('Passphrase minimal 12 karakter.'); return; }
+  if (p1 !== p2) { alert('Passphrase tidak sama.'); return; }
+
+  _newWrappedPassphrase = await E2EE.wrapPrivateKeyWithPassphrase(_recoveredPrivateKey, p1);
+  _newRecoveryCode = E2EE.generateRecoveryCode();
+
+  document.getElementById('kode-recovery-baru').textContent = _newRecoveryCode;
+  document.getElementById('langkah-passphrase-baru').style.display = 'none';
+  document.getElementById('langkah-recovery-baru').style.display = 'block';
+});
+
+document.getElementById('konfirmasi-dicatat-baru').addEventListener('change', (e) => {
+  document.getElementById('btn-simpan-baru').disabled = !e.target.checked;
+});
+
+document.getElementById('btn-simpan-baru').addEventListener('click', async () => {
+  const newWrappedRecovery = await E2EE.wrapPrivateKeyWithPassphrase(_recoveredPrivateKey, _newRecoveryCode);
+
+  const res = await fetch("{% url 'chat_pemulihan_kunci' %}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken() },
+    body: JSON.stringify({
+      wrapped_private_key: _newWrappedPassphrase,
+      wrapped_private_key_recovery: newWrappedRecovery,
+    }),
+  });
+
+  if (res.ok) {
+    document.getElementById('langkah-recovery-baru').style.display = 'none';
+    document.getElementById('hasil').textContent = 'Selesai. Passphrase & kode pemulihan sudah diperbarui.';
+  } else {
+    document.getElementById('hasil').textContent = 'Gagal menyimpan, coba lagi.';
+  }
+});
+</script>
+{% endblock %}

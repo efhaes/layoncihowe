@@ -1,160 +1,391 @@
-  {% extends "partials/base.html" %}
-  {% load static %}
+{% extends "partials/base.html" %}
+{% load static %}
 
-  {% block title %}
-    Daftar Pengumuman | Desa
-  {% endblock %}
+{% block title %}
+Daftar Pengumuman | Desa Cihowe
+{% endblock %}
 
-  {% block css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/pengumuman.css' %}">
-  {% endblock %}
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/pengumuman.css' %}">
+{% endblock %}
 
-  {% block content %}
-  <div id="vanta"></div>
-  <section class="container pengumuman-section" data-aos="fade-down">
-    <h2>Daftar Pengumuman</h2>
+{% block content %}
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section class="announcement-hero">
+  <div class="announcement-hero-overlay"></div>
+
+  <div class="container announcement-hero-content">
+
+    <div class="announcement-hero-text">
+      <span class="announcement-hero-badge">
+        <i class="fa-solid fa-bullhorn"></i>
+        Informasi Desa
+      </span>
+
+      <h1>Pengumuman Desa Cihowe</h1>
+
+      <p>
+        Informasi resmi mengenai kegiatan, pelayanan,
+        pemberitahuan dan agenda Pemerintah Desa Cihowe.
+      </p>
+    </div>
+
+    <div class="announcement-hero-icon">
+      <i class="fa-solid fa-bullhorn"></i>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     MADING PENGUMUMAN
+========================================================= -->
+<section class="mading-section">
+
+  <div class="container">
 
     {% if announcements %}
-      {% for a in announcements %}
-        <div class="announcement p-4 my-4 shadow" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
-          <h3>{{ a.title }}</h3>
+    <div class="mading-board">
+      <!-- ===================================================
+           GRID CARD
+      ==================================================== -->
+      <div class="mading-grid">
 
-          {% if a.images.all %}
-            <div class="image-scroll-container my-3" data-aos="fade-left" data-aos-delay="{{ forloop.counter0|add:'1' }}50">
+        {% for a in announcements %}
+
+        <article class="mading-card">
+
+          <!-- Pin -->
+          <span class="mading-pin">
+            <i class="fa-solid fa-thumbtack"></i>
+          </span>
+
+
+          <!-- ===============================
+               POSTER / FOTO
+          ================================ -->
+          <div class="mading-card-image">
+
+            {% if a.images.all %}
+
               {% for img in a.images.all %}
-                <img src="{{ img.image.url }}" alt="Gambar {{ a.title }}" class="rounded" style="max-height: 120px;">
+
+                {% if forloop.first %}
+                  <img
+                    src="{{ img.image.url }}"
+                    alt="{{ a.title }}"
+                    loading="lazy"
+                  >
+                {% endif %}
+
               {% endfor %}
+
+            {% else %}
+
+              <!-- Placeholder jika tidak ada poster -->
+              <div class="mading-image-placeholder">
+
+                <div class="placeholder-icon">
+                  <i class="fa-solid fa-bullhorn"></i>
+                </div>
+
+                <span>PENGUMUMAN</span>
+
+                <strong>
+                  PEMERINTAH<br>
+                  DESA CIHOWE
+                </strong>
+
+                <small>
+                  Informasi resmi untuk masyarakat
+                </small>
+
+              </div>
+
+            {% endif %}
+
+
+            <!-- Badge tanggal -->
+            <div class="poster-date">
+              <span class="poster-date-day">
+                {{ a.published_at|date:"d" }}
+              </span>
+
+              <div>
+                <strong>
+                  {{ a.published_at|date:"M" }}
+                </strong>
+
+                <small>
+                  {{ a.published_at|date:"Y" }}
+                </small>
+              </div>
             </div>
-          {% else %}
-            <p class="text-muted fst-italic">Tidak ada gambar untuk pengumuman ini.</p>
-          {% endif %}
 
-          <p>{{ a.content|truncatewords:20 }}</p>
-          <small class="text-light">{{ a.published_at|date:"d M Y" }}</small>
-
-          <div class="mt-3">
-            <button class="btn btn-outline-light btn-sm lihat-detail-btn"
-                    data-url="{% url 'announcement_ajax_detail' a.pk %}">
-              <i class="fas fa-eye"></i> Lihat lebih lengkap
-            </button>
           </div>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="text-center text-light" data-aos="fade-up">Belum ada pengumuman.</p>
-    {% endif %}
-  </section>
 
-  <!-- Modal AJAX -->
-  <div class="modal fade" id="announcementModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content" id="modalContent">
-        <!-- AJAX content will be injected here -->
+
+          <!-- ===============================
+               BODY CARD
+          ================================ -->
+          <div class="mading-card-body">
+
+            <span class="mading-category">
+              <i class="fa-solid fa-bullhorn"></i>
+              Pengumuman Desa
+            </span>
+
+            <h3>
+              {{ a.title }}
+            </h3>
+
+            <p>
+              {{ a.content|striptags|truncatewords:16 }}
+            </p>
+
+          </div>
+
+
+          <!-- ===============================
+               FOOTER CARD
+          ================================ -->
+          <div class="mading-card-footer">
+
+            <div class="mading-date">
+              <i class="fa-regular fa-calendar"></i>
+              {{ a.published_at|date:"d F Y" }}
+            </div>
+
+            <button
+              type="button"
+              class="mading-detail-btn lihat-detail-btn"
+              data-url="{% url 'announcement_ajax_detail' a.pk %}"
+            >
+              Selengkapnya
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+          </div>
+
+        </article>
+
+        {% endfor %}
+
       </div>
+
     </div>
+    {% else %}
+
+    <!-- =====================================================
+         EMPTY STATE
+    ====================================================== -->
+    <div class="mading-empty">
+
+      <div class="mading-empty-icon">
+        <i class="fa-solid fa-bell-slash"></i>
+      </div>
+
+      <h3>Belum Ada Pengumuman</h3>
+
+      <p>
+        Saat ini belum ada informasi terbaru dari
+        Pemerintah Desa Cihowe.
+      </p>
+
+      <span>
+        Silakan pantau halaman ini secara berkala.
+      </span>
+
+    </div>
+
+    {% endif %}
+
   </div>
-  {% endblock %}
 
-  {% block javascripts %}
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</section>
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
 
-    <script>
-      // VANTA Background
-      let vantaEffect = VANTA.DOTS({
-        el: "#vanta",
-        mouseControls: false,
-        touchControls: false,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0xffffff,
-        backgroundColor: 0x000000,
-        size: 2.00,
-        spacing: 25.00,
-        showLines: false
-        
-      });
+<!-- =========================================================
+     MODAL AJAX DETAIL
+========================================================= -->
+<div
+  class="modal fade"
+  id="announcementModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
 
-      // Ganti warna titik otomatis
-      setInterval(() => {
-        const randomColor = Math.floor(Math.random() * 0xffffff);
-        vantaEffect.setOptions({ color: randomColor });
-      }, 3000);
+    <div
+      class="modal-content"
+      id="modalContent"
+    >
+      <!-- AJAX content -->
+    </div>
 
-      // AOS Init
-      AOS.init();
-
-      // AJAX Modal
-      $(document).ready(function () {
-        $('.lihat-detail-btn').on('click', function (e) {
-          e.preventDefault();
-          const url = $(this).data('url');
-
-          if (!url) {
-            alert("URL tidak tersedia.");
-            return;
-          }
-            
-          $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            beforeSend: function () {
-              $('#modalContent').html('<div class="text-center p-5 text-white">Memuat...</div>');
-            },
-            success: function (response) {
-              $('#modalContent').html(response.html);
-              const modal = new bootstrap.Modal(document.getElementById('announcementModal'));
-              modal.show();
-            },
-            error: function (xhr, status, error) {
-              console.error("AJAX Error:", status, error);
-              alert("Gagal memuat detail pengumuman.");
-            }
-          });
-        });
-      });
-    </script>
-
-<!-- Modal Zoom Gambar -->
-<div id="imgModal" class="img-modal">
-  <span class="img-close">&times;</span>
-  <img class="img-modal-content" id="modalFullImg">
+  </div>
 </div>
 
+
+<!-- =========================================================
+     MODAL ZOOM GAMBAR
+========================================================= -->
+<div id="imgModal" class="img-modal">
+
+  <span class="img-close">
+    &times;
+  </span>
+
+  <img
+    class="img-modal-content"
+    id="modalFullImg"
+    alt="Preview Pengumuman"
+  >
+
+</div>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <script>
-  
-  // Zoom gambar dari AJAX modal
-  document.addEventListener('click', function (e) {
-    if (e.target.matches('.modal-body img')) {
-      const modal = document.getElementById("imgModal");
-      const modalImg = document.getElementById("modalFullImg");
-      modal.style.display = "block";
-      modalImg.src = e.target.src;
+$(document).ready(function () {
+
+  $('.lihat-detail-btn').on('click', function (e) {
+
+    e.preventDefault();
+
+    const url = $(this).data('url');
+
+    if (!url) {
+      alert("URL tidak tersedia.");
+      return;
     }
+
+    $.ajax({
+
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+
+      beforeSend: function () {
+
+        $('#modalContent').html(`
+          <div class="modal-loading">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Memuat pengumuman...</span>
+          </div>
+        `);
+
+      },
+
+      success: function (response) {
+
+        $('#modalContent').html(response.html);
+
+        const modal = new bootstrap.Modal(
+          document.getElementById('announcementModal')
+        );
+
+        modal.show();
+
+      },
+
+      error: function (xhr, status, error) {
+
+        console.error(
+          "AJAX Error:",
+          status,
+          error
+        );
+
+        alert(
+          "Gagal memuat detail pengumuman."
+        );
+
+      }
+
+    });
+
   });
 
-  // Close modal zoom
-  document.querySelector(".img-close").onclick = function () {
-    document.getElementById("imgModal").style.display = "none";
-  };
-
-  // Klik di luar gambar juga nutup modal
-  document.getElementById("imgModal").onclick = function (e) {
-    if (e.target === this) {
-      this.style.display = "none";
-    }
-  };
+});
 </script>
 
-  {% endblock %}
+
+<script>
+document.addEventListener(
+  'click',
+  function (e) {
+
+    if (e.target.matches('.ig-post-media img')) {
+
+      const modal =
+        document.getElementById("imgModal");
+
+      const modalImg =
+        document.getElementById("modalFullImg");
+
+      modal.style.display = "flex";
+      modalImg.src = e.target.src;
+
+    }
+
+  }
+);
+
+
+/* Tutup tombol X */
+document.querySelector(
+  ".img-close"
+).onclick = function () {
+
+  document.getElementById(
+    "imgModal"
+  ).style.display = "none";
+
+};
+
+
+/* Tutup ketika klik background */
+document.getElementById(
+  "imgModal"
+).onclick = function (e) {
+
+  if (e.target === this) {
+    this.style.display = "none";
+  }
+
+};
+
+
+/* Tutup pakai ESC */
+document.addEventListener(
+  "keydown",
+  function (e) {
+
+    if (e.key === "Escape") {
+
+      document.getElementById(
+        "imgModal"
+      ).style.display = "none";
+
+    }
+
+  }
+);
+</script>
+
+{% endblock %}

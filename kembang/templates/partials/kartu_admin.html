@@ -10,38 +10,35 @@
 }
 
 .card {
-  background: #ffffff1a;
+  background-color: rgba(0, 20, 40, 0.45); /* transparan gelap */
+  border: 1px solid rgba(0, 255, 255, 0.15);
   backdrop-filter: blur(8px);
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow:
-    0 0 12px rgba(0, 240, 255, 0.25),
-    0 0 24px rgba(0, 240, 255, 0.15),
-    0 6px 16px rgba(0, 0, 0, 0.2);
+    0 0 12px rgba(0, 238, 255, 0.51);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   max-width: 250px;
-  color: #00f0ff;
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgb(0, 0, 0); /* kontras bayangan gelap */
 }
 
 .card:hover {
   transform: translateY(-6px);
   box-shadow:
-    0 0 20px rgba(0, 240, 255, 0.35),
-    0 0 32px rgba(0, 240, 255, 0.25),
-    0 10px 24px rgba(0, 0, 0, 0.4);
+    0 0 20px rgb(0, 238, 255);
 }
 
 .card h2 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color:#FFFFFF;
- text-shadow:
-    0 0 6px rgba(0, 240, 255, 0.6),
-    0 0 12px rgba(0, 240, 255, 0.5),
-    0 0 18px rgba(0, 240, 255, 0.3);
+  color: #FFFFFF;
+    text-shadow:
+    0 1px 3px rgb(0, 0, 0), /* bayangan gelap lembut */
+    0 0 6px rgb(0, 0, 0);   /* efek tambahan glow ringan */
+    
 }
 
 .card p {
@@ -55,16 +52,16 @@
 .card .button {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: #005b9e;
-  color: white;
+  background: rgba(0, 255, 123, 0.1);
+  color: #ffffff;
   text-decoration: none;
   border-radius: 8px;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 8px rgba(0, 91, 158, 0.5);
+  box-shadow: 0 0 8px rgb(0, 158, 97);
 }
 
 .card .button:hover {
-  background-color: #003f70;
+  background-color:rgb(36, 199, 3);
   box-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
 }
 
@@ -90,62 +87,103 @@
 
 
 <div class="card-container">
-  <div class="card" data-aos="zoom-in" data-aos-delay="0">
+  <div class="card" data-aos="zoom-in" data-aos-delay="0" style="position: relative;">
     <h2>✉️ Surat Kelahiran</h2>
+    {% if notifikasi.kelahiran > 0 %}
+      <span class="notif-badge">{{ notifikasi.kelahiran }}</span>
+    {% endif %}
     <p>{{ akta_kelahiran.count }}</p>
     <a href="{% url 'daftar_pengajuan_kelahiran' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="100">
+  <div class="card" data-aos="zoom-in" data-aos-delay="100" style="position: relative;">
     <h2>✉️ Surat Kematian</h2>
+    {% if notifikasi.kematian > 0 %}
+      <span class="notif-badge">{{ notifikasi.kematian }}</span>
+    {% endif %}
     <p>{{ akta_kematian.count }}</p>
     <a href="{% url 'daftar_pengajuan_akta_kematian' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="100">
+  <div class="card" data-aos="zoom-in" data-aos-delay="100" style="position: relative;">
     <h2>✉️ Pindah Datang</h2>
+    {% if notifikasi.pindah > 0 %}
+      <span class="notif-badge">{{ notifikasi.pindah }}</span>
+    {% endif %}
     <p>{{ pindah_datang.count }}</p>
     <a href="{% url 'daftar_pengajuan_pindah_datang' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="200">
+  <div class="card" data-aos="zoom-in" data-aos-delay="200" style="position: relative;">
     <h2>✉️ SKDU</h2>
+    {% if notifikasi.skdu > 0 %}
+      <span class="notif-badge">{{ notifikasi.skdu }}</span>
+    {% endif %}
     <p>{{ pindah_keluar.count }}</p>
     <a href="{% url 'daftar_pengajuan_skdu' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="400">
+  <div class="card" data-aos="zoom-in" data-aos-delay="400" style="position: relative;">
     <h2>✉️ SKU</h2>
+    {% if notifikasi.sku > 0 %}
+      <span class="notif-badge">{{ notifikasi.sku }}</span>
+    {% endif %}
     <p>{{ sku.count }}</p>
     <a href="{% url 'daftar_sku' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="500">
+  <div class="card" data-aos="zoom-in" data-aos-delay="500" style="position: relative;">
     <h2>✉️ Surat Domisili</h2>
+    {% if notifikasi.domisili > 0 %}
+      <span class="notif-badge">{{ notifikasi.domisili }}</span>
+    {% endif %}
     <p>{{ domisili.count }}</p>
     <a href="{% url 'daftar_domisili' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="600">
+  <div class="card" data-aos="zoom-in" data-aos-delay="600" style="position: relative;">
     <h2>✉️ SKTM</h2>
+    {% if notifikasi.sktm > 0 %}
+      <span class="notif-badge">{{ notifikasi.sktm }}</span>
+    {% endif %}
     <p>{{ sktm.count }}</p>
     <a href="{% url 'daftar_pengajuan_sktm' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="600">
+  <div class="card" data-aos="zoom-in" data-aos-delay="600" style="position: relative;">
     <h2>✉️ Surat Pengantar KK</h2>
+    {% if notifikasi.kk > 0 %}
+      <span class="notif-badge">{{ notifikasi.kk }}</span>
+    {% endif %}
     <p>{{ kk.count }}</p>
     <a href="{% url 'daftar_kk' %}" class="button">Lihat Detail</a>
   </div>
 
-  <div class="card" data-aos="zoom-in" data-aos-delay="600">
+  <div class="card" data-aos="zoom-in" data-aos-delay="600" style="position: relative;">
     <h2>✉️ Surat Pengantar KTP</h2>
+    {% if notifikasi.ktp > 0 %}
+      <span class="notif-badge">{{ notifikasi.ktp }}</span>
+    {% endif %}
     <p>{{ ktp.count }}</p>
     <a href="{% url 'daftar_ktp' %}" class="button">Lihat Detail</a>
   </div>
-  
-  <div class="card" data-aos="zoom-in" data-aos-delay="700">
-    <h2>📂 Semua Pengajuan</h2>
-    <a href="{% url 'semua_pengajuan' %}" class="button">Lihat Detail</a>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="700" style="position: relative;">
+    <h2>✉️ Surat Lainnya</h2>
+    {% if notifikasi.lainnya > 0 %}
+      <span class="notif-badge">{{ notifikasi.lainnya }}</span>
+    {% endif %}
+    <p>{{ lainnya.count }}</p>
+    <a href="{% url 'daftar_surat_lainnya' %}" class="button">Lihat Detail</a>
   </div>
+
+  <div class="card" data-aos="zoom-in" data-aos-delay="700" style="position: relative;">
+  <h2>📂 Semua Pengajuan</h2>
+
+  {% if notifikasi.total > 0 %}
+    <span class="notif-badge">{{ notifikasi.total }}</span>
+  {% endif %}
+
+  <a href="{% url 'semua_pengajuan' %}" class="button">Lihat Detail</a>
 </div>
+

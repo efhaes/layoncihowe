@@ -1,0 +1,115 @@
+{% extends 'partials/base_admin.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+<div class="chat-panel-wrap">
+  <div class="chat-panel">
+    <div class="chat-panel-icon">
+      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    </div>
+    <h3>Setup Kunci Enkripsi Kantor Desa</h3>
+
+    <div class="chat-panel-warning">
+      Ini dilakukan <strong>SEKALI SEUMUR HIDUP PROYEK</strong>. Ada 2 hal yang akan dibuat: <strong>passphrase harian</strong> (dipakai buka chat sehari-hari) dan <strong>kode pemulihan</strong> (cadangan kalau passphrase harian lupa). Kalau KEDUANYA hilang, histori chat desa tidak akan bisa dibuka lagi selamanya.
+    </div>
+
+    {% csrf_token %}
+
+    <div id="langkah-passphrase" class="chat-form">
+      <input type="password" id="passphrase1" placeholder="Buat passphrase harian (min. 12 karakter)">
+      <input type="password" id="passphrase2" placeholder="Ulangi passphrase">
+      <button id="btn-generate">Lanjut: Buat Kode Pemulihan</button>
+    </div>
+
+    <div id="langkah-recovery" style="display:none;">
+      <div class="chat-recovery-box">
+        <div class="label">Kode pemulihan kamu (catat/cetak sekarang, ini cuma tampil sekali):</div>
+        <div class="chat-recovery-code" id="kode-recovery"></div>
+      </div>
+
+      <div class="chat-recovery-notice">
+        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>
+        <span>Simpan di tempat fisik &amp; offline — map arsip kantor, brankas, dsb. JANGAN cuma discreenshot di HP yang sama dipakai buka chat.</span>
+      </div>
+
+      <label class="chat-checkbox-row">
+        <input type="checkbox" id="konfirmasi-dicatat">
+        Saya sudah mencatat/mencetak kode ini
+      </label>
+
+      <div class="chat-form">
+        <button id="btn-simpan" disabled>Simpan &amp; Selesaikan Setup</button>
+      </div>
+    </div>
+
+    <p id="hasil" class="chat-result-text"></p>
+  </div>
+</div>
+
+<script src="{% static 'js/e2ee.js' %}"></script>
+<script>
+function csrftoken() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+let _keyPair = null;
+let _wrappedPassphrase = null;
+let _recoveryCode = null;
+
+document.getElementById('btn-generate').addEventListener('click', async () => {
+  const p1 = document.getElementById('passphrase1').value;
+  const p2 = document.getElementById('passphrase2').value;
+
+  if (p1.length < 12) { alert('Passphrase minimal 12 karakter.'); return; }
+  if (p1 !== p2) { alert('Passphrase tidak sama.'); return; }
+
+  _keyPair = await E2EE.generateKeypair();
+  _wrappedPassphrase = await E2EE.wrapPrivateKeyWithPassphrase(_keyPair.privateKey, p1);
+  _recoveryCode = E2EE.generateRecoveryCode();
+
+  document.getElementById('kode-recovery').textContent = _recoveryCode;
+  document.getElementById('langkah-passphrase').style.display = 'none';
+  document.getElementById('langkah-recovery').style.display = 'block';
+});
+
+document.getElementById('konfirmasi-dicatat').addEventListener('change', (e) => {
+  document.getElementById('btn-simpan').disabled = !e.target.checked;
+});
+
+document.getElementById('btn-simpan').addEventListener('click', async (e) => {
+  const btn = e.target;
+  btn.disabled = true;
+  btn.textContent = 'Menyimpan...';
+  try {
+    const publicKeyJwk = await E2EE.exportPublicKeyJwk(_keyPair);
+    const wrappedRecovery = await E2EE.wrapPrivateKeyWithPassphrase(_keyPair.privateKey, _recoveryCode);
+
+    const res = await fetch("{% url 'chat_setup_kunci_desa' %}", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken() },
+      body: JSON.stringify({
+        public_key_jwk: publicKeyJwk,
+        wrapped_private_key: _wrappedPassphrase,
+        wrapped_private_key_recovery: wrappedRecovery,
+      }),
+    });
+
+    if (res.ok) {
+      document.getElementById('langkah-recovery').style.display = 'none';
+      document.getElementById('hasil').textContent = 'Setup selesai. Kode pemulihan sudah tidak ditampilkan lagi.';
+    } else if (res.status === 403) {
+      document.getElementById('hasil').textContent = 'Kunci kantor sudah ada — kemungkinan setup sebelumnya sudah berhasil. Cek halaman chat admin.';
+    } else {
+      document.getElementById('hasil').textContent = `Gagal (status ${res.status}), coba lagi.`;
+      btn.disabled = false;
+      btn.textContent = 'Simpan & Selesaikan Setup';
+    }
+  } catch (err) {
+    document.getElementById('hasil').textContent = 'Terjadi error jaringan, coba lagi.';
+    btn.disabled = false;
+    btn.textContent = 'Simpan & Selesaikan Setup';
+  }
+});
+</script>
+{% endblock %}

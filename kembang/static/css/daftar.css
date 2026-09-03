@@ -1,0 +1,377 @@
+/* =========================================================
+   Desa Cihowe — Daftar Pengajuan Surat Kelahiran (Admin)
+   Konsep: "Buku Register" — nomor urut ledger + status
+   bergaya cap/stempel resmi, bukan pill badge generik.
+   Pakai token warna dari base.css + admin_layout.css.
+   ========================================================= */
+
+/* ===== Header halaman: judul + hitung catatan ===== */
+.register-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 3px double var(--border);
+  flex-wrap: wrap;
+}
+
+.register-header .section-eyebrow {
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.register-header h2 {
+  font-family: 'Bitter', serif;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.65rem;
+  margin: 0 0 0.4rem;
+}
+
+.admin-dash-sub {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 46ch;
+}
+
+.register-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--accent-soft);
+}
+
+
+/* ===== Search bar — reusable di semua halaman daftar pengajuan ===== */
+.register-search {
+  position: relative;
+  max-width: 340px;
+  margin-bottom: 1.25rem;
+}
+ 
+.register-search i {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+ 
+.register-search input {
+  width: 100%;
+  padding: 0.6rem 0.9rem 0.6rem 2.3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+ 
+.register-search input:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+}
+ 
+.register-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.register-count-value {
+  font-family: 'Bitter', serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--primary);
+}
+
+.register-count-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-top: 0.15rem;
+}
+
+/* ===== Wrapper tabel ===== */
+.table-wrapper {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem 1.5rem 1rem;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+/* ===== Tabel gaya ledger ===== */
+table.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ledger-table th {
+  font-family: 'Bitter', serif;
+  text-align: left;
+  padding: 1rem 1rem 0.75rem;
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--primary);
+}
+
+.ledger-table th.col-no { width: 60px; }
+.ledger-table th.col-aksi { text-align: right; }
+
+.ledger-row {
+  border-bottom: 1px dashed var(--border);
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s ease, border-left-color 0.15s ease;
+}
+
+.ledger-row:hover {
+  background-color: var(--bg);
+}
+
+.ledger-row td {
+  padding: 0.9rem 1rem;
+  color: var(--text);
+  font-size: 0.92rem;
+  vertical-align: middle;
+}
+
+.ledger-index {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.nama-cell {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.tanggal-cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Garis aksen kiri per status, biar bisa di-scan cepat tanpa baca teks */
+.status-line-menunggu, .status-line-diproses, .status-line-pending {
+  border-left-color: #C9A227;
+}
+.status-line-disetujui, .status-line-selesai, .status-line-approved {
+  border-left-color: var(--secondary);
+}
+.status-line-ditolak, .status-line-rejected {
+  border-left-color: #B3261E;
+}
+
+.empty-row {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 3rem 0 !important;
+  font-size: 0.9rem;
+}
+.empty-row i {
+  display: block;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  color: var(--border);
+}
+
+/* ===== Status "stempel" — bukan pill generik ===== */
+.stempel {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1.5px dashed currentColor;
+  border-radius: 4px;
+  transform: rotate(-2deg);
+  background: transparent;
+}
+
+.stempel-menunggu, .stempel-diproses, .stempel-pending {
+  color: #9C6B00;
+}
+.stempel-disetujui, .stempel-selesai, .stempel-approved {
+  color: var(--secondary);
+}
+.stempel-ditolak, .stempel-rejected {
+  color: #B3261E;
+}
+
+/* ===== Aksi ===== */
+.aksi-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ledger-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--secondary);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-left: 1rem;
+}
+.ledger-action:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.ledger-action i { font-size: 0.78rem; }
+
+.ledger-action-danger {
+  color: #B3261E;
+}
+.ledger-action-danger:hover {
+  color: #8C1D17;
+}
+
+/* ===== Modal konfirmasi hapus ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background-color: rgba(28, 42, 34, 0.45);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.modal-buttons button {
+  padding: 0.55rem 1.6rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.modal-buttons button:first-child {
+  background-color: #B3261E;
+  color: var(--white);
+}
+.modal-buttons button:first-child:hover {
+  background-color: #8C1D17;
+}
+
+.modal-buttons button:last-child {
+  background-color: transparent;
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+}
+.modal-buttons button:last-child:hover {
+  background-color: var(--accent-soft);
+}
+
+/* ===== Versi mobile ===== */
+.mobile-table { display: none; }
+
+@media (max-width: 768px) {
+  .table-wrapper { display: none !important; }
+  .mobile-table { display: block; }
+
+  .register-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .register-header h2 { font-size: 1.35rem; }
+  .register-count { align-self: flex-end; margin-top: -3.5rem; }
+
+  .mobile-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mobile-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+  }
+
+  .mobile-nama {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .mobile-tanggal {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .mobile-aksi {
+    display: flex;
+    gap: 1.25rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.65rem;
+  }
+  .mobile-aksi a {
+    color: var(--secondary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .mobile-aksi a:last-child { color: #B3261E; }
+
+  .modal-buttons button {
+    padding: 0.5rem 1.4rem;
+    font-size: 0.85rem;
+  }
+}

@@ -1,91 +1,174 @@
-{% extends "partials/base.html" %}
+{% extends "partials/base_admin.html" %}
 {% load static %}
 
-{% block title %}Daftar Pengajuan Surat{% endblock %}
+{% block title %}Semua Pengajuan{% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/semua_pengajuan.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
+<link rel="stylesheet" href="{% static 'css/semua_pengajuan.css' %}">
 {% endblock %}
 
 {% block content %}
-  <div id="vanta"></div>  <!-- Vanta di luar content supaya background -->
 
-  <div class="content">
-    <h1>Daftar Pengajuan Surat</h1>
+{% if messages %}
+  <div class="messages" style="margin-bottom: 1.5rem;">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}" style="background: var(--card); border: 1px solid var(--border); border-left: 4px solid {% if message.tags == 'error' %}#B3261E{% else %}var(--secondary){% endif %}; border-radius: var(--radius-sm); padding: 0.85rem 1.1rem; color: var(--text); font-weight: 600; font-size: 0.9rem;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
-    <div class="card-container">
-   {% for surat in semua_surat %}
-  <div class="card mb-3">
-    <div class="card-header">
-      <strong>{{ surat.jenis_surat }}</strong>
-    </div>
-    <div class="card-body">
-      {% if surat.nama_lengkap %}
-        <p>Nama: {{ surat.nama_lengkap }}</p>
-      {% elif surat.nama %}
-        <p>Nama: {{ surat.nama }}</p>
-      {% elif surat.nama_pemilik %}
-        <p>Nama: {{ surat.nama_pemilik }}</p>
-      {% elif surat.nama_jenazah %}
-        <p>Nama: {{ surat.nama_jenazah }}</p>
-      {% else %}
-        <p>Nama: Tidak tersedia</p>
-      {% endif %}
+<div class="register-header">
+  <div>
+    <div class="section-eyebrow">Buku Register</div>
+    <h2>Semua Pengajuan Surat</h2>
+    <p class="admin-dash-sub">Rekap seluruh pengajuan dari semua jenis surat dalam satu tampilan.</p>
+  </div>
+  <div class="register-count">
+    <span class="register-count-value">{{ semua_surat|length }}</span>
+    <span class="register-count-label">Catatan</span>
+  </div>
+</div>
 
-      <p>Status: {{ surat.status }}</p>
-      <p>No WhatsApp: {{ surat.no_whatsapp }}</p>
-      <p>Tanggal: {{ surat.tanggal_pengajuan|date:"d F Y, H:i" }}</p>
+<!-- Kartu filter Tahun Pengajuan -->
+<div class="tahun-filter-row">
+  <a href="{% url 'semua_pengajuan' %}"
+     class="tahun-card {% if not tahun_dipilih %}tahun-card-active{% endif %}">
+    Semua Tahun
+  </a>
+  {% for tahun in tahun_list %}
+  <a href="?tahun={{ tahun }}"
+     class="tahun-card {% if tahun_dipilih == tahun %}tahun-card-active{% endif %}">
+    {{ tahun }}
+  </a>
+  {% endfor %}
+</div>
 
-      {% if surat.alamat %}
-        <p>Alamat: {{ surat.alamat }}</p>
-      {% elif surat.alamat_lengkap %}
-        <p>Alamat: {{ surat.alamat_lengkap }}</p>
-      {% elif surat.alamat_usaha %}
-        <p>Alamat: {{ surat.alamat_usaha }}</p>
-      {% else %}
-        <p>Alamat: Tidak tersedia</p>
-      {% endif %}
-    </div>
+<div class="register-search">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" class="ledger-search-input" placeholder="Cari nama atau jenis surat...">
+</div>
+
+<div style="margin-bottom: 1.5rem;">
+  <button class="btn-hapus-semua" onclick="openDeleteAllModal()">
+    <i class="fa-solid fa-trash-can"></i> Hapus Semua Pengajuan
+  </button>
+</div>
+
+{% if semua_surat %}
+  <div class="mixed-card-container">
+    {% for surat in semua_surat %}
+  <div class="mixed-card" data-search="{{ surat.jenis_surat|lower }} {{ surat.nama_display|lower }} {{ surat.nik_display }}">
+    <button onclick="openDeleteModal('{{ surat.model_name }}', {{ surat.id }})" class="btn-delete" title="Hapus Pengajuan">
+      <i class="fa-solid fa-trash"></i>
+    </button>
+
+    <span class="jenis-tag">{{ surat.jenis_surat }}</span>
+
+    <p><strong>Nama:</strong> {{ surat.nama_display }}</p>
+    <p><strong>Status:</strong> <span class="stempel stempel-{{ surat.status }}">{{ surat.get_status_display }}</span></p>
+    <p><strong>No. WhatsApp:</strong> {{ surat.no_whatsapp|default:"-" }}</p>
+    <p><strong>Tanggal:</strong> {{ surat.tanggal_pengajuan|date:"d M Y, H:i" }}</p>
   </div>
 {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-row" style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+    <i class="fa-solid fa-inbox"></i>
+    {% if tahun_dipilih %}
+      Belum ada pengajuan di tahun {{ tahun_dipilih }}.
+    {% else %}
+      Belum ada pengajuan sama sekali.
+    {% endif %}
+  </div>
+{% endif %}
 
+<!-- Form tersembunyi untuk aksi hapus (POST) -->
+<form id="deleteSuratForm" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+<form id="deleteAllForm" method="post" action="{% url 'hapus_semua_pengajuan' %}" style="display:none;">
+  {% csrf_token %}
+</form>
 
+<!-- Modal: Hapus satu pengajuan -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <p>Yakin ingin menghapus data pengajuan ini?</p>
+    <div class="modal-buttons">
+      <button onclick="confirmDeleteSatu()">Ya, Hapus</button>
+      <button onclick="closeDeleteModal()" class="modal-btn-batal">Batal</button>
     </div>
   </div>
+</div>
+
+<!-- Modal: Hapus SEMUA pengajuan (peringatan keras) -->
+<div id="deleteAllModal" class="modal">
+  <div class="modal-content modal-danger">
+    <i class="fa-solid fa-triangle-exclamation modal-danger-icon"></i>
+    <p class="modal-danger-title">Hapus Semua Pengajuan?</p>
+    <p class="modal-danger-text">
+      Tindakan ini akan menghapus <strong>seluruh arsip data pengajuan</strong> dari semua jenis surat
+      dan <strong>tidak bisa dibatalkan</strong>. Semua riwayat pengajuan warga akan hilang permanen.
+      Apakah Anda benar-benar yakin?
+    </p>
+    <div class="modal-buttons">
+      <button onclick="confirmDeleteAll()" class="modal-btn-danger">Ya, Hapus Semua</button>
+      <button onclick="closeDeleteAllModal()" class="modal-btn-batal">Batal</button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block javascripts %}
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="{% static 'js/search.js' %}"></script>
 <script>
-  AOS.init({
-    duration: 800,
-    once: true,
-  });
-</script>
+  let selectedModel = null;
+  let selectedId = null;
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
-<script>
-  window.addEventListener('DOMContentLoaded', function () {
-    VANTA.DOTS({
-      el: "#vanta",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00,
-      color: 0xffffff,
-      backgroundColor: 0x000000,
-      size: 2.00,
-      spacing: 25.00,
-      showLines: true
+  // --- Modal hapus satu pengajuan ---
+  function openDeleteModal(model, id) {
+    selectedModel = model;
+    selectedId = id;
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    selectedModel = null;
+    selectedId = null;
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  function confirmDeleteSatu() {
+    if (selectedModel && selectedId) {
+      const form = document.getElementById('deleteSuratForm');
+      form.action = `/pengajuan/hapus/${selectedModel}/${selectedId}/`;
+      form.submit();
+    }
+  }
+
+  // --- Modal hapus semua pengajuan ---
+  function openDeleteAllModal() {
+    document.getElementById('deleteAllModal').style.display = 'flex';
+  }
+
+  function closeDeleteAllModal() {
+    document.getElementById('deleteAllModal').style.display = 'none';
+  }
+
+  function confirmDeleteAll() {
+    document.getElementById('deleteAllForm').submit();
+  }
+
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transition = 'opacity 0.4s ease';
+      setTimeout(() => el.remove(), 400);
     });
-  });
+  }, 4000);
 </script>
 {% endblock %}

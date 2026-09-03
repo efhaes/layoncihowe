@@ -1,0 +1,153 @@
+{% extends "partials/base_admin.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/daftar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  <div class="messages" style="margin-bottom: 1.5rem;">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}" style="background: var(--card); border: 1px solid var(--border); border-left: 4px solid {% if message.tags == 'error' %}#B3261E{% else %}var(--secondary){% endif %}; border-radius: var(--radius-sm); padding: 0.85rem 1.1rem; color: var(--text); font-weight: 600; font-size: 0.9rem;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="register-header">
+  <div>
+    <div class="section-eyebrow">Manajemen Akun</div>
+    <h2>Kelola Akun Warga</h2>
+    <p class="admin-dash-sub">Reset password warga yang lupa akunnya. NIK adalah username login mereka.</p>
+  </div>
+  <div class="register-count">
+    <span class="register-count-value">{{ warga|length }}</span>
+    <span class="register-count-label">Akun</span>
+  </div>
+</div>
+
+<div class="register-search">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" class="ledger-search-input" placeholder="Cari nama atau NIK...">
+</div>
+
+<div class="table-wrapper">
+  <table class="ledger-table">
+    <thead>
+      <tr>
+        <th class="col-no">No</th>
+        <th>Nama</th>
+        <th>NIK (Username)</th>
+        <th>Alamat</th>
+        <th class="col-aksi">Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in warga %}
+      <tr class="ledger-row" data-search="{{ w.nama|lower }} {{ w.user.username }}">
+        <td class="ledger-index">{{ forloop.counter }}</td>
+        <td class="nama-cell">{{ w.nama }}</td>
+        <td>{{ w.user.username }}</td>
+        <td>{{ w.alamat }}</td>
+        <td class="aksi-cell">
+          <a class="ledger-action" href="#" onclick="openResetPasswordModal({{ w.user.id }}, '{{ w.nama|escapejs }}'); return false;">
+            <i class="fa-solid fa-key"></i> Ganti Password
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="empty-row">
+          <i class="fa-solid fa-inbox"></i>
+          Belum ada akun warga terdaftar.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Versi mobile -->
+<div class="mobile-table">
+  {% for w in warga %}
+  <div class="mobile-row" data-search="{{ w.nama|lower }} {{ w.user.username }}">
+    <div class="mobile-row-top">
+      <span class="mobile-nama">{{ w.nama }}</span>
+    </div>
+    <div class="mobile-tanggal">NIK: {{ w.user.username }}</div>
+    <div class="mobile-aksi">
+      <a href="#" onclick="openResetPasswordModal({{ w.user.id }}, '{{ w.nama|escapejs }}'); return false;">
+        <i class="fa-solid fa-key"></i> Ganti Password
+      </a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="mobile-row">
+    <div class="empty-row">
+      <i class="fa-solid fa-inbox"></i>
+      Belum ada akun warga terdaftar.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Modal Reset Password -->
+<div id="resetPasswordModal" class="modal">
+  <div class="modal-content">
+    <p>Ganti password untuk <strong id="resetPasswordNama"></strong></p>
+    <form id="resetPasswordForm" method="post">
+      {% csrf_token %}
+      <div style="margin-bottom: 0.9rem; text-align: left;">
+        <label for="password_baru" style="display:block; font-size:0.78rem; font-weight:700; margin-bottom:0.3rem; color: var(--text-muted, #6b7280);">
+          Password Baru
+        </label>
+        <input type="password" name="password_baru" id="password_baru" required minlength="8"
+               style="width:100%; box-sizing:border-box; padding:0.6rem 0.8rem; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:0.9rem;">
+      </div>
+      <div style="margin-bottom: 1rem; text-align: left;">
+        <label for="password_konfirmasi" style="display:block; font-size:0.78rem; font-weight:700; margin-bottom:0.3rem; color: var(--text-muted, #6b7280);">
+          Konfirmasi Password Baru
+        </label>
+        <input type="password" name="password_konfirmasi" id="password_konfirmasi" required minlength="8"
+               style="width:100%; box-sizing:border-box; padding:0.6rem 0.8rem; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:0.9rem;">
+      </div>
+      <div class="modal-buttons">
+        <button type="submit">Simpan Password</button>
+        <button type="button" onclick="closeResetPasswordModal()">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="{% static 'js/search.js' %}"></script>
+
+<script>
+  function openResetPasswordModal(userId, nama) {
+    const form = document.getElementById('resetPasswordForm');
+    form.action = `/admin-desa/akun-warga/reset-password/${userId}/`;
+    document.getElementById('resetPasswordNama').textContent = nama;
+    document.getElementById('password_baru').value = '';
+    document.getElementById('password_konfirmasi').value = '';
+    document.getElementById('resetPasswordModal').style.display = 'flex';
+  }
+
+  function closeResetPasswordModal() {
+    document.getElementById('resetPasswordModal').style.display = 'none';
+  }
+
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transition = 'opacity 0.4s ease';
+      setTimeout(() => el.remove(), 400);
+    });
+  }, 4000);
+</script>
+{% endblock %}

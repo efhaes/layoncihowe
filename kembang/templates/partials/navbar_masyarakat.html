@@ -3,8 +3,8 @@
 <!-- ==== GLOWING NAVBAR ==== -->
 <nav>
   <div class="brand">
-    <img src="{% static 'img/logo tegar.png' %}" alt="Logo" class="logo-img">
-    Desa Sukasari
+    <img src="{% static 'img/logotegar.png' %}" alt="Logo" class="logo-img">
+    Desa Cihowe
   </div>
 
   <div class="nav-links">
@@ -21,6 +21,7 @@
 
     {% if user.is_authenticated and not user.is_superuser %}
       <a href="{% url 'cek_status' %}">Cek Status</a>
+      <a href="{% url 'chat_saya' %}">Chat</a>
     {% endif %}
 
     {% if user.is_authenticated and user.is_superuser %}

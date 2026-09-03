@@ -6,126 +6,564 @@ Tentang | Desa
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 <link rel="stylesheet" href="{% static 'css/tentang.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
-<!-- VANTA Background -->
-<div id="vanta"></div>
 
 <!-- Hero Section -->
-<section class="hero-section py-5 text-center" data-aos="fade-down">
-  <h1>Tentang Desa</h1>
-  <p>Membangun harmoni dan kemajuan bersama demi masa depan yang lebih cerah</p>
+<section class="hero-section text-center" data-aos="fade-up">
+  <h1>Tentang Desa Cihowe</h1>
+  <p>Membangun harmoni dan kemajuan bersama demi masa depan yang lebih cerah.</p>
 </section>
 
-<!-- Tentang Desa & Potensi -->
+<!-- Sejarah & Potensi -->
 <section id="tentang-desa" class="container about-section" data-aos="fade-up">
-  <div class="row g-4">
-    <!-- Tentang Desa -->
-    <div class="col-md-6">
+  <div class="row g-4 justify-content-center">
+
+    <div class="col-lg-6 col-md-6">
       <div class="card card-custom h-100">
-        <div class="card-header">Tentang Desa Sukasari</div>
+        <div class="card-header text-center">Sejarah Singkat</div>
         <div class="card-body">
-          <p>Desa Sukasari adalah salah satu desa yang terletak di Kecamatan <strong>Rumpin</strong>, Kabupaten <strong>Bogor</strong>. Desa Sukasari merupakan kesatuan masyarakat hukum dengan segala potensi sumber daya alam dan manusianya.</p>
+          <p>{{ tentang.sejarah_singkat|linebreaks }}</p>
         </div>
       </div>
     </div>
 
-    <!-- Potensi & Kearifan Lokal -->
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-6">
       <div class="card card-custom h-100">
-        <div class="card-header">Potensi & Kearifan Lokal</div>
+        <div class="card-header text-center">Potensi &amp; Kearifan Lokal</div>
         <div class="card-body">
-          <p>Potensi pertanian subur dengan hasil utama berupa padi dan sayuran. Keahlian masyarakat dalam kerajinan bambu dan anyaman khas daerah. Kearifan lokal terjaga lewat kesenian tradisional dan budaya gotong royong. Peternakan dan perikanan juga menjadi mata pencaharian utama warga.</p>
+          <p>{{ tentang.potensi_kearifan_lokal|linebreaks }}</p>
         </div>
       </div>
     </div>
+
   </div>
 </section>
 
 <!-- Visi & Misi -->
 <section id="visi-misi" class="container about-section" data-aos="fade-up">
   <div class="row g-4">
-    <!-- Visi -->
+
     <div class="col-12 col-md-6">
       <div class="card card-custom h-100">
         <div class="card-header">Visi Desa</div>
         <div class="card-body text-start">
-          <ul>
-            <li>Terwujudnya Desa Sukasari yang BERSIH, TRANSPARAN, dan MANDIRI menuju masyarakat yang sehat, makmur, dan sejahtera.</li>
-            <li>Menjunjung tinggi nilai-nilai agama.</li>
-            <li>Menjadi desa yang subur makmur dan mandiri.</li>
-            <li>Berlandaskan budaya Sunda sebagai jati diri lokal.</li>
-          </ul>
+          {% if tentang.visi_items.all %}
+            <ul>
+              {% for v in tentang.visi_items.all %}
+                <li>{{ v.teks }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">Belum ada poin visi. Tambahkan dari admin.</p>
+          {% endif %}
         </div>
       </div>
     </div>
 
-    <!-- Misi -->
     <div class="col-12 col-md-6">
       <div class="card card-custom h-100">
         <div class="card-header">Misi Desa</div>
         <div class="card-body text-start">
-          <ul>
-            <li>Menciptakan dan meningkatkan produk unggulan desa.</li>
-            <li>Meningkatkan kerukunan umat beragama.</li>
-            <li>Menjalankan pemerintahan yang transparan dan responsif.</li>
-            <li>Meningkatkan ekonomi berbasis pertanian dan pendidikan teknologi.</li>
-            <li>Mengembangkan adat istiadat dan budaya sebagai potensi lokal.</li>
-          </ul>
+          {% if tentang.misi_items.all %}
+            <ul>
+              {% for m in tentang.misi_items.all %}
+                <li>{{ m.teks }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">Belum ada poin misi. Tambahkan dari admin.</p>
+          {% endif %}
         </div>
       </div>
     </div>
+
   </div>
+</section>
+
+<!-- Struktur Organisasi Pemerintah Desa -->
+<section id="struktur-organisasi" class="container about-section" data-aos="fade-up">
+  <div class="section-eyebrow">Perangkat Desa</div>
+  <h4 class="struktur-title">Bagan Struktur Organisasi</h4>
+  <p class="struktur-subtitle">Pemerintah Desa Cihowe</p>
+
+  <!-- Desktop/tablet: canvas + garis SVG -->
+  <div class="bagan-scroll d-none d-md-block">
+    <div class="bagan-canvas">
+
+      <svg class="bagan-lines" viewBox="0 0 1180 535" preserveAspectRatio="none">
+        <!-- BPD -> Kepala Desa : Koordinasi -->
+        <polyline points="169,143 234,143" class="garis garis-koordinasi"/>
+        <!-- Kepala Desa -> Sekretaris Desa -->
+        <polyline points="319,225 319,240 625,240" class="garis garis-instruksi"/>
+        <!-- Sekretaris Desa -> Bus Kaur -->
+        <polyline points="715,250 715,295" class="garis garis-instruksi"/>
+        <!-- Bus semua Kaur -->
+        <polyline points="101,295 1069,295" class="garis garis-instruksi"/>
+        <!-- Bus -> Kaur Pemerintahan -->
+        <polyline points="101,295 101,330" class="garis garis-instruksi"/>
+        <!-- Bus -> Kaur Ekbang -->
+        <polyline points="295,295 295,330" class="garis garis-instruksi"/>
+        <!-- Bus -> Kaur Prolap -->
+        <polyline points="488,295 488,330" class="garis garis-instruksi"/>
+        <!-- Bus -> Kaur Kesra -->
+        <polyline points="682,295 682,330" class="garis garis-instruksi"/>
+        <!-- Bus -> Kaur Keuangan -->
+        <polyline points="875,295 875,330" class="garis garis-instruksi"/>
+        <!-- Bus -> Kaur Umum -->
+        <polyline points="1069,295 1069,330" class="garis garis-instruksi"/>
+        <!-- Bus -> Kepala Dusun -->
+        <polyline points="319,225 319,520" class="garis garis-instruksi"/>
+
+      </svg>
+
+      <div class="bagan-box slot-bpd">
+        <div class="bagan-photo">
+          {% if bpd and bpd.foto %}
+            <img src="{{ bpd.foto.url }}" alt="{{ bpd.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">B.P.D</span>
+          <span class="bagan-nama">{{ bpd.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kepala-desa bagan-box-lg">
+        <div class="bagan-photo">
+          {% if kepala_desa and kepala_desa.foto %}
+            <img src="{{ kepala_desa.foto.url }}" alt="{{ kepala_desa.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kepala Desa</span>
+          <span class="bagan-nama">{{ kepala_desa.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-sekretaris-desa">
+        <div class="bagan-photo">
+          {% if sekretaris_desa and sekretaris_desa.foto %}
+            <img src="{{ sekretaris_desa.foto.url }}" alt="{{ sekretaris_desa.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Sekretaris Desa</span>
+          <span class="bagan-nama">{{ sekretaris_desa.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kaur-pemerintahan">
+        <div class="bagan-photo">
+          {% if kasi_pemerintahan and kasi_pemerintahan.foto %}
+            <img src="{{ kasi_pemerintahan.foto.url }}" alt="{{ kasi_pemerintahan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kasi Pemerintahan</span>
+          <span class="bagan-nama">{{ kasi_pemerintahan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kaur-ekbang">
+        <div class="bagan-photo">
+          {% if kasi_kesejahteraan and kasi_kesejahteraan.foto %}
+            <img src="{{ kasi_kesejahteraan.foto.url }}" alt="{{ kasi_kesejahteraan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kasi Kesejahteraan</span>
+          <span class="bagan-nama">{{ kasi_kesejahteraan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kaur-prolap">
+        <div class="bagan-photo">
+          {% if kasi_pelayanan and kasi_pelayanan.foto %}
+            <img src="{{ kasi_pelayanan.foto.url }}" alt="{{ kasi_pelayanan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kasi Pelayanan</span>
+          <span class="bagan-nama">{{ kasi_pelayanan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kaur-kesra">
+        <div class="bagan-photo">
+          {% if kaur_tatausahadannumum and kaur_tatausahadannumum.foto %}
+            <img src="{{ kaur_tatausahadannumum.foto.url }}" alt="{{ kaur_tatausahadannumum.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kaur Tata Usaha dan Umum</span>
+          <span class="bagan-nama">{{ kaur_tatausahadannumum.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kaur-keuangan">
+        <div class="bagan-photo">
+          {% if kaur_keuangan and kaur_keuangan.foto %}
+            <img src="{{ kaur_keuangan.foto.url }}" alt="{{ kaur_keuangan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kaur Keuangan</span>
+          <span class="bagan-nama">{{ kaur_keuangan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-box slot-kaur-umum">
+        <div class="bagan-photo">
+          {% if kaur_perencanaan and kaur_perencanaan.foto %}
+            <img src="{{ kaur_perencanaan.foto.url }}" alt="{{ kaur_perencanaan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kaur Perencanaan</span>
+          <span class="bagan-nama">{{ kaur_perencanaan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="dusun-wrap">
+        <svg class="dusun-lines" aria-hidden="true"></svg>
+        <div class="dusun-group">
+          {% for s in kepala_wilayah %}
+            <div class="bagan-box slot-kepala-dusun">
+              <div class="bagan-photo">
+                {% if s.foto %}
+                  <img src="{{ s.foto.url }}" alt="{{ s.nama }}">
+                {% else %}
+                  <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+                {% endif %}
+              </div>
+              <div class="bagan-info">
+                <span class="bagan-label">Kepala Dusun {{ forloop.counter }}</span>
+                <span class="bagan-nama">{{ s.nama }}</span>
+              </div>
+            </div>
+          {% empty %}
+            <div class="bagan-box slot-kepala-dusun">
+              <div class="bagan-info">
+                <span class="bagan-label">Kepala Dusun</span>
+                <span class="bagan-nama bagan-nama-muted">Belum diisi</span>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Mobile: tree vertikal, tanpa geser -->
+  <div class="bagan-tree d-md-none">
+
+    <!-- BPD (koordinasi) + Kepala Desa -->
+    <div class="bagan-tree-row">
+      <div class="bagan-m-box bagan-m-bpd">
+        <div class="bagan-photo">
+          {% if bpd and bpd.foto %}
+            <img src="{{ bpd.foto.url }}" alt="{{ bpd.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">B.P.D</span>
+          <span class="bagan-nama">{{ bpd.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-tree-dash" aria-hidden="true"></div>
+
+      <div class="bagan-m-box bagan-m-kepala">
+        <div class="bagan-photo">
+          {% if kepala_desa and kepala_desa.foto %}
+            <img src="{{ kepala_desa.foto.url }}" alt="{{ kepala_desa.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kepala Desa</span>
+          <span class="bagan-nama">{{ kepala_desa.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bagan-tree-connector"></div>
+
+    <!-- Sekretaris Desa -->
+    <div class="bagan-tree-row">
+      <div class="bagan-m-box bagan-m-sekretaris">
+        <div class="bagan-photo">
+          {% if sekretaris_desa and sekretaris_desa.foto %}
+            <img src="{{ sekretaris_desa.foto.url }}" alt="{{ sekretaris_desa.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Sekretaris Desa</span>
+          <span class="bagan-nama">{{ sekretaris_desa.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bagan-tree-connector"></div>
+
+    <!-- 6 Kaur — grid 2 kolom -->
+    <div class="bagan-tree-grid">
+
+      <div class="bagan-m-box">
+        <div class="bagan-photo">
+          {% if kasi_pemerintahan and kasi_pemerintahan.foto %}
+            <img src="{{ kasi_pemerintahan.foto.url }}" alt="{{ kasi_pemerintahan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kasi Pemerintahan</span>
+          <span class="bagan-nama">{{ kasi_pemerintahan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-m-box">
+        <div class="bagan-photo">
+          {% if kasi_kesejahteraan and kasi_kesejahteraan.foto %}
+            <img src="{{ kasi_kesejahteraan.foto.url }}" alt="{{ kasi_kesejahteraan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kasi Kesejahteraan</span>
+          <span class="bagan-nama">{{ kasi_kesejahteraan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-m-box">
+        <div class="bagan-photo">
+          {% if kasi_pelayanan and kasi_pelayanan.foto %}
+            <img src="{{ kasi_pelayanan.foto.url }}" alt="{{ kasi_pelayanan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kasi Pelayanan</span>
+          <span class="bagan-nama">{{ kasi_pelayanan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-m-box">
+        <div class="bagan-photo">
+          {% if kaur_tatausahadannumum and kaur_tatausahadannumum.foto %}
+            <img src="{{ kaur_tatausahadannumum.foto.url }}" alt="{{ kaur_tatausahadannumum.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kaur Tata Usaha dan Umum</span>
+          <span class="bagan-nama">{{ kaur_tatausahadannumum.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-m-box">
+        <div class="bagan-photo">
+          {% if kaur_keuangan and kaur_keuangan.foto %}
+            <img src="{{ kaur_keuangan.foto.url }}" alt="{{ kaur_keuangan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kaur Keuangan</span>
+          <span class="bagan-nama">{{ kaur_keuangan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+      <div class="bagan-m-box">
+        <div class="bagan-photo">
+          {% if kaur_perencanaan and kaur_perencanaan.foto %}
+            <img src="{{ kaur_perencanaan.foto.url }}" alt="{{ kaur_perencanaan.nama }}">
+          {% else %}
+            <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+          {% endif %}
+        </div>
+        <div class="bagan-info">
+          <span class="bagan-label">Kaur Perencanaan</span>
+          <span class="bagan-nama">{{ kaur_perencanaan.nama|default:"Belum diisi" }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bagan-tree-connector"></div>
+
+    <!-- Kepala Dusun — dinamis, grid 2 kolom -->
+    <div class="bagan-tree-grid">
+      {% for s in kepala_wilayah %}
+        <div class="bagan-m-box">
+          <div class="bagan-photo">
+            {% if s.foto %}
+              <img src="{{ s.foto.url }}" alt="{{ s.nama }}">
+            {% else %}
+              <div class="bagan-photo-empty"><i class="fa-solid fa-user"></i></div>
+            {% endif %}
+          </div>
+          <div class="bagan-info">
+            <span class="bagan-label">Kepala Dusun {{ forloop.counter }}</span>
+            <span class="bagan-nama">{{ s.nama }}</span>
+          </div>
+        </div>
+      {% empty %}
+        <div class="bagan-m-box bagan-m-group">
+          <span class="bagan-label">Kepala Dusun</span>
+          <span class="bagan-nama bagan-nama-muted">Belum diisi</span>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div><!-- /.bagan-tree -->
 </section>
 
 <!-- Lokasi -->
-<section id="lokasi" class="container about-section" data-aos="fade-up">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
-      <div class="card card-custom">
-        <div class="card-body">
-          <h4 class="card-title mb-3 text-center">Lokasi Desa Sukasari</h4>
-          <div class="ratio ratio-4x3 rounded-3 overflow-hidden">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.481956740556!2d106.6715!3d-6.5169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69dd50f56fbaef%3A0xa3d47e0586762169!2sHJJR%2BCR5%2C%20Sukasari%2C%20Rumpin%2C%20Bogor%20Regency%2C%20West%20Java%2016350!5e0!3m2!1sen!2sid!4v1718279393759!5m2!1sen!2sid"
-              width="600" height="450" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<section id="lokasi" class="about-section">
+  <p class="section-eyebrow">Lokasi</p>
 
+  {% if tentang.lokasi_embed_cache %}
+    <div class="lokasi-map ratio ratio-16x9">
+      <iframe src="{{ tentang.lokasi_embed_cache }}"
+              style="border:0;" allowfullscreen loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <a href="{{ tentang.lokasi_embed_url }}" target="_blank" rel="noopener" class="lokasi-open-link">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka di Google Maps
+    </a>
+
+  {% elif tentang.lokasi_embed_url %}
+    <a href="{{ tentang.lokasi_embed_url }}" target="_blank" rel="noopener" class="lokasi-card" style="text-decoration:none;">
+      <div class="lokasi-icon"><i class="fa-solid fa-location-dot"></i></div>
+      <div class="lokasi-text">
+        <strong>Kantor Desa Cihowe</strong>
+        <span>Lihat lokasi &amp; rute menuju kantor desa</span>
+      </div>
+      <span class="lokasi-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Maps</span>
+    </a>
+
+  {% else %}
+    <p class="lokasi-empty">Lokasi belum ditambahkan.</p>
+  {% endif %}
+</section>
 {% endblock %}
 
 {% block javascripts %}
-<!-- Vanta JS -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
 <script>
-  let vantaEffect = VANTA.DOTS({
-    el: "#vanta",
-    mouseControls: false,
-    touchControls: false,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.00,
-    scaleMobile: 1.00,
-    color: 0xffffff,
-    backgroundColor: 0x000000,
-    size: 2.00,
-    spacing: 35.00,
-    showLines: true
-  });
+  (function () {
+  function debounce(fn, wait) {
+    let t;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
 
-  setInterval(() => {
-    const randomColor = Math.floor(Math.random() * 0xffffff);
-    if (vantaEffect) vantaEffect.setOptions({ color: randomColor });
-  }, 3000);
+  function drawDusunLines() {
+    const wrap = document.querySelector('.dusun-wrap');
+    const group = document.querySelector('.dusun-group');
+    const svg = document.querySelector('.dusun-lines');
+    if (!wrap || !group || !svg) return;
+
+    const boxes = group.querySelectorAll(':scope > .bagan-box');
+    if (!boxes.length) return;
+
+    const wrapRect = wrap.getBoundingClientRect();
+    const width = wrapRect.width;
+    const height = wrapRect.height;
+    if (width === 0 || height === 0) return;
+
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+
+    // titik sumber garis (nyambung dari trunk utama Kepala Desa, sejajar 27% lebar canvas)
+    const sourceX = width * 0.27;
+    const busY = 26;   // sama dengan padding-top .dusun-group
+    const dropLen = 14;
+
+    const xs = [];
+    let branches = '';
+
+    boxes.forEach((box) => {
+      const boxRect = box.getBoundingClientRect();
+      const cx = (boxRect.left - wrapRect.left) + boxRect.width / 2;
+      xs.push(cx);
+      branches += `<line x1="${cx}" y1="${busY}" x2="${cx}" y2="${busY + dropLen}" class="garis garis-instruksi"/>`;
+    });
+
+    const minX = Math.min(sourceX, ...xs);
+    const maxX = Math.max(sourceX, ...xs);
+
+    const svgContent =
+      `<line x1="${sourceX}" y1="0" x2="${sourceX}" y2="${busY}" class="garis garis-instruksi"/>` +
+      `<line x1="${minX}" y1="${busY}" x2="${maxX}" y2="${busY}" class="garis garis-instruksi"/>` +
+      branches;
+
+    svg.innerHTML = svgContent;
+  }
+
+  function initDusunLines() {
+    drawDusunLines();
+
+    window.addEventListener('resize', debounce(drawDusunLines, 150));
+    window.addEventListener('load', drawDusunLines);
+
+    if (window.ResizeObserver) {
+      const wrap = document.querySelector('.dusun-wrap');
+      if (wrap) {
+        const ro = new ResizeObserver(debounce(drawDusunLines, 100));
+        ro.observe(wrap);
+      }
+    }
+
+    // jaga-jaga kalau foto lambat load dan geser tinggi box
+    document.querySelectorAll('.dusun-group img').forEach((img) => {
+      img.addEventListener('load', drawDusunLines);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDusunLines);
+  } else {
+    initDusunLines();
+  }
+})();
 </script>
 {% endblock %}

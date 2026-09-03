@@ -1,187 +1,829 @@
-/* ===== Root Variables ===== */
-:root {
-  --primary: #081c3c;
-  --secondary: #005b9e;
-  --background: linear-gradient(to bottom, #081c3c, #005b9e, #00f0ff);
-  --light-blue: #F0F8FF;
-  --text: #e0f0ff;
-  --white: #ffffff;
+/* =========================================================
+   Desa Cihowe — Tentang Desa
+   Diselaraskan ke design system "Gov Clean" di base.css + home.css.
+   Wajib load base.css & home.css duluan (token, navbar, footer, AOS).
+   ========================================================= */
+
+/* ===== Page Hero ===== */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  padding: 3.5rem 2rem 5rem;
+  background: linear-gradient(160deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--white);
 }
 
-/* ===== Reset & Base ===== */
+.hero-section h1 {
+  color: var(--white);
+  font-weight: 800;
+  font-size: 2.3rem;
+  margin-bottom: 0.6rem;
+  text-shadow: none;
+  position: relative;
+  z-index: 2;
+}
 
+.hero-section p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.05rem;
+  font-weight: 500;
+  max-width: 560px;
+  margin: 0 auto;
+  text-shadow: none;
+  position: relative;
+  z-index: 2;
+}
 
-/* ===== VANTA Background ===== */
-#vanta {
-  position: fixed;
-  top: 0;
+.hero-section::after {
+  content: "";
+  position: absolute;
+  left: -8%; right: -8%; bottom: -1px;
+  height: 70px;
+  background: var(--bg);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .hero-section { padding: 2.75rem 1.5rem 4rem; }
+  .hero-section h1 { font-size: 1.9rem; }
+}
+
+/* ===== Section spacing ===== */
+.about-section {
+  padding: 2.75rem 0;
+}
+
+.about-section .section-eyebrow {
+  text-align: center;
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+/* ===== Card — flat, terang, sesuai design system ===== */
+.card-custom {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  color: var(--text);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card-custom:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--secondary);
+}
+
+.card-custom .card-header {
+  background: var(--accent-soft);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-shadow: none;
+  border-bottom: 1px solid var(--border);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  padding: 1rem 1.5rem;
+}
+
+.card-custom .card-body {
+  padding: 1.6rem;
+  font-size: 1rem;
+  color: var(--text);
+  text-shadow: none;
+}
+
+.card-custom .card-body p {
+  text-align: justify;
+  hyphens: auto;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.card-custom .card-title {
+  color: var(--primary);
+  font-weight: 700;
+  text-shadow: none;
+}
+
+/* Visi & Misi — checklist icon, bukan bullet polos */
+.card-custom .card-body ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.card-custom .card-body ul li {
+  position: relative;
+  padding-left: 1.9rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: var(--text);
+  text-shadow: none;
+}
+
+.card-custom .card-body ul li:last-child { margin-bottom: 0; }
+
+.card-custom .card-body ul li::before {
+  content: "\f00c";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
   left: 0;
-  z-index: -100;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--secondary);
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   BAGAN STRUKTUR ORGANISASI — COMPACT DESKTOP
+========================================================= */
+
+#struktur-organisasi {
+  max-width: 1240px;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.struktur-title {
+  color: var(--primary);
+  font-weight: 800;
+  text-align: center;
+  margin: 0 0 0.25rem;
+}
+
+.struktur-subtitle {
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.bagan-scroll {
+  width: 100%;
+  overflow: visible;
+  padding: 0;
+}
+
+.bagan-canvas {
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  min-height: 525px; /* baris Kaur berakhir di y=525 */
+  height: auto; /* melar otomatis ngikutin jumlah Kepala Dusun */
+  margin: 0 auto;
+  background: #fbfcfb;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* jaga border-radius pas konten melar */
+}
+
+.bagan-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 550px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.garis {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 1.8;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.garis-instruksi {
+  stroke: var(--primary);
+}
+
+.garis-koordinasi {
+  stroke: #65776d;
+  stroke-width: 1.6;
+  stroke-dasharray: 7 6;
+}
+
+.bagan-box {
+  z-index: 2;
+}
+
+/* ===== CARD ===== */
+
+.bagan-box {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(27, 67, 50, 0.08);
+  text-align: center;
+  z-index: 2;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bagan-box:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== FOTO ===== */
+
+.bagan-photo {
+  width: 100%;
+  height: 110px;
+  overflow: hidden;
+  background: #e8f0eb;
+}
+
+.bagan-photo img {
   width: 100%;
   height: 100%;
-  background: var(--background);
+  display: block;
+  object-fit: cover;
+  object-position: center 18%;
 }
 
-/* ===== Typography ===== */
-h1 {
-  color: var(--white);
-  font-weight: 700;
-  font-size: 2.8rem;
-  text-shadow: 2px 2px 6px rgba(0, 255, 255, 0.4);
-  margin-top: -20px;
+.bagan-photo-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #f1f6f3, #e1ebe5);
+  color: rgba(27, 67, 50, 0.35);
+  font-size: 2.4rem;
 }
 
-h2, h3, h5, h6 {
-  color: var(--white);
-  font-weight: 700;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+/* ===== INFO ===== */
+
+.bagan-info {
+  position: relative;
+  min-height: 58px;
+  padding: 0.65rem 0.4rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--card);
 }
 
-h4 {
-  color: var(--white);
-  font-weight: 700;
-  font-size: 2.2rem;
-  text-shadow: 2px 2px 6px rgba(0, 255, 255, 0.4);
+.bagan-info::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 30px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: translateX(-50%);
 }
 
-p, li {
+.bagan-label {
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.bagan-nama {
+  display: block;
+  margin-top: 0.2rem;
   color: var(--text);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
-a {
-  color: #00ccff;
-  text-decoration: none;
-  font-weight: 500;
+.bagan-nama-muted {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-style: italic;
 }
-a:hover {
+
+/* ===== KEPALA DESA ===== */
+
+.slot-kepala-desa {
+  left: 27%;
+  top: 25px;
+  width: 170px;
+  height: 200px;
+  transform: translateX(-50%);
+  border: 2px solid var(--primary);
+}
+
+.slot-kepala-desa:hover {
+  transform: translateX(-50%) translateY(-3px);
+}
+
+.slot-kepala-desa .bagan-photo {
+  height: 135px;
+}
+
+.slot-kepala-desa .bagan-info {
+  min-height: 65px;
+  background: var(--primary);
+}
+
+.slot-kepala-desa .bagan-label {
+  color: var(--white);
+  font-size: 0.76rem;
+}
+
+.slot-kepala-desa .bagan-nama {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===== BPD ===== */
+
+.slot-bpd {
+  left: 3%;
+  top: 55px;
+  width: 145px;
+  height: 175px;
+  border-color: rgba(201, 162, 39, 0.7);
+}
+
+.slot-bpd .bagan-photo {
+  height: 112px;
+}
+
+/* ===== SEKRETARIS ===== */
+
+.slot-sekretaris-desa {
+  left: 53%;
+  top: 70px;
+  width: 180px;
+  height: 180px;
+  border-color: rgba(45, 106, 79, 0.45);
+}
+
+.slot-sekretaris-desa .bagan-photo {
+  height: 115px;
+}
+
+
+.slot-kaur-pemerintahan,
+.slot-kaur-ekbang,
+.slot-kaur-prolap,
+.slot-kaur-kesra,
+.slot-kaur-keuangan,
+.slot-kaur-umum {
+  top: 330px;
+  width: 14%;
+  max-width: 155px;
+  height: 175px;
+}
+
+.slot-kaur-pemerintahan { left: 2%; }
+.slot-kaur-ekbang       { left: 18.4%; }
+.slot-kaur-prolap       { left: 34.8%; }
+.slot-kaur-kesra        { left: 51.2%; }
+.slot-kaur-keuangan     { left: 67.6%; }
+.slot-kaur-umum         { left: 84%; }
+
+.slot-kaur-pemerintahan .bagan-photo,
+.slot-kaur-ekbang .bagan-photo,
+.slot-kaur-prolap .bagan-photo,
+.slot-kaur-kesra .bagan-photo,
+.slot-kaur-keuangan .bagan-photo,
+.slot-kaur-umum .bagan-photo {
+  height: 112px;
+}
+
+/* ===== BAWAH ===== */
+
+.bagan-box-group {
+  min-height: 75px;
+  padding: 0.75rem;
+  justify-content: center;
+  background: #f7faf8;
+}
+
+.bagan-box-group .bagan-label {
+  font-size: 0.7rem;
+}
+.dusun-wrap {
+  position: relative;
+  margin-top: 530px;
+  padding-bottom: 28px;
+
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.dusun-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.dusun-group {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 20px;
+  width: max-content;
+  min-width: 100%;
+  margin: 0 auto;
+  padding-top: 37px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+}
+
+.dusun-group .bagan-box {
+  position: relative;
+  width: 170px;
+  flex-shrink: 0;
+}
+
+
+/* ===== LAPTOP KECIL ===== */
+
+@media (max-width: 1200px) {
+  #struktur-organisasi {
+    max-width: 100%;
+  }
+
+  .bagan-canvas {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  .bagan-label {
+    font-size: 0.62rem;
+  }
+
+  .bagan-nama {
+    font-size: 0.58rem;
+  }
+}
+
+/* ===== MOBILE (base — horizontal scroll canvas) ===== */
+
+@media (max-width: 768px) {
+  .bagan-scroll {
+    overflow-x: auto;
+  }
+
+  .bagan-canvas {
+    width: 1100px;
+    min-width: 1100px;
+  }
+}
+
+/* ===== Lokasi ===== */
+#lokasi.about-section {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Embed peta — dipakai kalau backend berhasil resolve link share
+   jadi koordinat (lihat lokasi_embed_cache). */
+.lokasi-map {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0.75rem;
+}
+
+.lokasi-map iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.lokasi-open-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.lokasi-open-link:hover {
   text-decoration: underline;
 }
 
-/* ===== Layout Utilities ===== */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin-inline: auto;
-  padding: 0 15px;
-  position: relative;
-  z-index: 2;
+/* Fallback: link-out card kalau resolve embed gagal
+   (network error pas save, atau format link gak dikenali). */
+
+.lokasi-card {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.4rem 1.5rem;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-/* ===== Hero Section ===== */
-.hero-section {
-  padding: 100px 20px 60px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 30px rgba(0,0,0,0.2);
-  position: relative;
-  z-index: 2;
-}
-.hero-section p {
-  font-size: 1.2rem;
-  color: #e8f8ff;
+.lokasi-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--secondary);
 }
 
-/* ===== About Section ===== */
-.about-section {
-  padding: 50px 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border-radius: 1rem;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-  margin-bottom: 2rem;
-  transition: 0.3s ease-in-out;
-}
-.about-section:hover {
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
-  transform: translateY(-4px);
+.lokasi-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
 }
 
-/* ===== Card Custom ===== */
-.card-custom {
-  border-radius: 1rem;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+.lokasi-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.lokasi-text strong {
+  display: block;
   color: var(--text);
-  height: 100%;
-  overflow: hidden;
-}
-.card-custom .card-header {
-  background-color: rgba(0, 91, 158, 0.8);
-  color: var(--white);
-  font-weight: 600;
-  font-size: 1.1rem;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-}
-.card-custom .card-body {
-  padding: 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
 }
 
-/* ===== Ratio for Maps ===== */
-.ratio {
-  aspect-ratio: 4 / 3;
-}
-.ratio iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  border-radius: 0.75rem;
+.lokasi-text span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
-/* ===== Utilities ===== */
-.highlight {
-  background-color: rgba(255, 255, 255, 0.2);
+.lokasi-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary);
   color: var(--white);
-  padding: 2px 6px;
-  border-radius: 0.3rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
   font-weight: 600;
-  box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.lokasi-btn:hover {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.lokasi-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+@media (max-width: 576px) {
+  .lokasi-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  .lokasi-btn { width: 100%; justify-content: center; }
 }
 
 /* ===== Responsive ===== */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
+@media (min-width: 992px) {
+  .col-lg-5 {
+    flex: 0 0 auto;
+    width: 45%;
   }
-  h4 {
-    font-size: 1.6rem;
+}
+
+@media (max-width: 768px) {
+  .card-custom { margin-bottom: 1rem; }
+  .card-custom .card-body { padding: 1.25rem; font-size: 0.95rem; }
+}
+
+/* =========================================================
+   MOBILE REFINEMENTS (tambahan)
+   ========================================================= */
+
+/* ===== Hero — extra kecil di HP ===== */
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 2.25rem 1.25rem 3.5rem;
+  }
+  .hero-section h1 {
+    font-size: 1.55rem;
+    line-height: 1.3;
   }
   .hero-section p {
+    font-size: 0.92rem;
+  }
+  .hero-section::after {
+    height: 45px;
+  }
+}
+
+/* ===== Sejarah / Potensi / Visi / Misi cards ===== */
+@media (max-width: 576px) {
+  .about-section {
+    padding: 2rem 0;
+  }
+  .card-custom .card-header {
     font-size: 1rem;
+    padding: 0.85rem 1.1rem;
   }
-  .card-custom {
-    margin-bottom: 1rem;
+  .card-custom .card-body {
+    padding: 1.1rem;
+    font-size: 0.92rem;
   }
-  .ratio {
-    aspect-ratio: 16 / 9;
+  .card-custom .card-body p {
+    text-align: left; /* justify di layar sempit bikin spasi antar kata jomplang */
+  }
+  .card-custom .card-body ul li {
+    font-size: 0.92rem;
+    padding-left: 1.7rem;
   }
 }
 
-#lokasi.about-section {
-  background: none;
-  border: none;
-  backdrop-filter: none;
-  box-shadow: none;
-
-  /* Ukuran dan layout */
-  max-width: 800px;         /* batasi lebar maksimum */
-  margin: 0 auto 1rem;      /* center secara horizontal dan beri jarak bawah */
-  padding: 30px 15px;       /* padding atas-bawah dan kiri-kanan */
-  border-radius: 0.75rem;   /* opsional: sudut membulat sedikit */
-}
+/* ===== Struktur Organisasi — heading mobile ===== */
 @media (max-width: 768px) {
-  #lokasi.about-section {
-    padding: 20px 10px;
-    max-width: 100%;
+  #struktur-organisasi {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .struktur-title {
+    font-size: 1.25rem;
+  }
+
+  .struktur-subtitle {
+    font-size: 0.82rem;
+    margin-bottom: 1.25rem;
   }
 }
 
+/* =========================================================
+   BAGAN STRUKTUR ORGANISASI — MOBILE (versi tree vertikal)
+   Dipakai gantiin canvas+SVG desktop di layar < 768px, jadi
+   TANPA geser/scroll. Reuse class .bagan-photo/.bagan-info/
+   .bagan-label/.bagan-nama dari markup yang sama.
+   ========================================================= */
+
+.bagan-tree {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bagan-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .bagan-tree-connector {
+    width: 2px;
+    height: 20px;
+    background: var(--primary);
+  }
+
+  .bagan-tree-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .bagan-tree-dash {
+    width: 22px;
+    border-top: 2px dashed #65776d;
+    flex-shrink: 0;
+  }
+
+  .bagan-tree-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .bagan-m-box {
+    width: 100%;
+    max-width: 210px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(27, 67, 50, 0.08);
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .bagan-m-box .bagan-photo {
+    height: 78px;
+  }
+
+  .bagan-m-box .bagan-info {
+    min-height: 48px;
+    padding: 0.5rem 0.35rem 0.45rem;
+  }
+
+  .bagan-m-box .bagan-label {
+    font-size: 0.64rem;
+  }
+
+  .bagan-m-box .bagan-nama {
+    font-size: 0.6rem;
+  }
+
+  /* Kepala Desa — ditonjolkan */
+  .bagan-m-kepala {
+    max-width: 150px;
+    border: 2px solid var(--primary);
+  }
+  .bagan-m-kepala .bagan-photo { height: 95px; }
+  .bagan-m-kepala .bagan-info { background: var(--primary); }
+  .bagan-m-kepala .bagan-label { color: var(--white); font-size: 0.7rem; }
+  .bagan-m-kepala .bagan-nama { color: rgba(255, 255, 255, 0.85); }
+
+  /* BPD — sejajar Kepala Desa, garis putus2 (koordinasi) */
+  .bagan-m-bpd {
+    max-width: 118px;
+    border-color: rgba(201, 162, 39, 0.7);
+  }
+  .bagan-m-bpd .bagan-photo { height: 68px; }
+
+  /* Sekretaris Desa */
+  .bagan-m-sekretaris {
+    max-width: 190px;
+    border-color: rgba(45, 106, 79, 0.45);
+  }
+  .bagan-m-sekretaris .bagan-photo { height: 95px; }
+
+  /* Pelaksana Teknis & Unsur Kewilayahan */
+  .bagan-m-group {
+    max-width: none;
+    min-height: 60px;
+    padding: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #f7faf8;
+  }
+  .bagan-m-group .bagan-label { font-size: 0.66rem; }
+  .bagan-m-group .bagan-nama {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .bagan-m-box { max-width: 170px; }
+  .bagan-tree-grid { gap: 0.45rem; }
+}
+
+/* ===== Lokasi — mobile ===== */
+@media (max-width: 576px) {
+  #lokasi.about-section {
+    padding: 1.75rem 1rem;
+  }
+  .lokasi-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.15rem;
+  }
+}

@@ -1,10 +1,40 @@
 from django.contrib import admin
 from .models import SuratKematian,SuratKelahiran,PindahDatang,DomisiliUsaha,SKTMPengajuan, DomisiliPengajuan,SKUPengajuan,Announcement, AnnouncementImage,UserProfile, SuratKTPBaruPengantar, SuratKKPengantar
+from django.contrib import admin
+from .models import ProfilDesa
 
+# admin.py
 
+from django.contrib import admin
+from .models import TentangDesa, VisiItem, MisiItem, StrukturOrganisasi
+
+class VisiItemInline(admin.TabularInline):
+    model = VisiItem
+    extra = 1
+
+class MisiItemInline(admin.TabularInline):
+    model = MisiItem
+    extra = 1
+
+@admin.register(TentangDesa)
+class TentangDesaAdmin(admin.ModelAdmin):
+    inlines = [VisiItemInline, MisiItemInline]
+
+    def has_add_permission(self, request):
+        return not TentangDesa.objects.exists()
+
+@admin.register(StrukturOrganisasi)
+class StrukturOrganisasiAdmin(admin.ModelAdmin):
+    list_display = ("nama", "jabatan", "slot", "urutan")
+    list_editable = ("slot", "urutan")
+    list_filter = ("slot",)
     
+@admin.register(ProfilDesa)
+class ProfilDesaAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "updated_at")
 
-
+    def has_add_permission(self, request):
+        return not ProfilDesa.objects.exists()
 
 @admin.register(SuratKematian)
 class SuratKematianAdmin(admin.ModelAdmin):

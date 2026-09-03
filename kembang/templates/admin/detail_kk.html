@@ -1,10 +1,11 @@
-{% extends "partials/base.html" %}
+{% extends "partials/base_admin.html" %}
 {% load static %}
 
 {% block css %}
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
-  <link rel="stylesheet" href="{% static 'css/detail_kk.css' %}">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/detail.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -19,119 +20,140 @@
   {% endif %}
 {% endif %}
 
-<div class="container detail-pengantar-kk" data-aos="zoom-in" data-aos-duration="1000">
+<div class="container detail-akta">
 
-  <h1 data-aos="fade-right" data-aos-delay="100">
-    <i class="fa fa-id-card"></i> Detail Pengantar Kartu Keluarga
-  </h1>
+  <h1><i class="fa fa-id-card"></i> Detail Pengantar Kartu Keluarga</h1>
+  <p class="pemohon-sub">{{ kk.nama_lengkap }}</p>
 
-  <div class="info-card" data-aos="fade-up" data-aos-delay="200">
-    <i class="fa fa-user"></i> <strong>Nama Lengkap:</strong> {{ kk.nama_lengkap }}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="300">
-    <i class="fa fa-id-card"></i> <strong>NIK:</strong> {{ kk.nik }}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="400">
-    <i class="fa fa-map-marker-alt"></i> <strong>Alamat:</strong> {{ kk.alamat }}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="500">
-    <i class="fa-brands fa-whatsapp"></i> <strong>No. WhatsApp:</strong>
-    <a href="https://wa.me/{{ kk.no_whatsapp|cut:'+' }}" target="_blank">{{ kk.no_whatsapp }}</a>
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="600">
-    <i class="fa fa-calendar-alt"></i> <strong>Tanggal Pengajuan:</strong>
-    {{ kk.tanggal_pengajuan|date:"d M Y H:i" }}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="700">
-    <i class="fa fa-info-circle"></i> <strong>Status:</strong> {{ kk.status|title }}
-  </div>
-
-  <hr data-aos="fade-in" data-aos-delay="800" />
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="900">
-    <i class="fa fa-image"></i> <strong>Foto KK:</strong>
-    {% if kk.foto_kk %}
-      <a href="{{ kk.foto_kk.url }}" target="_blank">Lihat Foto KK</a>
-    {% else %}
-      Belum diunggah
-    {% endif %}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="1000">
-    <i class="fa fa-certificate"></i> <strong>Ijazah:</strong>
-    {% if kk.ijazah %}
-      <a href="{{ kk.ijazah.url }}" target="_blank">Lihat Ijazah</a>
-    {% else %}
-      Tidak ada
-    {% endif %}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="1100">
-    <i class="fa fa-baby"></i> <strong>Surat Kelahiran:</strong>
-    {% if kk.surat_kelahiran %}
-      <a href="{{ kk.surat_kelahiran.url }}" target="_blank">Lihat Surat Kelahiran</a>
-    {% else %}
-      Tidak ada
-    {% endif %}
-  </div>
-
-  <div class="info-card" data-aos="fade-up" data-aos-delay="1200">
-    <i class="fa fa-skull-crossbones"></i> <strong>Surat Kematian:</strong>
-    {% if kk.surat_kematian %}
-      <a href="{{ kk.surat_kematian.url }}" target="_blank">Lihat Surat Kematian</a>
-    {% else %}
-      Tidak ada
-    {% endif %}
-  </div>
-
-  <hr data-aos="fade-in" data-aos-delay="1300" />
-
-  <h3 data-aos="fade-up" data-aos-delay="1350"><i class="fa fa-edit"></i> Update Status & Hasil Surat</h3>
-
-  <form method="post" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="1400">
-    {% csrf_token %}
-    <label for="status"><i class="fa fa-flag"></i> Status:</label>
-    <select name="status" id="status">
-      <option value="diajukan" {% if kk.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
-      <option value="sedang diproses" {% if kk.status == 'sedang diproses' %}selected{% endif %}>Sedang Diproses</option>
-      <option value="selesai" {% if kk.status == 'selesai' %}selected{% endif %}>Selesai</option>
-    </select>
-
-    <label for="hasil_surat"><i class="fa fa-upload"></i> Unggah Hasil Surat (PDF):</label>
-    <input type="file" name="hasil_surat" accept=".pdf">
-
-    <button type="submit"><i class="fa fa-save"></i> Simpan Perubahan</button>
-  </form>
-
-  {% if kk.hasil_surat %}
-    <p class="info-card" data-aos="fade-up" data-aos-delay="1500">
-      <i class="fa fa-file-pdf"></i> <strong>Hasil Surat:</strong>
-      <a href="{{ kk.hasil_surat.url }}" target="_blank">Download PDF</a>
-    </p>
-
-    <div class="action-buttons" data-aos="zoom-in-up" data-aos-delay="1600">
-      <a href="{{ kk.hasil_surat.url }}" target="_blank">
-        <button type="button"><i class="fa fa-download"></i> Download</button>
-      </a>
-
-      <a href="https://wa.me/{{ kk.no_whatsapp|cut:'+' }}?text=Surat%20pengantar%20KK%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ kk.hasil_surat.url }}" target="_blank">
-        <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
-      </a>
+  <!-- Stepper status -->
+  <div class="status-stepper">
+    <div class="status-step {% if kk.status == 'diajukan' %}active{% else %}done{% endif %}">
+      <div class="step-dot">
+        {% if kk.status == 'diajukan' %}1{% else %}<i class="fa fa-check"></i>{% endif %}
+      </div>
+      <span class="step-label">Diajukan</span>
     </div>
-  {% endif %}
+    <div class="status-step {% if kk.status == 'sedang diproses' %}active{% elif kk.status == 'selesai' %}done{% endif %}">
+      <div class="step-dot">
+        {% if kk.status == 'selesai' %}<i class="fa fa-check"></i>{% else %}2{% endif %}
+      </div>
+      <span class="step-label">Diproses</span>
+    </div>
+    <div class="status-step {% if kk.status == 'selesai' %}active{% endif %}">
+      <div class="step-dot">3</div>
+      <span class="step-label">Selesai</span>
+    </div>
+  </div>
 
-  <div class="action-buttons" data-aos="zoom-in-up" data-aos-delay="1700">
+  <!-- Info pemohon -->
+  <div class="section-label">Data Pemohon</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <i class="fa fa-user"></i> <strong>Nama Lengkap:</strong>&nbsp;{{ kk.nama_lengkap }}
+    </div>
+    <div class="info-card">
+      <i class="fa fa-id-card"></i> <strong>NIK:</strong>&nbsp;{{ kk.nik }}
+    </div>
+    <div class="info-card">
+      <i class="fa fa-map-marker-alt"></i> <strong>Alamat:</strong>&nbsp;{{ kk.alamat }}
+    </div>
+    <div class="info-card">
+      <i class="fa fa-calendar-alt"></i> <strong>Tanggal Pengajuan:</strong>&nbsp;{{ kk.tanggal_pengajuan|date:"d M Y H:i" }}
+    </div>
+    <div class="info-card">
+      <i class="fa-brands fa-whatsapp"></i> <strong>WA:</strong>&nbsp;
+      <a href="https://wa.me/{{ kk.no_whatsapp|cut:'+' }}" target="_blank">{{ kk.no_whatsapp }}</a>
+    </div>
+  </div>
+
+  <!-- Checklist berkas -->
+  <div class="section-label">Berkas Terlampir</div>
+  <div class="berkas-grid">
+    <div class="berkas-item">
+      {% if kk.foto_kk %}
+        <span class="berkas-check"><i class="fa fa-check"></i></span>
+        <a href="{{ kk.foto_kk.url }}" target="_blank">Foto KK</a>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      {% else %}
+        <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
+        <span class="berkas-empty">Foto KK &middot; belum diunggah</span>
+      {% endif %}
+    </div>
+    <div class="berkas-item">
+      {% if kk.ijazah %}
+        <span class="berkas-check"><i class="fa fa-check"></i></span>
+        <a href="{{ kk.ijazah.url }}" target="_blank">Ijazah</a>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      {% else %}
+        <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
+        <span class="berkas-empty">Ijazah &middot; tidak ada</span>
+      {% endif %}
+    </div>
+    <div class="berkas-item">
+      {% if kk.surat_kelahiran %}
+        <span class="berkas-check"><i class="fa fa-check"></i></span>
+        <a href="{{ kk.surat_kelahiran.url }}" target="_blank">Surat Kelahiran</a>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      {% else %}
+        <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
+        <span class="berkas-empty">Surat Kelahiran &middot; tidak ada</span>
+      {% endif %}
+    </div>
+    <div class="berkas-item">
+      {% if kk.surat_kematian %}
+        <span class="berkas-check"><i class="fa fa-check"></i></span>
+        <a href="{{ kk.surat_kematian.url }}" target="_blank">Surat Kematian</a>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      {% else %}
+        <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
+        <span class="berkas-empty">Surat Kematian &middot; tidak ada</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Panel update status -->
+  <div class="update-panel">
+    <h3><i class="fa fa-edit"></i> Update Status &amp; Hasil Surat</h3>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="status"><i class="fa fa-flag"></i> Status</label>
+      <select name="status" id="status" required>
+        <option value="diajukan" {% if kk.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
+        <option value="sedang diproses" {% if kk.status == 'sedang diproses' %}selected{% endif %}>Sedang Diproses</option>
+        <option value="selesai" {% if kk.status == 'selesai' %}selected{% endif %}>Selesai</option>
+      </select>
+
+      <label for="hasil_surat"><i class="fa fa-upload"></i> Unggah Hasil Surat (PDF)</label>
+      {% if kk.hasil_surat %}
+        <div class="current-file">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a href="{{ kk.hasil_surat.url }}" target="_blank">Lihat file yang sudah diunggah</a>
+          <span>&middot; pilih file baru di bawah untuk mengganti</span>
+        </div>
+      {% endif %}
+      <input type="file" name="hasil_surat" id="hasil_surat" accept=".pdf">
+
+      <button type="submit"><i class="fa fa-save"></i> Simpan Perubahan</button>
+    </form>
+  </div>
+
+  <div class="action-buttons">
     <a href="{% url 'daftar_kk' %}">
       <button type="button"><i class="fa fa-arrow-left"></i> Kembali</button>
     </a>
+
+    {% if kk.hasil_surat %}
+    <a href="{{ kk.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa fa-download"></i> Download</button>
+    </a>
+
+    <a href="https://wa.me/{{ kk.no_whatsapp|cut:'+' }}?text=Surat%20pengantar%20KK%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ kk.hasil_surat.url }}" target="_blank">
+      <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
+    </a>
+    {% endif %}
   </div>
 
 </div>
 {% endblock %}
 
-{% block show_footer %}{% endblock %}
+{% block javascripts %}{% endblock %}

@@ -1,0 +1,126 @@
+{% load static %}
+<aside class="admin-sidebar">
+
+  <div class="admin-sidebar-brand">
+    <div class="admin-sidebar-logo">
+  <img src="{% static 'img/logotegar3.png' %}" alt="Logo Desa Cihowe">
+</div>
+    <div>
+      <strong>Desa Cihowe</strong>
+      <span>Panel Admin</span>
+    </div>
+  </div>
+
+  <sidebar class="admin-sidebar-nav">
+
+    <p class="admin-nav-group">Utama</p>
+
+    <a href="{% url 'admin_dashboard' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+      <i class="fa-solid fa-gauge"></i> Dashboard
+    </a>
+
+    <a href="{% url 'semua_pengajuan' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'semua_pengajuan' %}active{% endif %}">
+      <i class="fa-solid fa-folder-open"></i> Semua Pengajuan
+      {% if notifikasi.total > 0 %}<span class="admin-nav-badge">{{ notifikasi.total }}</span>{% endif %}
+    </a>
+
+     <p class="admin-nav-group">Komunikasi</p>
+
+    <a href="{% url 'chat_admin_daftar' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'chat_admin_daftar' or request.resolver_match.url_name == 'chat_admin_thread' %}active{% endif %}">
+      <i class="fa-solid fa-comments"></i> Chat Warga
+    </a>
+
+    <p class="admin-nav-group">Surat Kependudukan</p>
+
+    <a href="{% url 'daftar_pengajuan_kelahiran' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_pengajuan_kelahiran' %}active{% endif %}">
+      <i class="fa-solid fa-baby"></i> Surat Kelahiran
+      {% if notifikasi.kelahiran > 0 %}<span class="admin-nav-badge">{{ notifikasi.kelahiran }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_akta_kematian' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_pengajuan_akta_kematian' %}active{% endif %}">
+      <i class="fa-solid fa-cross"></i> Surat Kematian
+      {% if notifikasi.kematian > 0 %}<span class="admin-nav-badge">{{ notifikasi.kematian }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_pindah_datang' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_pengajuan_pindah_datang' %}active{% endif %}">
+      <i class="fa-solid fa-truck-moving"></i> Pindah Datang
+      {% if notifikasi.pindah > 0 %}<span class="admin-nav-badge">{{ notifikasi.pindah }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_kk' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_kk' %}active{% endif %}">
+      <i class="fa-solid fa-people-roof"></i> Pengantar KK
+      {% if notifikasi.kk > 0 %}<span class="admin-nav-badge">{{ notifikasi.kk }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_ktp' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_ktp' %}active{% endif %}">
+      <i class="fa-solid fa-id-card"></i> Pengantar KTP
+      {% if notifikasi.ktp > 0 %}<span class="admin-nav-badge">{{ notifikasi.ktp }}</span>{% endif %}
+    </a>
+
+    <p class="admin-nav-group">Surat Usaha &amp; Sosial</p>
+
+    <a href="{% url 'daftar_pengajuan_skdu' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_pengajuan_skdu' %}active{% endif %}">
+      <i class="fa-solid fa-store"></i> SKDU
+      {% if notifikasi.skdu > 0 %}<span class="admin-nav-badge">{{ notifikasi.skdu }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_sku' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_sku' %}active{% endif %}">
+      <i class="fa-solid fa-briefcase"></i> SKU
+      {% if notifikasi.sku > 0 %}<span class="admin-nav-badge">{{ notifikasi.sku }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_domisili' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_domisili' %}active{% endif %}">
+      <i class="fa-solid fa-house"></i> Surat Domisili
+      {% if notifikasi.domisili > 0 %}<span class="admin-nav-badge">{{ notifikasi.domisili }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_pengajuan_sktm' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_pengajuan_sktm' %}active{% endif %}">
+      <i class="fa-solid fa-hand-holding-heart"></i> SKTM
+      {% if notifikasi.sktm > 0 %}<span class="admin-nav-badge">{{ notifikasi.sktm }}</span>{% endif %}
+    </a>
+
+    <a href="{% url 'daftar_surat_lainnya' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'daftar_surat_lainnya' %}active{% endif %}">
+      <i class="fa-solid fa-file-lines"></i> Surat Lainnya
+      {% if notifikasi.lainnya > 0 %}<span class="admin-nav-badge">{{ notifikasi.lainnya }}</span>{% endif %}
+    </a>
+
+    <p class="admin-nav-group">Konten Website</p>
+    
+    <a href="{% url 'announcement_manage' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'announcement_manage' %}active{% endif %}">
+      <i class="fa-solid fa-bullhorn"></i> Kelola Pengumuman
+    </a>
+    <a href="{% url 'kelola_tentang' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'kelola_tentang' %}active{% endif %}">
+      <i class="fa-solid fa-info-circle"></i> Kelola Tentang Desa
+    </a>
+    <a href="{% url 'kelola_akun_warga' %}"
+       class="admin-nav-link {% if request.resolver_match.url_name == 'kelola_akun_warga' %}active{% endif %}">
+      <i class="fa-solid fa-users"></i> Kelola Akun Warga
+    </a>
+</sidebar>
+
+  <div class="admin-sidebar-footer">
+    <a href="{% url 'home' %}" class="admin-nav-link">
+      <i class="fa-solid fa-arrow-left"></i> Lihat Situs
+    </a>
+    <!-- Ganti 'logout_view' sesuai nama URL logout di urls.py kamu -->
+    <a href="{% url 'logout' %}" class="admin-nav-link admin-nav-link-danger">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar
+    </a>
+  </div>
+
+</aside>

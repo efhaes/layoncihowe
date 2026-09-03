@@ -1,0 +1,184 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+<div class="chat-wrap">
+  <div class="chat-card">
+    <div class="chat-header">
+      <div class="chat-header-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+      </div>
+      <div>
+        <div class="chat-header-title">Kantor Desa Cihowe</div>
+        <div class="chat-header-sub"><span class="dot-online"></span> Chat terenkripsi end-to-end</div>
+      </div>
+    </div>
+
+    <div id="setup-notice" class="chat-setup-notice">
+      <span class="spinner"></span> Menyiapkan kunci enkripsi kamu, tunggu sebentar...
+    </div>
+
+    <div id="pesan-list" class="chat-messages">
+      <div class="chat-empty" id="chat-empty-state">
+        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 20l1.2-4.1a8.4 8.4 0 0 1-1-4A8.5 8.5 0 0 1 12 3.4a8.5 8.5 0 0 1 9 8.1z"/></svg>
+        Belum ada pesan. Mulai obrolan dengan kantor desa di bawah ini.
+      </div>
+    </div>
+
+    <form id="form-kirim" class="chat-input-bar">
+      {% csrf_token %}
+      <input type="text" id="input-pesan" placeholder="Tulis pesan..." autocomplete="off" required>
+      <button type="submit" class="chat-send-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3 11l18-8-8 18-2.5-6.5L3 11z"/></svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'js/e2ee.js' %}"></script>
+<script>
+const THREAD_ID = {{ thread_id }};
+const DESA_PUBLIC_KEY = {{ desa_public_key|safe }};
+let lastMessageId = 0;
+let typingTimeout = null;
+
+function csrftoken() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+async function pastikanKunciSendiri() {
+  const existing = await E2EE.getMyPrivateKey();
+  if (existing) return;
+
+  document.getElementById('setup-notice').classList.add('is-visible');
+  const keyPair = await E2EE.generateKeypair();
+  const pubJwk = await E2EE.exportPublicKeyJwk(keyPair);
+  await E2EE.storeMyPrivateKey(keyPair.privateKey);
+
+  await fetch("{% url 'chat_daftar_kunci' %}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken() },
+    body: JSON.stringify({ public_key_jwk: pubJwk }),
+  });
+
+  window._myPublicKeyJwk = pubJwk;
+  document.getElementById('setup-notice').classList.remove('is-visible');
+}
+
+async function ambilPublicKeySendiri() {
+  if (window._myPublicKeyJwk) return window._myPublicKeyJwk;
+  const res = await fetch("{% url 'chat_public_key_saya' %}");
+  const data = await res.json();
+  window._myPublicKeyJwk = data.public_key_jwk;
+  return window._myPublicKeyJwk;
+}
+
+function pastikanTypingRowAda() {
+  let row = document.getElementById('typing-row');
+  if (row) return row;
+
+  row = document.createElement('div');
+  row.id = 'typing-row';
+  row.className = 'chat-row is-them is-typing';
+  row.innerHTML = `
+    <div class="typing-label">Staff sedang mengetik...</div>
+    <div class="typing-bubble">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>`;
+  document.getElementById('pesan-list').appendChild(row);
+  return row;
+}
+
+function setStaffMengetik(sedangMengetik) {
+  const row = pastikanTypingRowAda();
+  row.classList.toggle('is-visible', sedangMengetik);
+  if (sedangMengetik) {
+    document.getElementById('pesan-list').appendChild(row);
+    const listEl = document.getElementById('pesan-list');
+    listEl.scrollTop = listEl.scrollHeight;
+  }
+}
+
+function renderPesan(msg, plaintext, gagal = false) {
+  document.getElementById('chat-empty-state')?.remove();
+
+  const row = document.createElement('div');
+  row.className = `chat-row ${msg.pengirim_is_me ? 'is-me' : 'is-them'}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble${gagal ? ' is-failed' : ''}`;
+  bubble.textContent = plaintext;
+
+  row.appendChild(bubble);
+
+  const typingRow = document.getElementById('typing-row');
+  if (typingRow) {
+    document.getElementById('pesan-list').insertBefore(row, typingRow);
+  } else {
+    document.getElementById('pesan-list').appendChild(row);
+  }
+}
+
+async function muatPesanBaru() {
+  const priv = await E2EE.getMyPrivateKey();
+  if (!priv) return;
+
+  const res = await fetch(`{% url 'chat_pesan_list' %}?thread_id=${THREAD_ID}&sejak=${lastMessageId}`);
+  const data = await res.json();
+
+  for (const msg of data.pesan) {
+    try {
+      const plaintext = await E2EE.decryptMessage(msg, priv, msg.wrapped_key_warga);
+      renderPesan(msg, plaintext);
+    } catch (e) {
+      renderPesan(msg, "[gagal dekripsi pesan ini]", true);
+    }
+    lastMessageId = msg.id;
+  }
+
+  setStaffMengetik(!!data.lawan_mengetik);
+
+  const listEl = document.getElementById('pesan-list');
+  listEl.scrollTop = listEl.scrollHeight;
+}
+
+function kabariSedangMengetik() {
+  fetch("{% url 'chat_ketik' %}", {
+    method: "POST",
+    headers: { "X-CSRFToken": csrftoken() },
+    body: new URLSearchParams({ thread_id: THREAD_ID }),
+  });
+}
+
+document.getElementById('input-pesan').addEventListener('input', () => {
+  clearTimeout(typingTimeout);
+  kabariSedangMengetik();
+  typingTimeout = setTimeout(() => {}, 1200);
+});
+
+document.getElementById('form-kirim').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('input-pesan');
+  const teks = input.value.trim();
+  if (!teks) return;
+  input.value = '';
+
+  const myPub = await ambilPublicKeySendiri();
+  const enc = await E2EE.encryptMessage(teks, { warga: myPub, desa: DESA_PUBLIC_KEY });
+
+  await fetch("{% url 'chat_kirim' %}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken() },
+    body: JSON.stringify({ thread_id: THREAD_ID, ...enc }),
+  });
+  muatPesanBaru();
+});
+
+(async () => {
+  await pastikanKunciSendiri();
+  await muatPesanBaru();
+  setInterval(muatPesanBaru, 4000);
+})();
+</script>
+{% endblock %}

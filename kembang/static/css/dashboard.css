@@ -1,0 +1,229 @@
+/* =========================================================
+   Desa Cihowe — Dashboard Admin
+   Diselaraskan ke design system "Gov Clean" di base.css + home.css.
+   Wajib load base.css & home.css duluan (token, navbar, footer, AOS).
+   ========================================================= */
+
+/* ===== Status overview (belum diproses / diproses / selesai) ===== */
+.status-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.1rem;
+  padding: 1.25rem 0 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.4rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.status-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.status-value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.1;
+}
+
+.status-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.status-card-warn .status-icon { background: #FBEBB5; color: #8A6D00; }
+.status-card-warn .status-value { color: #8A6D00; }
+
+.status-card-ok .status-icon { background: #D6EFE0; color: #1B7A43; }
+.status-card-ok .status-value { color: #1B7A43; }
+
+@media (max-width: 900px) {
+  .status-overview { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== Panel grafik ===== */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.25rem;
+  padding: 1.25rem 0 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.4rem 1.5rem;
+}
+
+.admin-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.admin-panel-head h3 {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.admin-panel-head a {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.admin-panel-head a:hover { text-decoration: underline; }
+
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+
+@media (max-width: 900px) {
+  .chart-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Hero kecil buat header dashboard ===== */
+.admin-dash-hero {
+  padding: 2.75rem 1rem 1rem;
+  text-align: center;
+}
+
+.admin-dash-hero .section-eyebrow {
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.admin-dash-hero h2 {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.admin-dash-sub {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ===== Grid kartu statistik ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1.25rem;
+  padding: 1.5rem 0 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--secondary);
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Kartu "Semua Pengajuan" — dibuat menonjol beda dari yang lain */
+.stat-card-highlight {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-color: var(--primary);
+}
+
+.stat-card-highlight .stat-icon {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+}
+
+.stat-card-highlight .stat-value,
+.stat-card-highlight .stat-label {
+  color: var(--white);
+}
+
+.stat-card-highlight:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-dash-hero h2 { font-size: 1.5rem; }
+}

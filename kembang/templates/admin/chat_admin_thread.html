@@ -1,0 +1,224 @@
+{% extends 'partials/base_admin.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+<div class="chat-wrap">
+  <div id="passphrase-gate" class="chat-gate">
+    <div class="chat-gate-icon"><i class="fa-solid fa-lock"></i></div>
+    <h3>Buka Kunci Chat Kantor</h3>
+    <p>Masukkan passphrase kantor untuk membaca & membalas chat dengan <strong>{{ thread.user.username }}</strong>.</p>
+
+    {% csrf_token %}
+    <div class="chat-gate-form">
+      <input type="password" id="input-passphrase" placeholder="Passphrase kantor" autocomplete="off">
+      <button id="btn-unlock">Buka</button>
+    </div>
+    <p id="passphrase-error" class="chat-gate-error"></p>
+    <a href="{% url 'chat_pemulihan_kunci' %}" class="chat-gate-recovery">Lupa passphrase? Pakai kode pemulihan</a>
+  </div>
+
+  <div id="chat-area" class="chat-card" style="display:none;">
+    <div class="chat-header">
+      <div class="chat-header-icon"><i class="fa-solid fa-user"></i></div>
+      <div>
+        <div class="chat-header-title">{{ thread.user.userprofile.nama|default:thread.user.username }}</div>
+        <div class="chat-header-sub"><span class="dot-online"></span> Chat terenkripsi end-to-end</div>
+      </div>
+      <button type="button" id="btn-kunci-chat" class="chat-lock-btn" title="Kunci lagi (harus masukin passphrase ulang)">
+        <i class="fa-solid fa-lock"></i> Kunci Chat
+      </button>
+    </div>
+
+    <div id="pesan-list" class="chat-messages">
+      <div class="chat-empty" id="chat-empty-state">
+        <i class="fa-regular fa-comments"></i>
+        Belum ada pesan dari warga ini.
+      </div>
+    </div>
+
+    <form id="form-kirim" class="chat-input-bar">
+      <input type="text" id="input-pesan" placeholder="Balas pesan..." autocomplete="off" required>
+      <button type="submit" class="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'js/e2ee.js' %}"></script>
+<script>
+const THREAD_ID = {{ thread.id }};
+const WARGA_PUBLIC_KEY = {{ warga_public_key|safe }};
+const DESA_PUBLIC_KEY = {{ desa_public_key|safe }};
+const WRAPPED_PRIVATE_KEY = {{ wrapped_private_key|safe }};
+const SESSION_KEY_NAME = 'desa_private_key_jwk';
+
+let desaPrivateKey = null;
+let lastMessageId = 0;
+let pollingHandle = null;
+
+function csrftoken() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+function tampilkanChatArea() {
+  document.getElementById('passphrase-gate').style.display = 'none';
+  document.getElementById('chat-area').style.display = 'flex';
+}
+
+function tampilkanGate() {
+  document.getElementById('chat-area').style.display = 'none';
+  document.getElementById('passphrase-gate').style.display = 'block';
+  document.getElementById('input-passphrase').value = '';
+  document.getElementById('passphrase-error').textContent = '';
+  if (pollingHandle) clearInterval(pollingHandle);
+}
+
+async function mulaiChat() {
+  tampilkanChatArea();
+  lastMessageId = 0;
+  document.getElementById('pesan-list').innerHTML = `
+    <div class="chat-empty" id="chat-empty-state">
+      <i class="fa-regular fa-comments"></i>
+      Belum ada pesan dari warga ini.
+    </div>`;
+  await muatPesanBaru();
+  if (pollingHandle) clearInterval(pollingHandle);
+  pollingHandle = setInterval(muatPesanBaru, 4000);
+}
+
+document.getElementById('btn-unlock').addEventListener('click', async () => {
+  const pass = document.getElementById('input-passphrase').value;
+  try {
+    desaPrivateKey = await E2EE.unwrapPrivateKeyWithPassphrase(WRAPPED_PRIVATE_KEY, pass);
+  } catch (e) {
+    document.getElementById('passphrase-error').textContent = 'Passphrase salah.';
+    return;
+  }
+
+  // simpan supaya survive refresh — kehapus sendiri kalau tab ditutup
+  const jwk = await crypto.subtle.exportKey('jwk', desaPrivateKey);
+  sessionStorage.setItem(SESSION_KEY_NAME, JSON.stringify(jwk));
+
+  await mulaiChat();
+});
+
+document.getElementById('btn-kunci-chat').addEventListener('click', () => {
+  sessionStorage.removeItem(SESSION_KEY_NAME);
+  desaPrivateKey = null;
+  tampilkanGate();
+});
+
+function pastikanTypingRowAda() {
+  let row = document.getElementById('typing-row');
+  if (row) return row;
+
+  row = document.createElement('div');
+  row.id = 'typing-row';
+  row.className = 'chat-row is-them is-typing';
+  row.innerHTML = `
+    <div class="typing-label">Warga sedang mengetik...</div>
+    <div class="typing-bubble">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>`;
+  document.getElementById('pesan-list').appendChild(row);
+  return row;
+}
+
+function setWargaMengetik(sedangMengetik) {
+  const row = pastikanTypingRowAda();
+  row.classList.toggle('is-visible', sedangMengetik);
+  if (sedangMengetik) {
+    document.getElementById('pesan-list').appendChild(row);
+    const listEl = document.getElementById('pesan-list');
+    listEl.scrollTop = listEl.scrollHeight;
+  }
+}
+
+function renderPesan(msg, plaintext, gagal = false) {
+  document.getElementById('chat-empty-state')?.remove();
+
+  const row = document.createElement('div');
+  row.className = `chat-row ${msg.pengirim_is_staff ? 'is-me' : 'is-them'}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble${gagal ? ' is-failed' : ''}`;
+  bubble.textContent = plaintext;
+  row.appendChild(bubble);
+
+  const typingRow = document.getElementById('typing-row');
+  if (typingRow) {
+    document.getElementById('pesan-list').insertBefore(row, typingRow);
+  } else {
+    document.getElementById('pesan-list').appendChild(row);
+  }
+}
+
+async function muatPesanBaru() {
+  if (!desaPrivateKey) return;
+
+  const res = await fetch(`{% url 'chat_pesan_list' %}?thread_id=${THREAD_ID}&sejak=${lastMessageId}`);
+  const data = await res.json();
+
+  for (const msg of data.pesan) {
+    try {
+      const plaintext = await E2EE.decryptMessage(msg, desaPrivateKey, msg.wrapped_key_desa);
+      renderPesan(msg, plaintext);
+    } catch (e) {
+      renderPesan(msg, "[gagal dekripsi pesan ini]", true);
+    }
+    lastMessageId = msg.id;
+  }
+
+  setWargaMengetik(!!data.lawan_mengetik);
+
+  const listEl = document.getElementById('pesan-list');
+  listEl.scrollTop = listEl.scrollHeight;
+}
+
+function kabariSedangMengetik() {
+  fetch("{% url 'chat_ketik' %}", {
+    method: "POST",
+    headers: { "X-CSRFToken": csrftoken() },
+    body: new URLSearchParams({ thread_id: THREAD_ID }),
+  });
+}
+
+document.getElementById('input-pesan').addEventListener('input', () => {
+  kabariSedangMengetik();
+});
+
+document.getElementById('form-kirim').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('input-pesan');
+  const teks = input.value.trim();
+  if (!teks) return;
+  input.value = '';
+
+  const enc = await E2EE.encryptMessage(teks, { warga: WARGA_PUBLIC_KEY, desa: DESA_PUBLIC_KEY });
+
+  await fetch("{% url 'chat_kirim' %}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken() },
+    body: JSON.stringify({ thread_id: THREAD_ID, ...enc }),
+  });
+  muatPesanBaru();
+});
+
+// ---- auto-restore kalau ada key tersimpan dari sesi sebelumnya (refresh) ----
+(async () => {
+  const saved = sessionStorage.getItem(SESSION_KEY_NAME);
+  if (!saved) return; // tetap tampil gate, minta passphrase seperti biasa
+
+  try {
+    desaPrivateKey = await crypto.subtle.importKey(
+      'jwk', JSON.parse(saved),
+      { name: 'RSA-OAEP', hash: 'SHA-256' }, true, ['decrypt']
+    );
+    await mulaiChat();
+  } catch (e) {
+    // key tersimpan korup/gak valid -> buang, minta passphrase lagi
+    sessionStorage.removeItem(SESSION_KEY_NAME);
+  }
+})();
+</script>
+{% endblock %}

@@ -1,83 +1,118 @@
-{# templates/admin/daftar_domisili.html #}
-{% extends "partials/base.html" %}
+{% extends "partials/base_admin.html" %}
 {% load static %}
 
 {% block css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/daftar_kelahiran.css' %}">
+<link rel="stylesheet" href="{% static 'css/daftar.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Background VANTA -->
-<div id="vanta"></div>
-<h1 class="judul-halaman">Daftar Pengajuan Surat Domisli</h1>
+
+<div class="register-header">
+  <div>
+    <div class="section-eyebrow">Buku Register</div>
+    <h2>Daftar Pengajuan Domisili</h2>
+    <p class="admin-dash-sub">Catatan seluruh pengajuan surat keterangan domisili warga.</p>
+  </div>
+  <div class="register-count">
+    <span class="register-count-value">{{ daftar|length }}</span>
+    <span class="register-count-label">Catatan</span>
+  </div>
+</div>
+
+<div class="register-search">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" class="ledger-search-input" placeholder="Cari nama atau NIK...">
+</div>
+
+
 <div class="table-wrapper">
-  <table class="styled-table">
+  <table class="ledger-table">
     <thead>
       <tr>
+        <th class="col-no">No</th>
         <th>Nama Lengkap</th>
-         <th>Status</th>
-<th>Tanggal Pengajuan</th>
-        <th>Aksi</th>
+        <th>Status</th>
+        <th>Tanggal Pengajuan</th>
+        <th class="col-aksi">Aksi</th>
       </tr>
     </thead>
     <tbody>
-        {% for item in daftar %}
-        <tr>
-          <td>{{ item.nama_lengkap }}</td>
-           <td>{{ item.status }}</td>
-          <td>{{ item.tanggal_pengajuan }}</td>
-          <td>
-            <a href="{% url 'detail_pengajuan_domisili' item.pk %}">Detail</a> |
-            <a href="#" onclick="openDeleteModal({{ item.pk }})">Hapus</a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="5" style="text-align: center;">Belum ada pengajuan.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+      {% for item in daftar %}
+      <tr class="ledger-row status-line-{{ item.status }}"
+          data-search="{{ item.nama_lengkap|lower }} {{ item.user.username }}">
+        <td class="ledger-index">{{ forloop.counter }}</td>
+        <td class="nama-cell">{{ item.nama_lengkap }}</td>
+        <td><span class="stempel stempel-{{ item.status }}">{{ item.get_status_display }}</span></td>
+        <td class="tanggal-cell">{{ item.tanggal_pengajuan|date:"d M Y" }}</td>
+        <td class="aksi-cell">
+          <a class="ledger-action" href="{% url 'detail_pengajuan_domisili' item.pk %}">
+            <i class="fa-solid fa-eye"></i> Detail
+          </a>
+          <a class="ledger-action ledger-action-danger" href="#" onclick="openDeleteModal({{ item.pk }}); return false;">
+            <i class="fa-solid fa-trash"></i> Hapus
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="empty-row">
+          <i class="fa-solid fa-inbox"></i>
+          Belum ada pengajuan domisili.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
-  <!-- Modal Konfirmasi Hapus -->
-  <div id="deleteModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <p>Yakin ingin menghapus data ini?</p>
-      <div class="modal-buttons">
-        <button onclick="confirmDelete()">Ya, Hapus</button>
-        <button onclick="closeDeleteModal()">Batal</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="mobile-table">
+<!-- Versi mobile -->
+<div class="mobile-table">
   {% for item in daftar %}
-  <div class="mobile-row">
-    <div class="mobile-cell"><strong>Nama Lengkap:</strong> {{ item.nama_lengkap }}</div>
-    <div class="mobile-cell"><strong>Status:</strong> {{ item.status }}</div>
-    <div class="mobile-cell"><strong>Tanggal Pengajuan:</strong> {{ item.tanggal_pengajuan }}</div>
-    <div class="mobile-cell">
-      <strong>Aksi:</strong>
-      <a href="{% url 'detail_pengajuan_domisili' item.pk %}">Detail</a> |
-      <a href="#" onclick="openDeleteModal({{ item.pk }})">Hapus</a>
+  <div class="mobile-row" data-search="{{ item.nama_lengkap|lower }} {{ item.user.username }}">
+    <div class="mobile-row-top">
+      <span class="mobile-nama">{{ item.nama_lengkap }}</span>
+      <span class="stempel stempel-{{ item.status }}">{{ item.get_status_display }}</span>
+    </div>
+    <div class="mobile-tanggal">{{ item.tanggal_pengajuan|date:"d M Y" }}</div>
+    <div class="mobile-aksi">
+      <a href="{% url 'detail_pengajuan_domisili' item.pk %}">Detail</a>
+      <a href="#" onclick="openDeleteModal({{ item.pk }}); return false;">Hapus</a>
     </div>
   </div>
   {% empty %}
   <div class="mobile-row">
-    <div class="mobile-cell">Belum ada pengajuan.</div>
+    <div class="empty-row">
+      <i class="fa-solid fa-inbox"></i>
+      Belum ada pengajuan domisili.
+    </div>
   </div>
   {% endfor %}
 </div>
+<form id="deleteForm" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+
+<!-- Modal Konfirmasi Hapus -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <p>Yakin ingin menghapus data pengajuan ini?</p>
+    <div class="modal-buttons">
+      <button onclick="confirmDelete()">Ya, Hapus</button>
+      <button onclick="closeDeleteModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block javascripts %}
+<script src="{% static 'js/search.js' %}"></script>
+
 <script>
   let selectedDeleteId = null;
 
   function openDeleteModal(id) {
-    console.log("Modal dibuka untuk ID:", id); // Debug log
     selectedDeleteId = id;
     document.getElementById('deleteModal').style.display = 'flex';
   }
@@ -89,28 +124,10 @@
 
   function confirmDelete() {
     if (selectedDeleteId) {
-      window.location.href = `{% url 'hapus_domisili' 0 %}`.replace('0', selectedDeleteId);
+      const form = document.getElementById('deleteForm');
+      form.action = `{% url 'hapus_domisili' 0 %}`.replace('0', selectedDeleteId);
+      form.submit();
     }
   }
-</script>
-
-<!-- VANTA.JS Background -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/tengbao/vanta@latest/dist/vanta.dots.min.js"></script>
-<script>
-  VANTA.DOTS({
-    el: "#vanta",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.0,
-    scaleMobile: 1.0,
-    color: 0xffffff,
-      backgroundColor: 0x000000,
-    spacing: 30.00,
-    showLines: true
-  });
 </script>
 {% endblock %}

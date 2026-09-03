@@ -1,0 +1,37 @@
+{% extends 'partials/base_admin.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+<div class="chat-inbox-wrap">
+  <div class="chat-inbox-card">
+    <div class="chat-inbox-header">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 20l1.2-4.1a8.4 8.4 0 0 1-1-4A8.5 8.5 0 0 1 12 3.4a8.5 8.5 0 0 1 9 8.1z"/></svg>
+      <div class="chat-inbox-header-title">Chat Warga</div>
+      {% if threads %}
+        <div class="chat-inbox-header-count">{{ threads|length }} thread</div>
+      {% endif %}
+    </div>
+
+    {% if not threads %}
+      <div class="chat-inbox-empty">
+        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 20l1.2-4.1a8.4 8.4 0 0 1-1-4A8.5 8.5 0 0 1 12 3.4a8.5 8.5 0 0 1 9 8.1z"/></svg>
+        Belum ada chat masuk dari warga.
+      </div>
+    {% else %}
+      <div class="chat-inbox-list">
+        {% for thread in threads %}
+        <a href="{% url 'chat_admin_thread' thread.id %}" class="chat-inbox-row">
+        <div class="chat-inbox-avatar">{{ thread.user.userprofile.nama|default:thread.user.username|slice:":2" }}</div>
+        <div class="chat-inbox-info">
+            <div class="chat-inbox-name">{{ thread.user.userprofile.nama|default:thread.user.username }}</div>
+            <div class="chat-inbox-time">Update terakhir: {{ thread.updated_at|date:"d M Y, H:i" }}</div>
+        </div>
+        <svg class="chat-inbox-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
