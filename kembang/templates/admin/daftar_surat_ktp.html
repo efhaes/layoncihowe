@@ -1,4 +1,5 @@
 {% extends "partials/base_admin.html" %}
+{% load contact_tags %}
 {% load static %}
 
 {% block css %}
@@ -48,6 +49,7 @@
           <a class="ledger-action" href="{% url 'detail_pengajuan_ktp' item.pk %}">
             <i class="fa-solid fa-eye"></i> Detail
           </a>
+          {% include "partials/contact_actions.html" with item=item model_slug="suratktpbarupengantar" jenis_surat="Surat Pengantar KTP" %}
           <a class="ledger-action ledger-action-danger" href="#" onclick="openDeleteModal({{ item.pk }}); return false;">
             <i class="fa-solid fa-trash"></i> Hapus
           </a>
@@ -76,6 +78,7 @@
     <div class="mobile-tanggal">{{ item.tanggal_pengajuan|date:"d M Y" }}</div>
     <div class="mobile-aksi">
       <a href="{% url 'detail_pengajuan_ktp' item.pk %}">Detail</a>
+      {% include "partials/contact_actions.html" with item=item model_slug="suratktpbarupengantar" jenis_surat="Surat Pengantar KTP" %}
       <a href="#" onclick="openDeleteModal({{ item.pk }}); return false;">Hapus</a>
     </div>
   </div>

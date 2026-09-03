@@ -276,6 +276,8 @@ class SuratKematian(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='diajukan')
     hasil_surat = models.FileField(upload_to='hasil_surat/akta_kematian/', blank=True, null=True)
 
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
+
     def __str__(self):
         return f"{self.nama_jenazah} - {self.nik_jenazah}"
 
@@ -290,6 +292,7 @@ class SuratKelahiran(models.Model):
     alamat = models.CharField(max_length=200)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     no_whatsapp = models.CharField(max_length=15, verbose_name="No. WhatsApp")
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
     surat_keterangan_lahir = models.FileField(upload_to='syarat/kelahiran/surat_keterangan/', verbose_name="Surat Keterangan Lahir dari RS/Bidan")
     fotokopi_ktp_kk = models.FileField(upload_to='syarat/kelahiran/ktp_kk/', verbose_name="Fotokopi KTP dan KK Orang Tua")
@@ -308,6 +311,7 @@ class DomisiliUsaha(models.Model):
     jenis_usaha = models.CharField(max_length=100)
     alamat_usaha = models.CharField(max_length=100)
     no_whatsapp = models.CharField(max_length=15, verbose_name="No. WhatsApp")
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
     nib = models.FileField(upload_to='domisili_usaha/nib/', verbose_name="NIB")
     fotokopi_ktp = models.FileField(upload_to='domisili_usaha/KTP/', verbose_name="Fotokopi KTP")
     surat_pengantar_rt_rw = models.FileField(upload_to='domisili_usaha/pengantar_rt_rw/', verbose_name="Surat Pengantar RT/RW")
@@ -335,6 +339,7 @@ class PindahDatang(models.Model):
     no_whatsapp = models.CharField(max_length=15, verbose_name="No. WhatsApp")
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
     hasil_surat = models.FileField(upload_to='hasil_surat/pindah_datang/', blank=True, null=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
 
     def __str__(self):
         return f"Pindah Datang - {self.nama} ({self.nik})"
@@ -354,6 +359,7 @@ class SKTMPengajuan(models.Model):
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     hasil_surat = models.FileField(upload_to='sktm/hasil_surat/', blank=True, null=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
 
     def __str__(self):
         return f"SKTM - {self.nama_lengkap} ({self.nik})"
@@ -371,6 +377,7 @@ class DomisiliPengajuan(models.Model):
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     hasil_surat = models.FileField(upload_to='domisili/hasil_surat/', blank=True, null=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
 
     def __str__(self):
         return f"{self.nama_lengkap} - {self.nik}"
@@ -389,6 +396,7 @@ class SKUPengajuan(models.Model):
     surat_kuasa = models.ImageField(upload_to='SKU/surat_kuasa/', blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     hasil_surat = models.FileField(upload_to='SKU/hasil_surat/', blank=True, null=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -408,6 +416,7 @@ class SuratKTPBaruPengantar(models.Model):
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     hasil_surat = models.FileField(upload_to='hasil_surat/ktp_baru/', blank=True, null=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
 
     def __str__(self):
         return f"KTP Baru - {self.nama_lengkap}"
@@ -425,6 +434,7 @@ class SuratKKPengantar(models.Model):
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     hasil_surat = models.FileField(upload_to='hasil_surat/kk_pengantar/', blank=True, null=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
 
     def __str__(self):
         return f"Pengantar KK - {self.nama_lengkap} ({self.nik})"
@@ -441,6 +451,7 @@ class SuratLainnya(models.Model):
     no_whatsapp = models.CharField(max_length=20)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='diajukan')
     tanggal_pengajuan = models.DateTimeField(auto_now_add=True)
+    alasan_penolakan = models.TextField(blank=True, null=True, verbose_name="Alasan Penolakan")
     hasil_surat = models.FileField(upload_to='surat_lainnya/hasil/', blank=True, null=True)
 
     def __str__(self):
@@ -450,6 +461,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nama = models.CharField(max_length=100)
     alamat = models.CharField(max_length=100)
+    no_whatsapp = models.CharField(max_length=15, blank=True, default='', verbose_name="No. WhatsApp")
 
     def __str__(self):
         return self.nama

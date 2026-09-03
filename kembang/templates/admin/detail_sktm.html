@@ -41,7 +41,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="350">
     <i class="fa fa-envelope-open-text"></i> <strong>Surat Pengantar:</strong>
     {% if sktm.surat_pengantar %}
-      <a href="{{ sktm.surat_pengantar.url }}" target="_blank">Download</a>
+      <a href="{% url 'protected_surat_file' 'sktmpengajuan' sktm.pk 'surat_pengantar' %}" target="_blank">Download</a>
     {% else %}
       Belum diunggah
     {% endif %}
@@ -50,7 +50,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="400">
     <i class="fa fa-id-badge"></i> <strong>Foto KTP:</strong>
     {% if sktm.foto_ktp %}
-      <a href="{{ sktm.foto_ktp.url }}" target="_blank">Lihat</a>
+      <a href="{% url 'protected_surat_file' 'sktmpengajuan' sktm.pk 'foto_ktp' %}" target="_blank">Lihat</a>
     {% else %}
       Belum diunggah
     {% endif %}
@@ -59,7 +59,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="450">
     <i class="fa fa-users"></i> <strong>Foto KK:</strong>
     {% if sktm.foto_kk %}
-      <a href="{{ sktm.foto_kk.url }}" target="_blank">Lihat</a>
+      <a href="{% url 'protected_surat_file' 'sktmpengajuan' sktm.pk 'foto_kk' %}" target="_blank">Lihat</a>
     {% else %}
       Belum diunggah
     {% endif %}
@@ -68,7 +68,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="500">
     <i class="fa fa-file-signature"></i> <strong>Surat Pernyataan:</strong>
     {% if sktm.surat_pernyataan %}
-      <a href="{{ sktm.surat_pernyataan.url }}" target="_blank">Download</a>
+      <a href="{% url 'protected_surat_file' 'sktmpengajuan' sktm.pk 'surat_pernyataan' %}" target="_blank">Download</a>
     {% else %}
       Belum diunggah
     {% endif %}
@@ -81,7 +81,7 @@
   {% if sktm.hasil_surat %}
   <div class="info-card" data-aos="fade-up" data-aos-delay="600">
     <i class="fa fa-check-circle"></i> <strong>Hasil Surat:</strong>
-    <a href="{{ sktm.hasil_surat.url }}" target="_blank">Download Surat</a>
+    <a href="{% url 'protected_surat_file' 'sktmpengajuan' sktm.pk 'hasil_surat' %}" target="_blank">Download Surat</a>
   </div>
   {% endif %}
 
@@ -91,12 +91,7 @@
   <form method="post" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="750">
     {% csrf_token %}
 
-    <label for="status">Status:</label>
-    <select name="status" id="status">
-      <option value="diajukan" {% if sktm.status == "diajukan" %}selected{% endif %}>Diajukan</option>
-      <option value="sedang diproses" {% if sktm.status == "sedang diproses" %}selected{% endif %}>Sedang Diproses</option>
-      <option value="selesai" {% if sktm.status == "selesai" %}selected{% endif %}>Selesai</option>
-    </select>
+    {% include "partials/status_penolakan.html" with object=sktm %}
 
     <label for="hasil_surat">Unggah Hasil Surat (PDF):</label>
     <input type="file" name="hasil_surat" accept=".pdf">
@@ -106,7 +101,7 @@
 
   {% if sktm.hasil_surat %}
   <div class="action-buttons" data-aos="zoom-in" data-aos-delay="800">
-    <a href="https://wa.me/{{ sktm.no_whatsapp|cut:'+' }}?text=Surat%20Keterangan%20Tidak%20Mampu%20Anda%20sudah%20selesai.%20Silakan%20unduh%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ sktm.hasil_surat.url }}" target="_blank">
+    <a href="https://wa.me/{{ sktm.no_whatsapp|cut:'+' }}?text=Surat%20Keterangan%20Tidak%20Mampu%20Anda%20sudah%20selesai.%20Silakan%20unduh%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{% url 'protected_surat_file' 'sktmpengajuan' sktm.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
     </a>
   </div>

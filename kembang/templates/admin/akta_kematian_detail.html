@@ -49,24 +49,24 @@
 
   <div class="info-card" data-aos="fade-up" data-aos-delay="700">
     <i class="fa fa-id-badge"></i> <strong>Foto KTP Jenazah:</strong>
-    <a href="{{ akta.fotokopi_ktp_jenazah.url }}" target="_blank">Lihat</a>
+    <a href="{% url 'protected_surat_file' 'suratkematian' akta.pk 'fotokopi_ktp_jenazah' %}" target="_blank">Lihat</a>
 
   </div>
 
   <div class="info-card" data-aos="fade-up" data-aos-delay="700">
     <i class="fa fa-id-badge"></i> <strong>Foto KK:</strong>
-    <a href="{{ akta.fotokopi_kk.url }}" target="_blank">Lihat</a>
+    <a href="{% url 'protected_surat_file' 'suratkematian' akta.pk 'fotokopi_kk' %}" target="_blank">Lihat</a>
 
   </div>
 
   <div class="info-card" data-aos="fade-up" data-aos-delay="700">
     <i class="fa fa-id-badge"></i> <strong>Surat Keterangan Kematian:</strong>
-    <a href="{{ akta.surat_keterangan_kematian.url }}" target="_blank">Lihat</a>
+    <a href="{% url 'protected_surat_file' 'suratkematian' akta.pk 'surat_keterangan_kematian' %}" target="_blank">Lihat</a>
 
   </div>
     <div class="info-card" data-aos="fade-up" data-aos-delay="700">
     <i class="fa fa-id-badge"></i> <strong>Surat Pengantar RT/RW:</strong>
-    <a href="{{ akta.surat_pengantar_rt_rw.url }}" target="_blank">Lihat</a>
+    <a href="{% url 'protected_surat_file' 'suratkematian' akta.pk 'surat_pengantar_rt_rw' %}" target="_blank">Lihat</a>
 
   </div>
 
@@ -86,7 +86,7 @@
   </div>
   <div class="info-card" data-aos="fade-up" data-aos-delay="700">
     <i class="fa fa-id-badge"></i> <strong>Foto KTP Pelapor:</strong>
-    <a href="{{ akta.fotokopi_ktp_pelapor.url }}" target="_blank">Lihat</a>
+    <a href="{% url 'protected_surat_file' 'suratkematian' akta.pk 'fotokopi_ktp_pelapor' %}" target="_blank">Lihat</a>
   </div>
  
 
@@ -103,12 +103,7 @@
 
   <form method="POST" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="1400">
     {% csrf_token %}
-    <label for="status"><i class="fa fa-flag"></i> Status:</label>
-    <select name="status" id="status" required>
-      <option value="diajukan" {% if akta.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
-      <option value="diproses" {% if akta.status == 'diproses' %}selected{% endif %}>Diproses</option>
-      <option value="selesai" {% if akta.status == 'selesai' %}selected{% endif %}>Selesai</option>
-    </select>
+    {% include "partials/status_penolakan.html" with object=akta %}
 
     <label for="hasil_surat"><i class="fa fa-upload"></i> Upload Hasil Surat (PDF):</label>
     <input type="file" name="hasil_surat" id="hasil_surat" accept=".pdf">
@@ -122,11 +117,11 @@
     </a>
 
     {% if akta.hasil_surat %}
-    <a href="{{ akta.hasil_surat.url }}" target="_blank">
+    <a href="{% url 'protected_surat_file' 'suratkematian' akta.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa fa-download"></i> Download</button>
     </a>
 
-    <a href="https://wa.me/{{ akta.no_whatsapp|cut:'+' }}?text=Berikut%20hasil%20surat%20akta%20kematian%20Anda:%20{{ request.scheme }}://{{ request.get_host }}{{ akta.hasil_surat.url }}" target="_blank">
+    <a href="https://wa.me/{{ akta.no_whatsapp|cut:'+' }}?text=Berikut%20hasil%20surat%20akta%20kematian%20Anda:%20{{ request.scheme }}://{{ request.get_host }}{% url 'protected_surat_file' 'suratkematian' akta.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim WA</button>
     </a>
     {% endif %}

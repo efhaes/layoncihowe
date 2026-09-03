@@ -65,22 +65,22 @@
   <div class="berkas-grid">
     <div class="berkas-item">
       <span class="berkas-check"><i class="fa fa-check"></i></span>
-      <a href="{{ domisili.surat_pengantar.url }}" target="_blank">Surat Pengantar</a>
+      <a href="{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'surat_pengantar' %}" target="_blank">Surat Pengantar</a>
       <i class="fa-solid fa-arrow-up-right-from-square"></i>
     </div>
     <div class="berkas-item">
       <span class="berkas-check"><i class="fa fa-check"></i></span>
-      <a href="{{ domisili.foto_ktp.url }}" target="_blank">Foto KTP</a>
+      <a href="{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'foto_ktp' %}" target="_blank">Foto KTP</a>
       <i class="fa-solid fa-arrow-up-right-from-square"></i>
     </div>
     <div class="berkas-item">
       <span class="berkas-check"><i class="fa fa-check"></i></span>
-      <a href="{{ domisili.foto_kk.url }}" target="_blank">Foto KK</a>
+      <a href="{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'foto_kk' %}" target="_blank">Foto KK</a>
       <i class="fa-solid fa-arrow-up-right-from-square"></i>
     </div>
     <div class="berkas-item">
       <span class="berkas-check"><i class="fa fa-check"></i></span>
-      <a href="{{ domisili.surat_permohonan.url }}" target="_blank">Surat Permohonan</a>
+      <a href="{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'surat_permohonan' %}" target="_blank">Surat Permohonan</a>
       <i class="fa-solid fa-arrow-up-right-from-square"></i>
     </div>
   </div>
@@ -90,19 +90,13 @@
     <h3><i class="fa fa-edit"></i> Update Status &amp; Upload Surat</h3>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      <label for="status"><i class="fa fa-flag"></i> Status</label>
-      <select name="status" id="status" required>
-        <option value="diajukan" {% if domisili.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
-        <option value="diproses" {% if domisili.status == 'diproses' %}selected{% endif %}>Sedang Diproses</option>
-        <option value="ditolak" {% if domisili.status == 'ditolak' %}selected{% endif %}>Ditolak</option>
-        <option value="selesai" {% if domisili.status == 'selesai' %}selected{% endif %}>Selesai</option>
-      </select>
+      {% include "partials/status_penolakan.html" with object=domisili %}
 
       <label for="hasil_surat"><i class="fa fa-upload"></i> Upload Hasil Surat (PDF)</label>
       {% if domisili.hasil_surat %}
         <div class="current-file">
           <i class="fa-solid fa-file-pdf"></i>
-          <a href="{{ domisili.hasil_surat.url }}" target="_blank">Lihat file yang sudah diunggah</a>
+          <a href="{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'hasil_surat' %}" target="_blank">Lihat file yang sudah diunggah</a>
           <span>&middot; pilih file baru di bawah untuk mengganti</span>
         </div>
       {% endif %}
@@ -118,11 +112,11 @@
     </a>
 
     {% if domisili.hasil_surat %}
-    <a href="{{ domisili.hasil_surat.url }}" target="_blank">
+    <a href="{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa fa-download"></i> Download</button>
     </a>
 
-    <a href="https://wa.me/{{ domisili.no_whatsapp|cut:'+' }}?text=Berikut%20hasil%20surat%20domisili%20Anda:%20{{ request.scheme }}://{{ request.get_host }}{{ domisili.hasil_surat.url }}" target="_blank">
+    <a href="https://wa.me/{{ domisili.no_whatsapp|cut:'+' }}?text=Berikut%20hasil%20surat%20domisili%20Anda:%20{{ request.scheme }}://{{ request.get_host }}{% url 'protected_surat_file' 'domisilipengajuan' domisili.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim WA</button>
     </a>
     {% endif %}

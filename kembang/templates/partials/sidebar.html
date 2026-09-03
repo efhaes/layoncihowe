@@ -117,10 +117,12 @@
     <a href="{% url 'home' %}" class="admin-nav-link">
       <i class="fa-solid fa-arrow-left"></i> Lihat Situs
     </a>
-    <!-- Ganti 'logout_view' sesuai nama URL logout di urls.py kamu -->
-    <a href="{% url 'logout' %}" class="admin-nav-link admin-nav-link-danger">
-      <i class="fa-solid fa-right-from-bracket"></i> Keluar
-    </a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="admin-nav-link admin-nav-link-danger">
+        <i class="fa-solid fa-right-from-bracket"></i> Keluar
+      </button>
+    </form>
   </div>
 
 </aside>

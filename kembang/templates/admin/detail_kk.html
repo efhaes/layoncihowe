@@ -72,7 +72,7 @@
     <div class="berkas-item">
       {% if kk.foto_kk %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ kk.foto_kk.url }}" target="_blank">Foto KK</a>
+        <a href="{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'foto_kk' %}" target="_blank">Foto KK</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -82,7 +82,7 @@
     <div class="berkas-item">
       {% if kk.ijazah %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ kk.ijazah.url }}" target="_blank">Ijazah</a>
+        <a href="{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'ijazah' %}" target="_blank">Ijazah</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -92,7 +92,7 @@
     <div class="berkas-item">
       {% if kk.surat_kelahiran %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ kk.surat_kelahiran.url }}" target="_blank">Surat Kelahiran</a>
+        <a href="{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'surat_kelahiran' %}" target="_blank">Surat Kelahiran</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -102,7 +102,7 @@
     <div class="berkas-item">
       {% if kk.surat_kematian %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ kk.surat_kematian.url }}" target="_blank">Surat Kematian</a>
+        <a href="{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'surat_kematian' %}" target="_blank">Surat Kematian</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -116,18 +116,13 @@
     <h3><i class="fa fa-edit"></i> Update Status &amp; Hasil Surat</h3>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      <label for="status"><i class="fa fa-flag"></i> Status</label>
-      <select name="status" id="status" required>
-        <option value="diajukan" {% if kk.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
-        <option value="sedang diproses" {% if kk.status == 'sedang diproses' %}selected{% endif %}>Sedang Diproses</option>
-        <option value="selesai" {% if kk.status == 'selesai' %}selected{% endif %}>Selesai</option>
-      </select>
+      {% include "partials/status_penolakan.html" with object=kk %}
 
       <label for="hasil_surat"><i class="fa fa-upload"></i> Unggah Hasil Surat (PDF)</label>
       {% if kk.hasil_surat %}
         <div class="current-file">
           <i class="fa-solid fa-file-pdf"></i>
-          <a href="{{ kk.hasil_surat.url }}" target="_blank">Lihat file yang sudah diunggah</a>
+          <a href="{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'hasil_surat' %}" target="_blank">Lihat file yang sudah diunggah</a>
           <span>&middot; pilih file baru di bawah untuk mengganti</span>
         </div>
       {% endif %}
@@ -143,11 +138,11 @@
     </a>
 
     {% if kk.hasil_surat %}
-    <a href="{{ kk.hasil_surat.url }}" target="_blank">
+    <a href="{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa fa-download"></i> Download</button>
     </a>
 
-    <a href="https://wa.me/{{ kk.no_whatsapp|cut:'+' }}?text=Surat%20pengantar%20KK%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ kk.hasil_surat.url }}" target="_blank">
+    <a href="https://wa.me/{{ kk.no_whatsapp|cut:'+' }}?text=Surat%20pengantar%20KK%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{% url 'protected_surat_file' 'suratkkpengantar' kk.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
     </a>
     {% endif %}

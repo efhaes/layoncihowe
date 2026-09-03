@@ -78,7 +78,7 @@
     <div class="berkas-item">
       {% if pengajuan.fotokopi_ktp %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ pengajuan.fotokopi_ktp.url }}" target="_blank">Fotokopi KTP</a>
+        <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'fotokopi_ktp' %}" target="_blank">Fotokopi KTP</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -88,7 +88,7 @@
     <div class="berkas-item">
       {% if pengajuan.fotokopi_kk %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ pengajuan.fotokopi_kk.url }}" target="_blank">Fotokopi KK</a>
+        <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'fotokopi_kk' %}" target="_blank">Fotokopi KK</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -98,7 +98,7 @@
     <div class="berkas-item">
       {% if pengajuan.nib %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ pengajuan.nib.url }}" target="_blank">NIB</a>
+        <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'nib' %}" target="_blank">NIB</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -108,7 +108,7 @@
     <div class="berkas-item">
       {% if pengajuan.surat_pengantar_rt_rw %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ pengajuan.surat_pengantar_rt_rw.url }}" target="_blank">Surat Pengantar RT/RW</a>
+        <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'surat_pengantar_rt_rw' %}" target="_blank">Surat Pengantar RT/RW</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -118,7 +118,7 @@
     <div class="berkas-item">
       {% if pengajuan.foto_lokasi_usaha %}
         <span class="berkas-check"><i class="fa fa-check"></i></span>
-        <a href="{{ pengajuan.foto_lokasi_usaha.url }}" target="_blank">Foto Lokasi Usaha</a>
+        <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'foto_lokasi_usaha' %}" target="_blank">Foto Lokasi Usaha</a>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       {% else %}
         <span class="berkas-check berkas-missing"><i class="fa fa-xmark"></i></span>
@@ -132,18 +132,13 @@
     <h3><i class="fa fa-edit"></i> Update Status &amp; Upload Surat</h3>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      <label for="status"><i class="fa fa-flag"></i> Status</label>
-      <select name="status" id="status" required>
-        <option value="diajukan" {% if pengajuan.status == 'diajukan' %}selected{% endif %}>Diajukan</option>
-        <option value="diproses" {% if pengajuan.status == 'diproses' %}selected{% endif %}>Sedang Diproses</option>
-        <option value="selesai" {% if pengajuan.status == 'selesai' %}selected{% endif %}>Selesai</option>
-      </select>
+      {% include "partials/status_penolakan.html" with object=pengajuan %}
 
       <label for="hasil_surat"><i class="fa fa-upload"></i> Unggah Hasil Surat (PDF)</label>
       {% if pengajuan.hasil_surat %}
         <div class="current-file">
           <i class="fa-solid fa-file-pdf"></i>
-          <a href="{{ pengajuan.hasil_surat.url }}" target="_blank">Lihat file yang sudah diunggah</a>
+          <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'hasil_surat' %}" target="_blank">Lihat file yang sudah diunggah</a>
           <span>&middot; pilih file baru di bawah untuk mengganti</span>
         </div>
       {% endif %}
@@ -159,11 +154,11 @@
     </a>
 
     {% if pengajuan.hasil_surat %}
-    <a href="{{ pengajuan.hasil_surat.url }}" target="_blank">
+    <a href="{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa fa-download"></i> Download</button>
     </a>
 
-    <a href="https://wa.me/{{ pengajuan.no_whatsapp|cut:'+' }}?text=Surat%20Domisili%20Usaha%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ pengajuan.hasil_surat.url }}" target="_blank">
+    <a href="https://wa.me/{{ pengajuan.no_whatsapp|cut:'+' }}?text=Surat%20Domisili%20Usaha%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{% url 'protected_surat_file' 'domisiliusaha' pengajuan.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
     </a>
     {% endif %}

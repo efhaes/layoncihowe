@@ -1,4 +1,7 @@
 import json
+import base64
+import mimetypes
+from pathlib import Path
 from datetime import datetime, timedelta
 from collections import defaultdict
 from itertools import chain
@@ -8,11 +11,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, FileResponse
 from django.views.decorators.http import require_POST
 
 
@@ -20,7 +24,8 @@ from .models import (
     SuratKematian, SuratKelahiran, PindahDatang, UserProfile,
     SKTMPengajuan, Announcement, AnnouncementImage, SuratKKPengantar,
     SuratKTPBaruPengantar, DomisiliUsaha, SuratLainnya,
-    DomisiliPengajuan, SKUPengajuan, ProfilDesa, TentangDesa, StrukturOrganisasi,VisiItem, MisiItem
+    DomisiliPengajuan, SKUPengajuan, ProfilDesa, TentangDesa, StrukturOrganisasi,VisiItem, MisiItem,
+    STATUS_CHOICES,
 )
 from .forms import (
     SuratKematianForm, SuratKelahiranForm, PindahDatangForm, SKUPengajuanForm,
@@ -59,6 +64,147 @@ SURAT_MODEL_WHITELIST = {
     'suratlainnya': SuratLainnya,
 }
 
+SURAT_FILE_FIELDS = {
+    model: {
+        field.name for field in model._meta.get_fields()
+        if getattr(field, 'upload_to', None) is not None
+    }
+    for model in SURAT_MODEL_WHITELIST.values()
+}
+
+VALID_STATUS_VALUES = {value for value, _ in STATUS_CHOICES}
+MAX_RESULT_FILE_SIZE = 10 * 1024 * 1024
+MAX_PUBLIC_KEY_BODY_SIZE = 8 * 1024
+
+
+def invalid_status_redirect(request, status, view_name, pk):
+    if status not in VALID_STATUS_VALUES:
+        messages.error(request, "Status pengajuan tidak valid.")
+        return redirect(view_name, pk=pk)
+    return None
+
+
+def apply_status_update(request, obj, view_name, pk):
+    status = request.POST.get('status')
+    invalid_response = invalid_status_redirect(request, status, view_name, pk)
+    if invalid_response:
+        return invalid_response
+
+    alasan_penolakan = (request.POST.get('alasan_penolakan') or '').strip()
+    if status == 'ditolak' and not alasan_penolakan:
+        messages.error(request, "Alasan penolakan wajib diisi.")
+        return redirect(view_name, pk=pk)
+
+    obj.status = status
+    obj.alasan_penolakan = alasan_penolakan if status == 'ditolak' else None
+    return None
+
+
+def invalid_result_file_redirect(request, uploaded_file, view_name, pk):
+    if uploaded_file is None:
+        return None
+
+    valid_name = uploaded_file.name.lower().endswith('.pdf')
+    valid_type = uploaded_file.content_type in (None, '', 'application/pdf')
+    valid_size = 0 < uploaded_file.size <= MAX_RESULT_FILE_SIZE
+
+    try:
+        signature = uploaded_file.read(5)
+        uploaded_file.seek(0)
+    except (AttributeError, OSError):
+        signature = b''
+
+    if not (valid_name and valid_type and valid_size and signature == b'%PDF-'):
+        messages.error(request, "Hasil surat harus berupa file PDF yang valid dan berukuran maksimal 10 MB.")
+        return redirect(view_name, pk=pk)
+
+    return None
+
+
+@login_required
+def protected_surat_file(request, model, pk, field):
+    model_class = SURAT_MODEL_WHITELIST.get(model.lower())
+    if model_class is None or field not in SURAT_FILE_FIELDS[model_class]:
+        return HttpResponseNotFound("File tidak ditemukan.")
+
+    obj = get_object_or_404(model_class, pk=pk)
+    if not request.user.is_staff and obj.user_id != request.user.id:
+        return HttpResponseForbidden("Anda tidak memiliki akses ke file ini.")
+
+    uploaded_file = getattr(obj, field, None)
+    if not uploaded_file:
+        return HttpResponseNotFound("File tidak ditemukan.")
+
+    media_root = Path(settings.MEDIA_ROOT).resolve()
+    file_path = Path(uploaded_file.path).resolve()
+    try:
+        file_path.relative_to(media_root)
+    except ValueError:
+        return HttpResponseForbidden("Lokasi file tidak valid.")
+
+    if not file_path.is_file():
+        return HttpResponseNotFound("File tidak ditemukan.")
+
+    return FileResponse(
+        file_path.open('rb'),
+        as_attachment=True,
+        filename=file_path.name,
+    )
+
+
+PUBLIC_MEDIA_PREFIXES = ('announcement_images/', 'profil_desa/', 'struktur_organisasi/')
+
+
+def public_media_file(request, file_path):
+    if not file_path.startswith(PUBLIC_MEDIA_PREFIXES):
+        return HttpResponseNotFound("File tidak ditemukan.")
+
+    media_root = Path(settings.MEDIA_ROOT).resolve()
+    requested_path = (media_root / file_path).resolve()
+    try:
+        requested_path.relative_to(media_root)
+    except ValueError:
+        return HttpResponseForbidden("Lokasi file tidak valid.")
+
+    if not requested_path.is_file():
+        return HttpResponseNotFound("File tidak ditemukan.")
+
+    content_type, _ = mimetypes.guess_type(requested_path.name)
+    return FileResponse(requested_path.open('rb'), content_type=content_type)
+
+
+@login_required
+@staff_required
+def chat_from_pengajuan(request, model, pk):
+    model_class = SURAT_MODEL_WHITELIST.get(model.lower())
+    if model_class is None:
+        return HttpResponseNotFound("Pengajuan tidak ditemukan.")
+
+    pengajuan = get_object_or_404(model_class, pk=pk)
+    thread, _ = ChatThread.objects.get_or_create(user=pengajuan.user)
+    return redirect('chat_admin_thread', thread_id=thread.pk)
+
+
+def valid_public_key_jwk(public_key_jwk):
+    if not isinstance(public_key_jwk, dict):
+        return False
+    if public_key_jwk.get('kty') != 'RSA':
+        return False
+    if not isinstance(public_key_jwk.get('n'), str) or not isinstance(public_key_jwk.get('e'), str):
+        return False
+    if any(private_field in public_key_jwk for private_field in ('d', 'p', 'q', 'dp', 'dq', 'qi', 'oth')):
+        return False
+    if public_key_jwk.get('e') != 'AQAB':
+        return False
+
+    try:
+        modulus = base64.urlsafe_b64decode(public_key_jwk['n'] + '===')
+        base64.urlsafe_b64decode(public_key_jwk['e'] + '===')
+    except (TypeError, ValueError):
+        return False
+
+    return len(modulus) == 256
+
 
 def get_tanggal(obj):
     return (
@@ -87,6 +233,7 @@ def persyaratan(request):
     return render(request, 'profile/persyaratan.html')
 
 
+@require_POST
 def logout_view(request):
     logout(request)
     return redirect('home')
@@ -281,7 +428,7 @@ def tentang(request):
 
 
 def profil(request):
-    return render(request, 'profile/profil.html')
+    return render(request, 'profile/tentang.html')
 
 
 def home(request):
@@ -341,7 +488,14 @@ def register(request):
             nama = form.cleaned_data['nama']
             alamat = form.cleaned_data['alamat']
             email = form.cleaned_data['email']
+            no_whatsapp = form.cleaned_data.get('no_whatsapp', '')
             password = form.cleaned_data['password']
+
+            try:
+                validate_password(password)
+            except DjangoValidationError as e:
+                form.add_error('password', e)
+                return render(request, 'profile/register.html', {'form': form})
 
             if User.objects.filter(username=nik).exists():
                 messages.error(request, "NIK sudah terdaftar.")
@@ -352,7 +506,12 @@ def register(request):
                 email=email,
                 password=make_password(password),  # password sudah di-hash, bagus
             )
-            UserProfile.objects.create(user=user, nama=nama, alamat=alamat)
+            UserProfile.objects.create(
+                user=user,
+                nama=nama,
+                alamat=alamat,
+                no_whatsapp=no_whatsapp,
+            )
 
             messages.success(request, "Registrasi berhasil! Silakan login.")
             return redirect('login')
@@ -691,7 +850,14 @@ def hapus_kematian(request, pk):
 def detail_pengajuan_akta_kematian(request, pk):
     akta = get_object_or_404(SuratKematian, pk=pk)
     if request.method == 'POST':
-        akta.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, akta, 'detail_pengajuan_akta_kematian', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_akta_kematian', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             akta.hasil_surat = hasil_surat
@@ -749,7 +915,14 @@ def hapus_kelahiran(request, pk):
 def detail_pengajuan_kelahiran(request, pk):
     akta = get_object_or_404(SuratKelahiran, pk=pk)
     if request.method == 'POST':
-        akta.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, akta, 'detail_pengajuan_kelahiran', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_kelahiran', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             akta.hasil_surat = hasil_surat
@@ -808,7 +981,14 @@ def hapus_pindah_datang(request, pk):
 def detail_pindah_datang(request, pk):
     datang = get_object_or_404(PindahDatang, pk=pk)
     if request.method == 'POST':
-        datang.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, datang, 'detail_pengajuan_pindah_datang', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_pindah_datang', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             datang.hasil_surat = hasil_surat
@@ -865,7 +1045,14 @@ def hapus_domisili_usaha(request, pk):
 def detail_domisili_usaha(request, pk):
     pengajuan = get_object_or_404(DomisiliUsaha, pk=pk)
     if request.method == 'POST':
-        pengajuan.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, pengajuan, 'detail_skdu', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_skdu', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             pengajuan.hasil_surat = hasil_surat
@@ -924,7 +1111,14 @@ def hapus_sktm(request, pk):
 def detail_sktm(request, pk):
     sktm = get_object_or_404(SKTMPengajuan, pk=pk)
     if request.method == 'POST':
-        sktm.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, sktm, 'detail_pengajuan_sktm', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_sktm', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             sktm.hasil_surat = hasil_surat
@@ -983,7 +1177,14 @@ def pengajuan_domisili(request):
 def detail_domisili(request, pk):
     domisili = get_object_or_404(DomisiliPengajuan, pk=pk)
     if request.method == 'POST':
-        domisili.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, domisili, 'detail_pengajuan_domisili', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_domisili', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             domisili.hasil_surat = hasil_surat
@@ -1043,7 +1244,14 @@ def detail_sku(request, pk):
     sku = get_object_or_404(SKUPengajuan, pk=pk)
 
     if request.method == 'POST':
-        sku.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, sku, 'detail_pengajuan_sku', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_sku', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             sku.hasil_surat = hasil_surat
@@ -1052,11 +1260,11 @@ def detail_sku(request, pk):
         return redirect('detail_pengajuan_sku', pk=pk)
 
     file_fields = [
-        ("Surat Pengantar", sku.surat_pengantar),
-        ("Surat Permohonan", sku.surat_permohonan),
-        ("Foto KTP", sku.foto_ktp),
-        ("Foto KK", sku.foto_kk),
-        ("Surat Kuasa", sku.surat_kuasa),
+        ("Surat Pengantar", "surat_pengantar", sku.surat_pengantar),
+        ("Surat Permohonan", "surat_permohonan", sku.surat_permohonan),
+        ("Foto KTP", "foto_ktp", sku.foto_ktp),
+        ("Foto KK", "foto_kk", sku.foto_kk),
+        ("Surat Kuasa", "surat_kuasa", sku.surat_kuasa),
     ]
 
     return render(request, 'admin/detail_sku.html', {'sku': sku, 'file_fields': file_fields})
@@ -1111,7 +1319,14 @@ def pengajuan_surat_ktp(request):
 def detail_ktp(request, pk):
     ktp = get_object_or_404(SuratKTPBaruPengantar, pk=pk)
     if request.method == 'POST':
-        ktp.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, ktp, 'detail_pengajuan_ktp', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_ktp', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             ktp.hasil_surat = hasil_surat
@@ -1170,7 +1385,14 @@ def pengajuan_surat_kk(request):
 def detail_kk(request, pk):
     kk = get_object_or_404(SuratKKPengantar, pk=pk)
     if request.method == 'POST':
-        kk.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, kk, 'detail_pengajuan_kk', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_pengajuan_kk', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             kk.hasil_surat = hasil_surat
@@ -1187,6 +1409,17 @@ def detail_kk(request, pk):
 @login_required
 def pengajuan_surat_lainnya(request):
     if request.method == 'POST':
+        sudah_ada = SuratLainnya.objects.filter(
+            user=request.user, status__in=['diajukan', 'diproses']
+        ).exists()
+        if sudah_ada:
+            messages.warning(
+                request,
+                "Anda sudah memiliki pengajuan yang sedang diproses.",
+                extra_tags='pengajuan_lainnya',
+            )
+            return redirect('pengajuan_surat_lainnya')
+
         form = SuratLainnyaForm(request.POST, request.FILES)
         if form.is_valid():
             pengajuan = form.save(commit=False)
@@ -1213,7 +1446,14 @@ def daftar_surat_lainnya(request):
 def detail_surat_lainnya(request, pk):
     surat = get_object_or_404(SuratLainnya, pk=pk)
     if request.method == 'POST':
-        surat.status = request.POST.get('status')
+        invalid_response = apply_status_update(request, surat, 'detail_surat_lainnya', pk)
+        if invalid_response:
+            return invalid_response
+        invalid_response = invalid_result_file_redirect(
+            request, request.FILES.get('hasil_surat'), 'detail_surat_lainnya', pk
+        )
+        if invalid_response:
+            return invalid_response
         hasil_surat = request.FILES.get('hasil_surat')
         if hasil_surat:
             surat.hasil_surat = hasil_surat
@@ -1244,6 +1484,7 @@ def hapus_surat_lainnya(request, pk):
 def cek_status_surat(request):
     hasil = None
     jenis = request.GET.get('jenis')
+    file_model = None
 
     jenis_map = {
         'kelahiran': SuratKelahiran,
@@ -1261,8 +1502,13 @@ def cek_status_surat(request):
     model_class = jenis_map.get(jenis)
     if model_class is not None:
         hasil = model_class.objects.filter(user=request.user)
+        file_model = model_class._meta.model_name
 
-    return render(request, 'profile/cek_status.html', {'hasil': hasil, 'jenis': jenis})
+    return render(request, 'profile/cek_status.html', {
+        'hasil': hasil,
+        'jenis': jenis,
+        'file_model': file_model,
+    })
 
 
 # =========================================================================
@@ -1356,14 +1602,17 @@ def chat_daftar_kunci(request):
     Dipanggil sekali oleh JS pas warga pertama kali buka chat & belum
     punya keypair di IndexedDB-nya. Menyimpan public key ke server.
     """
+    if len(request.body) > MAX_PUBLIC_KEY_BODY_SIZE:
+        return HttpResponseBadRequest("Payload public key terlalu besar.")
+
     try:
         body = json_lib.loads(request.body)
     except json_lib.JSONDecodeError:
         return HttpResponseBadRequest("Body bukan JSON valid.")
 
     pub_jwk = body.get('public_key_jwk')
-    if not pub_jwk:
-        return HttpResponseBadRequest("public_key_jwk wajib diisi.")
+    if not valid_public_key_jwk(pub_jwk):
+        return HttpResponseBadRequest("public_key_jwk RSA tidak valid.")
 
     obj, created = UserEncryptionKey.objects.get_or_create(
         user=request.user,

@@ -1,0 +1,322 @@
+/* Shared admin controls: compact, calm, and consistent across submission pages. */
+.admin-sidebar-footer form {
+  margin: 0;
+}
+
+.admin-sidebar-footer .admin-nav-link {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-sidebar-footer .admin-nav-link,
+.admin-sidebar-footer > a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, .82);
+  text-decoration: none;
+  font: inherit;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+.admin-sidebar-footer .admin-nav-link:hover,
+.admin-sidebar-footer > a:hover {
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+}
+
+.admin-sidebar-footer .admin-nav-link-danger:hover {
+  background: rgba(198, 40, 40, .18);
+  color: #ffd0cc;
+}
+
+.table-wrapper {
+  padding: 0 24px 8px;
+  border: 1px solid #E2E9E5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(24, 59, 45, .05);
+}
+
+.admin-content .ledger-table th {
+  padding: 14px 20px 12px;
+  font-size: 12px;
+  letter-spacing: .04em;
+  border-bottom: 1px solid #D8E2DD;
+}
+
+.admin-content .ledger-row {
+  border-bottom: 1px solid #EEF2EF;
+}
+
+.admin-content .ledger-row td {
+  padding: 14px 20px;
+  vertical-align: middle;
+}
+
+.admin-content .stempel {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  transform: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.admin-content .stempel-diajukan {
+  background: #FFF7E6;
+  color: #A96300;
+}
+
+.admin-content .stempel-diproses {
+  background: #EAF2FF;
+  color: #245FAF;
+}
+
+.admin-content .stempel-ditolak {
+  background: #FDECEC;
+  color: #B42318;
+}
+
+.admin-content .stempel-selesai {
+  background: #E9F6EF;
+  color: #18794E;
+}
+
+.admin-content .aksi-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.admin-content .ledger-action,
+.admin-content .contact-actions .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  margin-left: 0;
+  padding: 0 12px;
+  border: 1px solid #D8E2DD;
+  border-radius: 8px;
+  background: #fff;
+  color: #245B47;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.admin-content .ledger-action:hover {
+  background: #F3F8F5;
+  border-color: #BBD5C7;
+  color: #176B4A;
+  text-decoration: none;
+}
+
+.admin-content .contact-actions .dropdown-toggle {
+  border-color: #CFE7DA;
+  background: #EDF7F2;
+  color: #176B4A;
+}
+
+.admin-content .contact-actions .dropdown-toggle:hover,
+.admin-content .contact-actions .dropdown-toggle:focus {
+  border-color: #A9CEB9;
+  background: #E2F3E9;
+  color: #145B40;
+}
+
+.admin-content .contact-actions .dropdown-menu {
+  min-width: 190px;
+  padding: 6px;
+  border: 1px solid #E3E9E6;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(24, 59, 45, .10);
+}
+
+.admin-content .contact-actions .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.admin-content .contact-actions .dropdown-item:hover,
+.admin-content .contact-actions .dropdown-item:focus {
+  background: #EDF7F2;
+  color: #176B4A;
+}
+
+.admin-content .ledger-action-danger {
+  width: 36px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  color: #8E3B36;
+}
+
+.admin-content .ledger-action-danger:hover {
+  border-color: #F5CCCC;
+  background: #FFF1F1;
+  color: #B42318;
+}
+
+.admin-content .ledger-action-danger span {
+  display: none;
+}
+
+.admin-content .alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.admin-content .alert-danger,
+.admin-content .alert-error {
+  border: 1px solid #F5CCCC;
+  background: #FFF5F5;
+  color: #9F2424;
+}
+
+.admin-content .alert-warning {
+  border: 1px solid #F2D9A6;
+  background: #FFF9EC;
+  color: #8A5A00;
+}
+
+.admin-content .alert::before {
+  content: "\f06a";
+  flex: 0 0 auto;
+  font-family: "Font Awesome 6 Free";
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.admin-content .alert-success {
+  border: 1px solid #CFE7DA;
+  background: #EDF7F2;
+  color: #176B4A;
+}
+
+.admin-content .alert .btn-close {
+  width: 30px;
+  height: 30px;
+  margin: 0 0 0 auto;
+  padding: 0;
+  flex: 0 0 30px;
+  opacity: .7;
+}
+
+.admin-content .alert .btn-close:hover {
+  opacity: 1;
+}
+
+#alasan-wrapper {
+  max-width: 620px;
+}
+
+#alasan_penolakan {
+  min-height: 86px;
+  resize: vertical;
+}
+
+#alasan-wrapper::after {
+  content: "Jelaskan alasan agar warga mengetahui dokumen atau data yang perlu diperbaiki.";
+  display: block;
+  margin-top: 5px;
+  color: #6B7C73;
+  font-size: 12px;
+}
+
+.status-rejection-reason {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid #B42318;
+  border-radius: 6px;
+  background: #FFF5F5;
+  color: #7C2D27;
+  font-size: 13px;
+}
+
+.status-rejection-reason strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #B42318;
+  font-size: 12px;
+}
+
+.status-rejection-reason p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .table-wrapper {
+    padding: 0 14px 6px;
+  }
+
+  .ledger-table th,
+  .ledger-row td {
+    padding: 12px 10px;
+  }
+
+  .admin-content .aksi-cell {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    min-width: 150px;
+  }
+
+  .admin-content .ledger-action,
+  .admin-content .contact-actions .dropdown-toggle {
+    min-height: 36px;
+    padding: 0 10px;
+  }
+
+  .admin-content .mobile-row,
+  .admin-content .mobile-aksi,
+  .admin-content .contact-actions,
+  .admin-content .mixed-card,
+  .admin-content .mixed-card-container {
+    position: relative;
+    overflow: visible;
+  }
+
+  .admin-content .mobile-aksi {
+    z-index: 2;
+  }
+
+  .admin-content .mixed-card {
+    z-index: 1;
+  }
+
+  .admin-content .mixed-card:has(.contact-actions .dropdown-menu.show) {
+    z-index: 50;
+    transform: none;
+  }
+
+  .admin-content .contact-actions .dropdown-menu {
+    z-index: 1055;
+  }
+}

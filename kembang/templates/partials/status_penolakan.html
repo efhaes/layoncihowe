@@ -1,0 +1,23 @@
+<label for="status" class="form-label">Status:</label>
+<select name="status" id="status" class="form-select" required>
+  <option value="diajukan" {% if object.status == "diajukan" %}selected{% endif %}>Diajukan</option>
+  <option value="diproses" {% if object.status == "diproses" %}selected{% endif %}>Sedang Diproses</option>
+  <option value="ditolak" {% if object.status == "ditolak" %}selected{% endif %}>Ditolak</option>
+  <option value="selesai" {% if object.status == "selesai" %}selected{% endif %}>Sudah Diproses</option>
+</select>
+
+<div id="alasan-wrapper" class="mt-3" {% if object.status != "ditolak" %}hidden{% endif %}>
+  <label for="alasan_penolakan" class="form-label">Alasan Penolakan</label>
+  <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="4" placeholder="Tuliskan alasan pengajuan ditolak...">{{ object.alasan_penolakan|default:'' }}</textarea>
+</div>
+
+<script>
+  (() => {
+    const status = document.getElementById('status');
+    const wrapper = document.getElementById('alasan-wrapper');
+    if (!status || !wrapper) return;
+    status.addEventListener('change', () => {
+      wrapper.hidden = status.value !== 'ditolak';
+    });
+  })();
+</script>

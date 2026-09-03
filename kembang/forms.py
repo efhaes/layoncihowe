@@ -101,6 +101,10 @@ class SKUPengajuanForm(BaseSuratForm):
         required=False,
         help_text="Boleh dikosongkan — kalau kosong, otomatis diisi pakai NIK kamu."
     )
+    no_whatsapp = forms.CharField(
+        max_length=15, required=False, label='No. WhatsApp',
+        help_text="Contoh: 08xxxxxxxxxx atau 628xxxxxxxxxx.",
+    )
 
     class Meta:
         model = SKUPengajuan
@@ -190,6 +194,10 @@ class RegisterForm(forms.Form):
     alamat = forms.CharField(
         widget=forms.TextInput(attrs={'rows': 3}), label='Alamat',
         error_messages={'required': 'Alamat wajib diisi.'},
+    )
+    no_whatsapp = forms.CharField(
+        max_length=15, required=False, label='No. WhatsApp',
+        help_text="Contoh: 08xxxxxxxxxx atau 628xxxxxxxxxx.",
     )
     email = forms.EmailField(
         label='Email',

@@ -1,0 +1,16 @@
+{% load contact_tags %}
+<div class="contact-actions dropdown">
+  <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="fa-solid fa-comments"></i> Hubungi
+  </button>
+  <ul class="dropdown-menu">
+    {% with wa=item|whatsapp_number %}
+      {% if wa %}
+        <li><a class="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://wa.me/{{ wa }}?text={{ item|whatsapp_message:jenis_surat|urlencode }}"><i class="fa-brands fa-whatsapp text-success"></i> WhatsApp</a></li>
+      {% else %}
+        <li><span class="dropdown-item text-muted"><i class="fa-brands fa-whatsapp"></i> WhatsApp tidak tersedia</span></li>
+      {% endif %}
+    {% endwith %}
+    <li><a class="dropdown-item" href="{% url 'chat_from_pengajuan' model_slug item.pk %}"><i class="fa-solid fa-comments"></i> Chat Aplikasi</a></li>
+  </ul>
+</div>

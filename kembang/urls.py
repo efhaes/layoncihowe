@@ -1,7 +1,5 @@
 from django.urls import path
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -84,6 +82,8 @@ urlpatterns = [
     path('staff/chat/setup-kunci/', views.chat_setup_kunci_desa, name='chat_setup_kunci_desa'),
     path('staff/chat/pemulihan-kunci/', views.chat_pemulihan_kunci, name='chat_pemulihan_kunci'),
     path('staff/chat/<int:thread_id>/', views.chat_admin_thread, name='chat_admin_thread'),
+    path('file/<str:model>/<int:pk>/<str:field>/', views.protected_surat_file, name='protected_surat_file'),
+    path('media/<path:file_path>', views.public_media_file, name='public_media_file'),
+    path('staff/chat/pengajuan/<str:model>/<int:pk>/', views.chat_from_pengajuan, name='chat_from_pengajuan'),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

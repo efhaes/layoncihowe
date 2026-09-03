@@ -1,5 +1,6 @@
 {% extends "partials/base_admin.html" %}
 {% load static %}
+{% load contact_tags %}
 
 {% block title %}Semua Pengajuan{% endblock %}
 
@@ -11,10 +12,12 @@
 {% block content %}
 
 {% if messages %}
-  <div class="messages" style="margin-bottom: 1.5rem;">
+  <div class="admin-messages">
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}" style="background: var(--card); border: 1px solid var(--border); border-left: 4px solid {% if message.tags == 'error' %}#B3261E{% else %}var(--secondary){% endif %}; border-radius: var(--radius-sm); padding: 0.85rem 1.1rem; color: var(--text); font-weight: 600; font-size: 0.9rem;">
+      <div class="alert alert-{{ message.tags }}" role="alert">
+        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
         {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
       </div>
     {% endfor %}
   </div>
@@ -69,8 +72,9 @@
 
     <p><strong>Nama:</strong> {{ surat.nama_display }}</p>
     <p><strong>Status:</strong> <span class="stempel stempel-{{ surat.status }}">{{ surat.get_status_display }}</span></p>
-    <p><strong>No. WhatsApp:</strong> {{ surat.no_whatsapp|default:"-" }}</p>
+    <p><strong>No. WhatsApp:</strong> {{ surat|whatsapp_number|default:"-" }}</p>
     <p><strong>Tanggal:</strong> {{ surat.tanggal_pengajuan|date:"d M Y, H:i" }}</p>
+    {% include "partials/contact_actions.html" with item=surat model_slug=surat.model_name jenis_surat=surat.jenis_surat %}
   </div>
 {% endfor %}
   </div>

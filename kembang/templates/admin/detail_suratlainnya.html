@@ -50,7 +50,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="450">
     <i class="fa fa-id-card"></i> <strong>Foto KTP:</strong>
     {% if surat.foto_ktp %}
-      <a href="{{ surat.foto_ktp.url }}" target="_blank">Lihat KTP</a>
+      <a href="{% url 'protected_surat_file' 'suratlainnya' surat.pk 'foto_ktp' %}" target="_blank">Lihat KTP</a>
     {% else %}
       Belum diunggah
     {% endif %}
@@ -59,7 +59,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="500">
     <i class="fa fa-users"></i> <strong>Foto KK:</strong>
     {% if surat.foto_kk %}
-      <a href="{{ surat.foto_kk.url }}" target="_blank">Lihat KK</a>
+      <a href="{% url 'protected_surat_file' 'suratlainnya' surat.pk 'foto_kk' %}" target="_blank">Lihat KK</a>
     {% else %}
       Belum diunggah
     {% endif %}
@@ -76,7 +76,7 @@
   <div class="info-card" data-aos="fade-up" data-aos-delay="650">
     <i class="fa fa-file-pdf"></i> <strong>Hasil Surat:</strong>
     {% if surat.hasil_surat %}
-      <a href="{{ surat.hasil_surat.url }}" target="_blank">Download PDF</a>
+      <a href="{% url 'protected_surat_file' 'suratlainnya' surat.pk 'hasil_surat' %}" target="_blank">Download PDF</a>
     {% else %}
       Belum tersedia
     {% endif %}
@@ -87,12 +87,7 @@
   <h3 data-aos="fade-up" data-aos-delay="750"><i class="fa fa-edit"></i> Update Status & Upload Surat</h3>
   <form method="post" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="800">
     {% csrf_token %}
-    <label for="status">Status:</label>
-    <select name="status" id="status">
-      <option value="diajukan" {% if surat.status == "diajukan" %}selected{% endif %}>Diajukan</option>
-      <option value="diproses" {% if surat.status == "diproses" %}selected{% endif %}>Diproses</option>
-      <option value="selesai" {% if surat.status == "selesai" %}selected{% endif %}>Selesai</option>
-    </select>
+    {% include "partials/status_penolakan.html" with object=surat %}
 
     <label for="hasil_surat">Unggah Hasil Surat (PDF):</label>
     <input type="file" name="hasil_surat" accept=".pdf">
@@ -102,10 +97,10 @@
 
   {% if surat.hasil_surat %}
   <div class="action-buttons" data-aos="zoom-in" data-aos-delay="850">
-    <a href="{{ surat.hasil_surat.url }}" target="_blank">
+    <a href="{% url 'protected_surat_file' 'suratlainnya' surat.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa fa-download"></i> Download PDF</button>
     </a>
-    <a href="https://wa.me/{{ surat.no_whatsapp|cut:'+' }}?text=Surat%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{{ surat.hasil_surat.url }}" target="_blank">
+    <a href="https://wa.me/{{ surat.no_whatsapp|cut:'+' }}?text=Surat%20Anda%20telah%20tersedia.%20Silakan%20cek%20di%20website%20kami:%20{{ request.scheme }}://{{ request.get_host }}{% url 'protected_surat_file' 'suratlainnya' surat.pk 'hasil_surat' %}" target="_blank">
       <button type="button"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button>
     </a>
   </div>

@@ -1,5 +1,7 @@
 {% extends "partials/base_admin.html" %}
 {% load static %}
+{% load contact_tags %}
+{% load static %}
 
 {% block title %}
   Surat Kelahiran | Desa Cihowe
@@ -56,6 +58,7 @@
           <a href="{% url 'detail_pengajuan_kelahiran' akta.pk %}" class="ledger-action" title="Lihat detail">
             <i class="fa-solid fa-eye"></i><span>Detail</span>
           </a>
+          {% include "partials/contact_actions.html" with item=akta model_slug="suratkelahiran" jenis_surat="Surat Kelahiran" %}
           <a href="#" class="ledger-action ledger-action-danger" title="Hapus catatan" onclick="openDeleteModal({{ akta.pk }}); return false;">
             <i class="fa-solid fa-trash"></i><span>Hapus</span>
           </a>
@@ -102,6 +105,7 @@
     <div class="mobile-cell mobile-aksi">
       <a href="{% url 'detail_pengajuan_kelahiran' akta.pk %}"><i class="fa-solid fa-eye"></i> Detail</a>
       <a href="#" onclick="openDeleteModal({{ akta.pk }}); return false;"><i class="fa-solid fa-trash"></i> Hapus</a>
+      {% include "partials/contact_actions.html" with item=akta model_slug="suratkelahiran" jenis_surat="Surat Kelahiran" %}
     </div>
   </div>
   {% empty %}

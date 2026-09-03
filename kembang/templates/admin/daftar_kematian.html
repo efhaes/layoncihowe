@@ -1,4 +1,5 @@
 {% extends "partials/base_admin.html" %}
+{% load contact_tags %}
 {% load static %}
 
 {% block css %}
@@ -50,6 +51,7 @@
           <a class="ledger-action" href="{% url 'detail_pengajuan_akta_kematian' akta.pk %}">
             <i class="fa-solid fa-eye"></i> Detail
           </a>
+          {% include "partials/contact_actions.html" with item=akta model_slug="suratkematian" jenis_surat="Surat Kematian" %}
           <a class="ledger-action ledger-action-danger" href="#" onclick="openDeleteModal({{ akta.pk }}); return false;">
             <i class="fa-solid fa-trash"></i> Hapus
           </a>
@@ -79,6 +81,7 @@
     <div class="mobile-aksi">
       <a href="{% url 'detail_pengajuan_akta_kematian' akta.pk %}">Detail</a>
       <a href="#" onclick="openDeleteModal({{ akta.pk }}); return false;">Hapus</a>
+      {% include "partials/contact_actions.html" with item=akta model_slug="suratkematian" jenis_surat="Surat Kematian" %}
     </div>
   </div>
   {% empty %}

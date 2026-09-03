@@ -9,10 +9,12 @@
 {% block content %}
 
 {% if messages %}
-  <div class="messages" style="margin-bottom: 1.5rem;">
+  <div class="admin-messages">
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}" style="background: var(--card); border: 1px solid var(--border); border-left: 4px solid {% if message.tags == 'error' %}#B3261E{% else %}var(--secondary){% endif %}; border-radius: var(--radius-sm); padding: 0.85rem 1.1rem; color: var(--text); font-weight: 600; font-size: 0.9rem;">
+      <div class="alert alert-{{ message.tags }}" role="alert">
+        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
         {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
       </div>
     {% endfor %}
   </div>

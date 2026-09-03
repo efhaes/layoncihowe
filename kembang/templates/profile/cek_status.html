@@ -257,6 +257,13 @@ Cek Status Pengajuan | Desa Cihowe
                   {{ item.status }}
                 </span>
 
+                {% if item.status == 'ditolak' and item.alasan_penolakan %}
+                  <div class="status-rejection-reason">
+                    <strong>Alasan Penolakan</strong>
+                    <p>{{ item.alasan_penolakan }}</p>
+                  </div>
+                {% endif %}
+
               </td>
 
 
@@ -265,7 +272,7 @@ Cek Status Pengajuan | Desa Cihowe
                 {% if item.hasil_surat %}
 
                 <a
-                  href="{{ item.hasil_surat.url }}"
+                  href="{% url 'protected_surat_file' file_model item.pk 'hasil_surat' %}"
                   target="_blank"
                   class="status-download-btn"
                 >
