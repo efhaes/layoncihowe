@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'kembang.context_processors.notifikasi_admin',
+                'kembang.context_processors.popupwhatsapp',
             ],
         },
     },

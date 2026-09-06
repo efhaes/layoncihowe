@@ -74,7 +74,6 @@
     <p><strong>Status:</strong> <span class="stempel stempel-{{ surat.status }}">{{ surat.get_status_display }}</span></p>
     <p><strong>No. WhatsApp:</strong> {{ surat|whatsapp_number|default:"-" }}</p>
     <p><strong>Tanggal:</strong> {{ surat.tanggal_pengajuan|date:"d M Y, H:i" }}</p>
-    {% include "partials/contact_actions.html" with item=surat model_slug=surat.model_name jenis_surat=surat.jenis_surat %}
   </div>
 {% endfor %}
   </div>

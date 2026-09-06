@@ -430,6 +430,10 @@ def tentang(request):
 def profil(request):
     return render(request, 'profile/tentang.html')
 
+def popupwhatsapp(request):
+    return {
+        "popupwhatsapp": TentangDesa.load()
+    }
 
 def home(request):
     if request.user.is_authenticated and request.user.is_staff:

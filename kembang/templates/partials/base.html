@@ -9,7 +9,10 @@
   <!-- Basic SEO -->
   <meta name="description" content="Layanan online desa: informasi, pengumuman, dan pengajuan surat-menyurat masyarakat. Cepat, mudah, dan transparan." />
   <meta name="theme-color" content="#081c3c" />
-
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'img/site.webmanifest' %}">
   <!-- Canonical -->
   {% if request.get_host == "layoncihowe.techo.id" and request.path == "/" %}
     <link rel="canonical" href="https://techo.id/">
@@ -61,7 +64,7 @@
       <!-- Kolom 1: Brand -->
       <div class="footer-brand">
         <div class="footer-brand-heading">
-          <img src="{% static 'img/logotegar.png' %}" alt="Logo Desa Cihowe" class="footer-logo" />
+          <img src="{% static 'img/logo.png' %}" alt="Logo Desa Cihowe" class="footer-logo" />
           <div>
             <span class="footer-desa">Desa Cihowe</span>
             <span class="footer-region">Kecamatan Ciseeng</span>
@@ -86,7 +89,6 @@
       <div class="footer-contact">
         <h5>Hubungi Kami</h5>
         <p><i class="bi bi-geo-alt"></i> Desa Cihowe, Kec. Ciseeng, Kab. Bogor</p>
-        <p><i class="bi bi-envelope"></i> <a href="mailto:desacihowe@example.com">desacihowe@example.com</a></p>
         <p><i class="bi bi-clock"></i> Senin - Jumat: 08.00 - 16.00 WIB</p>
       </div>
       
@@ -100,7 +102,64 @@
   </footer>
 
 </div>
+{% if popupwhatsapp.no_whatsapp %}
+<div
+  class="wa-service"
+  id="waService"
+  data-phone="{{ popupwhatsapp.no_whatsapp }}"
+>
+  <div class="wa-service-popup" id="waServicePopup">
 
+    <div class="wa-service-header">
+      <div class="wa-service-title">
+        <span class="wa-service-avatar">
+          <i class="fa-brands fa-whatsapp"></i>
+        </span>
+
+        <div>
+          <strong>Pelayanan Desa Cihowe</strong>
+          <small>Admin pelayanan</small>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="wa-service-close"
+        id="waServiceClose"
+        aria-label="Tutup bantuan WhatsApp"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="wa-service-body">
+      <p>Halo 👋</p>
+      <p>Ada yang bisa kami bantu terkait pelayanan Desa Cihowe?</p>
+
+      <a
+        href="#"
+        class="wa-service-chat"
+        id="waServiceChat"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="fa-brands fa-whatsapp"></i>
+        Chat via WhatsApp
+      </a>
+    </div>
+
+  </div>
+
+  <button
+    type="button"
+    class="wa-service-launcher"
+    id="waServiceLauncher"
+    aria-label="Hubungi Pelayanan Desa melalui WhatsApp"
+  >
+    <i class="fa-brands fa-whatsapp"></i>
+  </button>
+</div>
+{% endif %}
 <!-- JS -->
 {% block javascripts %}{% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -157,6 +216,90 @@
       window.addEventListener('resize', checkScreen);
     }
   });
+
+
+//whatsapp service
+document.addEventListener('DOMContentLoaded', function () {
+  const waService = document.getElementById('waService');
+
+  if (!waService) {
+    return;
+  }
+
+  const launcher = document.getElementById('waServiceLauncher');
+  const closeButton = document.getElementById('waServiceClose');
+  const chatButton = document.getElementById('waServiceChat');
+
+  const rawPhone = waService.dataset.phone || '';
+
+  function normalizeWhatsappNumber(phone) {
+    let number = phone
+      .trim()
+      .replace(/\s+/g, '')
+      .replace(/-/g, '')
+      .replace(/\(/g, '')
+      .replace(/\)/g, '');
+
+    if (number.startsWith('+62')) {
+      number = '62' + number.slice(3);
+    } else if (number.startsWith('08')) {
+      number = '62' + number.slice(1);
+    }
+
+    if (!/^62\d{8,13}$/.test(number)) {
+      return null;
+    }
+
+    return number;
+  }
+
+  const phone = normalizeWhatsappNumber(rawPhone);
+
+  if (!phone) {
+    waService.remove();
+    return;
+  }
+
+  const message =
+    'Halo, saya ingin bertanya mengenai pelayanan Desa Cihowe.';
+
+  chatButton.href =
+    'https://wa.me/' +
+    phone +
+    '?text=' +
+    encodeURIComponent(message);
+
+  function openPopup() {
+    waService.classList.add('is-open');
+  }
+
+  function closePopup() {
+    waService.classList.remove('is-open');
+  }
+
+  launcher.addEventListener('click', function () {
+    waService.classList.toggle('is-open');
+  });
+
+  closeButton.addEventListener('click', function () {
+    closePopup();
+  });
+
+  const alreadyShown =
+    sessionStorage.getItem('cihoweWhatsappShown') === '1';
+
+  if (alreadyShown) {
+    waService.classList.add('is-visible');
+  } else {
+    setTimeout(function () {
+      waService.classList.add('is-visible');
+      openPopup();
+
+      sessionStorage.setItem('cihoweWhatsappShown', '1');
+    }, 20000);
+  }
+});
+
 </script>
 
 </body>

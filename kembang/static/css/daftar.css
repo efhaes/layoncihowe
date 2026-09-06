@@ -230,6 +230,11 @@ table.ledger-table {
   white-space: nowrap;
 }
 
+.aksi-cell .contact-actions {
+  display: inline-block;
+  margin-left: 0.8rem;
+  margin-right: 0.8rem;
+}
 .ledger-action {
   display: inline-flex;
   align-items: center;

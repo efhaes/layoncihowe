@@ -60,15 +60,15 @@ body.admin-body {
 }
 
 .admin-sidebar-logo img {
-  width: 90%;
-  height: 90%;
-  object-fit: cover;     /* atau 'contain' kalau logo ga mau ke-crop */
+  width: 120%;
+  height: 120%;
+  object-fit: contain;     /* atau 'contain' kalau logo ga mau ke-crop */
 }
 
 .admin-sidebar-brand strong {
   display: block;
   color: var(--white);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1.2;
 }

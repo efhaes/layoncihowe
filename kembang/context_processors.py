@@ -1,7 +1,7 @@
 from .models import (
     SuratKelahiran, SuratKematian, PindahDatang, DomisiliUsaha,
     SKUPengajuan, DomisiliPengajuan, SKTMPengajuan,
-    SuratKKPengantar, SuratKTPBaruPengantar, SuratLainnya,
+    SuratKKPengantar, SuratKTPBaruPengantar, SuratLainnya,TentangDesa
 )
 
 def notifikasi_admin(request):
@@ -25,3 +25,8 @@ def notifikasi_admin(request):
     notifikasi['total'] = sum(notifikasi.values())
 
     return {'notifikasi': notifikasi}
+
+def popupwhatsapp(request):
+    return {
+        "popupwhatsapp": TentangDesa.load()
+    }

@@ -606,3 +606,247 @@ nav.active .burger span:nth-child(3) { transform: rotate(-45deg); bottom: 50%; }
 /* ===== AOS ===== */
 [data-aos] { opacity: 0; transition-property: transform, opacity; }
 [data-aos].aos-animate { opacity: 1; }
+
+/* =========================================================
+   FLOATING WHATSAPP SERVICE
+========================================================= */
+
+.wa-service {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1050;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(12px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0.25s ease;
+}
+
+.wa-service.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Launcher */
+.wa-service-launcher {
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+
+  background: #25D366;
+  color: #fff;
+
+  font-size: 1.7rem;
+  cursor: pointer;
+
+  box-shadow: 0 8px 24px rgba(20, 70, 45, 0.22);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.wa-service-launcher:hover {
+  background: #20bd5a;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(20, 70, 45, 0.28);
+}
+
+.wa-service-launcher:focus-visible {
+  outline: 3px solid rgba(37, 211, 102, 0.3);
+  outline-offset: 3px;
+}
+
+/* Popup */
+.wa-service-popup {
+  width: 310px;
+  overflow: hidden;
+
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  box-shadow: 0 12px 32px rgba(25, 55, 40, 0.16);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(8px) scale(0.98);
+  transform-origin: bottom left;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.wa-service.is-open .wa-service-popup {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Header */
+.wa-service-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px 15px;
+
+  background: var(--primary);
+  color: #fff;
+}
+
+.wa-service-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wa-service-avatar {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #25D366;
+  color: #fff;
+
+  font-size: 1.2rem;
+}
+
+.wa-service-title strong {
+  display: block;
+  margin: 0 0 2px;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.wa-service-title small {
+  display: block;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.wa-service-close {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+
+  cursor: pointer;
+}
+
+.wa-service-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* Body */
+.wa-service-body {
+  padding: 16px;
+}
+
+.wa-service-body p {
+  margin: 0;
+
+  color: var(--text);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.wa-service-body p + p {
+  margin-top: 4px;
+}
+
+.wa-service-chat {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 15px;
+  padding: 10px 14px;
+
+  border-radius: 10px;
+
+  background: #25D366;
+  color: #fff;
+
+  font-size: 0.86rem;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: background-color 0.2s ease;
+}
+
+.wa-service-chat:hover {
+  background: #20bd5a;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .wa-service {
+    left: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
+
+  .wa-service-popup {
+    width: min(300px, calc(100vw - 28px));
+  }
+
+  .wa-service-launcher {
+    width: 52px;
+    height: 52px;
+    font-size: 1.55rem;
+  }
+}
